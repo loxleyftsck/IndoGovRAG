@@ -1,0 +1,16 @@
+{
+  "total_chunks": 3,
+  "collection_name": "indonesian_gov_docs",
+  "persist_directory": "data\\vector_db\\chroma",
+  "doc_types": {
+    "Perpres": 2,
+    "PP": 1
+  },
+  "categories": {
+    "civil_administration": 2,
+    "social_assistance": 1
+  },
+  "embedding_model": "intfloat/multilingual-e5-base",
+  "embedding_dimension": 768,
+  "distance_metric": "cosine"
+}
