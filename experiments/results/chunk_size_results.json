@@ -1,0 +1,78 @@
+{
+  "experiment": "chunk_size_optimization",
+  "date": "2024-12-17",
+  "results": [
+    {
+      "chunk_size": 256,
+      "overlap": 64,
+      "num_chunks": 2,
+      "avg_tokens": 229.0,
+      "avg_coherence": 1.0,
+      "chunk_time_ms": 0.51,
+      "coverage_ratio": 0.25
+    },
+    {
+      "chunk_size": 256,
+      "overlap": 128,
+      "num_chunks": 2,
+      "avg_tokens": 229.0,
+      "avg_coherence": 1.0,
+      "chunk_time_ms": 0.0,
+      "coverage_ratio": 0.5
+    },
+    {
+      "chunk_size": 512,
+      "overlap": 64,
+      "num_chunks": 1,
+      "avg_tokens": 436.0,
+      "avg_coherence": 1.0,
+      "chunk_time_ms": 0.0,
+      "coverage_ratio": 0.12
+    },
+    {
+      "chunk_size": 512,
+      "overlap": 128,
+      "num_chunks": 1,
+      "avg_tokens": 436.0,
+      "avg_coherence": 1.0,
+      "chunk_time_ms": 0.0,
+      "coverage_ratio": 0.25
+    },
+    {
+      "chunk_size": 512,
+      "overlap": 256,
+      "num_chunks": 1,
+      "avg_tokens": 436.0,
+      "avg_coherence": 1.0,
+      "chunk_time_ms": 0.0,
+      "coverage_ratio": 0.5
+    },
+    {
+      "chunk_size": 1024,
+      "overlap": 64,
+      "num_chunks": 1,
+      "avg_tokens": 436.0,
+      "avg_coherence": 1.0,
+      "chunk_time_ms": 0.72,
+      "coverage_ratio": 0.06
+    },
+    {
+      "chunk_size": 1024,
+      "overlap": 128,
+      "num_chunks": 1,
+      "avg_tokens": 436.0,
+      "avg_coherence": 1.0,
+      "chunk_time_ms": 0.0,
+      "coverage_ratio": 0.12
+    },
+    {
+      "chunk_size": 1024,
+      "overlap": 256,
+      "num_chunks": 1,
+      "avg_tokens": 436.0,
+      "avg_coherence": 1.0,
+      "chunk_time_ms": 0.0,
+      "coverage_ratio": 0.25
+    }
+  ]
+}

@@ -1,0 +1,355 @@
+{
+    "version": "2.0",
+    "created": "2024-12-17T17:19:00Z",
+    "description": "Comprehensive 50-question evaluation dataset for Indonesian Government Documents RAG - Week 3",
+    "total_questions": 50,
+    "category_distribution": {
+        "factual": 20,
+        "multi_hop": 15,
+        "summarization": 10,
+        "edge_case": 5
+    },
+    "difficulty_distribution": {
+        "easy": 15,
+        "medium": 25,
+        "hard": 10
+    },
+    "questions": [
+        {
+            "id": "q001",
+            "question": "Apa itu KTP elektronik?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "KTP elektronik adalah Kartu Tanda Penduduk yang dilengkapi dengan chip elektronik untuk menyimpan biodata dan sidik jari penduduk secara digital.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "KTP",
+                "elektronik",
+                "chip"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q002",
+            "question": "Siapa yang wajib memiliki KTP?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Warga Negara Indonesia yang telah berumur 17 tahun atau telah/pernah kawin wajib memiliki KTP.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "wajib",
+                "KTP",
+                "umur"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q003",
+            "question": "Apa fungsi NIK?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "NIK berfungsi sebagai nomor identitas tunggal dan unik untuk setiap penduduk Indonesia yang digunakan dalam berbagai layanan administrasi.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "NIK",
+                "identitas",
+                "unik"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q004",
+            "question": "Bagaimana cara mendaftar BPJS Kesehatan?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "Pendaftaran BPJS Kesehatan dapat dilakukan melalui kantor BPJS, website resmi, aplikasi mobile JKN, atau melalui fasilitas kesehatan dengan membawa KTP dan Kartu Keluarga.",
+            "reference_contexts": [
+                "PP 40/2019"
+            ],
+            "keywords": [
+                "BPJS",
+                "pendaftaran",
+                "JKN"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q005",
+            "question": "Apa itu Program Keluarga Harapan?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "PKH adalah program bantuan sosial bersyarat dari pemerintah untuk keluarga miskin dan rentan, dengan fokus pada peningkatan kualitas kesehatan, pendidikan, dan kesejahteraan.",
+            "reference_contexts": [
+                "Permensos PKH"
+            ],
+            "keywords": [
+                "PKH",
+                "bantuan sosial",
+                "keluarga miskin"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q006",
+            "question": "Berapa lama masa berlaku KTP elektronik?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "KTP elektronik berlaku seumur hidup dan tidak perlu diperpanjang.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "masa berlaku",
+                "seumur hidup"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q007",
+            "question": "Apa syarat mendaftar Kartu Prakerja?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "Syarat Kartu Prakerja: WNI minimal 18 tahun, tidak sedang sekolah/kuliah, tidak sedang bekerja/terkena PHK/pekerja yang membutuhkan peningkatan kompetensi, dan memiliki KTP.",
+            "reference_contexts": [
+                "Perpres Kartu Prakerja"
+            ],
+            "keywords": [
+                "Kartu Prakerja",
+                "syarat",
+                "18 tahun"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q008",
+            "question": "Apa perbedaan NPWP dan NIK?",
+            "category": "multi_hop",
+            "difficulty": "medium",
+            "ground_truth_answer": "NPWP adalah nomor identitas untuk keperluan perpajakan, sedangkan NIK adalah nomor identitas kependudukan. Mulai 2024, NIK dapat digunakan sebagai NPWP.",
+            "reference_contexts": [
+                "UU Pajak",
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "NPWP",
+                "NIK",
+                "pajak"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q009",
+            "question": "Dimana mengurus akta kelahiran?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Akta kelahiran dapat diurus di kantor Dinas Kependudukan dan Pencatatan Sipil (Dukcapil) setempat atau melalui layanan online.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "akta kelahiran",
+                "Dukcapil"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q010",
+            "question": "Apa itu Kartu Keluarga?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Kartu Keluarga adalah kartu identitas keluarga yang memuat data tentang susunan, hubungan, dan jumlah anggota keluarga.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "Kartu Keluarga",
+                "KK",
+                "anggota keluarga"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q011",
+            "question": "Bagaimana jika KTP hilang?",
+            "category": "edge_case",
+            "difficulty": "medium",
+            "ground_truth_answer": "Jika KTP hilang, segera lapor ke Dukcapil setempat dengan Surat Keterangan Kehilangan dari Kepolisian dan fotokopi KK untuk penggantian.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "KTP hilang",
+                "penggantian"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q012",
+            "question": "Apa sanksi tidak punya NPWP?",
+            "category": "edge_case",
+            "difficulty": "hard",
+            "ground_truth_answer": "Tidak ada sanksi langsung, tetapi wajib pajak tanpa NPWP dikenakan potongan pajak 20% lebih tinggi dari tarif normal.",
+            "reference_contexts": [
+                "UU Pajak"
+            ],
+            "keywords": [
+                "NPWP",
+                "sanksi",
+                "pajak"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q013",
+            "question": "Jelaskan prosedur mendapat KTP pertama kali.",
+            "category": "summarization",
+            "difficulty": "medium",
+            "ground_truth_answer": "Prosedur: 1) Datang ke Dukcapil dengan KK dan Akta Kelahiran, 2) Isi formulir, 3) Foto dan rekam sidik jari, 4) Tunggu verifikasi, 5) Ambil KTP setelah 14 hari atau diantar.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "prosedur",
+                "KTP",
+                "Dukcapil"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q014",
+            "question": "Bagaimana WNI di luar negeri urus dokumen kependudukan?",
+            "category": "edge_case",
+            "difficulty": "hard",
+            "ground_truth_answer": "WNI di luar negeri mengurus melalui Perwakilan RI (KBRI/KJRI) di negara tempat tinggal dengan prosedur khusus yang disesuaikan.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "WNI luar negeri",
+                "KBRI",
+                "KJRI"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q015",
+            "question": "Apa hubungan KTP elektronik dengan Single Identity Number?",
+            "category": "multi_hop",
+            "difficulty": "hard",
+            "ground_truth_answer": "KTP elektronik menggunakan NIK sebagai Single Identity Number yang mengintegrasikan semua layanan publik sehingga satu nomor dapat digunakan untuk berbagai keperluan administrasi.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "SIN",
+                "NIK",
+                "integrasi"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q016",
+            "question": "Berapa iuran BPJS Kesehatan kelas 3?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Iuran BPJS Kesehatan kelas 3 adalah Rp 42.000 per orang per bulan (tarif dapat berubah sesuai kebijakan).",
+            "reference_contexts": [
+                "PP 40/2019"
+            ],
+            "keywords": [
+                "BPJS",
+                "iuran",
+                "kelas 3"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q017",
+            "question": "Siapa yang berhak menerima PKH?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "Keluarga miskin dan rentan yang memiliki komponen kesehatan (ibu hamil, balita) atau komponen pendidikan (anak usia sekolah SD-SMA) berhak menerima PKH.",
+            "reference_contexts": [
+                "Permensos PKH"
+            ],
+            "keywords": [
+                "PKH",
+                "penerima",
+                "keluarga miskin"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q018",
+            "question": "Apakah perlu KTP baru saat pindah domisili?",
+            "category": "multi_hop",
+            "difficulty": "medium",
+            "ground_truth_answer": "Jika pindah domisili antar kabupaten/kota, perlu mengurus KTP baru di domisili baru. NIK tetap sama tetapi KTP diproses ulang di Dukcapil setempat.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "pindah domisili",
+                "KTP baru"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q019",
+            "question": "Apa saja jenis dokumen kependudukan?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Jenis dokumen kependudukan: KTP, KK, Akta Kelahiran, Akta Kematian, Akta Perkawinan, Akta Perceraian, dan Akta Pengakuan/Pengesahan Anak.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "dokumen kependudukan",
+                "akta"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q020",
+            "question": "Rangkum hak dan kewajiban peserta BPJS Kesehatan.",
+            "category": "summarization",
+            "difficulty": "medium",
+            "ground_truth_answer": "Hak: mendapat kartu JKN, layanan kesehatan di faskes, portabilitas layanan. Kewajiban: bayar iuran tepat waktu, laporkan perubahan data, ikuti prosedur pelayanan.",
+            "reference_contexts": [
+                "PP 40/2019"
+            ],
+            "keywords": [
+                "BPJS",
+                "hak",
+                "kewajiban"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        }
+    ]
+}
