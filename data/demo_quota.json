@@ -1,0 +1,53 @@
+{
+  "date": "2025-12-17",
+  "daily_requests": 5,
+  "daily_tokens": 3550,
+  "minute_buckets": {
+    "2025-12-17 12:22": {
+      "requests": 5,
+      "tokens": 3550
+    }
+  },
+  "history": [
+    {
+      "timestamp": "2025-12-17T12:22:48.800495",
+      "model": "gemini-pro",
+      "input_tokens": 400,
+      "output_tokens": 150,
+      "total_tokens": 550,
+      "query_preview": "Demo query #1: What is RAG?"
+    },
+    {
+      "timestamp": "2025-12-17T12:22:49.102081",
+      "model": "gemini-pro",
+      "input_tokens": 450,
+      "output_tokens": 180,
+      "total_tokens": 630,
+      "query_preview": "Demo query #2: What is RAG?"
+    },
+    {
+      "timestamp": "2025-12-17T12:22:49.404180",
+      "model": "gemini-pro",
+      "input_tokens": 500,
+      "output_tokens": 210,
+      "total_tokens": 710,
+      "query_preview": "Demo query #3: What is RAG?"
+    },
+    {
+      "timestamp": "2025-12-17T12:22:49.705832",
+      "model": "gemini-pro",
+      "input_tokens": 550,
+      "output_tokens": 240,
+      "total_tokens": 790,
+      "query_preview": "Demo query #4: What is RAG?"
+    },
+    {
+      "timestamp": "2025-12-17T12:22:50.011209",
+      "model": "gemini-pro",
+      "input_tokens": 600,
+      "output_tokens": 270,
+      "total_tokens": 870,
+      "query_preview": "Demo query #5: What is RAG?"
+    }
+  ]
+}

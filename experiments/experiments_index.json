@@ -1,0 +1,58 @@
+{
+  "experiments": [
+    {
+      "id": "exp_20251217_125615_56ae95a5",
+      "name": "Hybrid Search + Rerank",
+      "start_time": "2025-12-17T12:56:15.988102",
+      "end_time": "2025-12-17T12:56:15.988102",
+      "config_summary": {
+        "embedding_model": "multilingual-e5-base",
+        "retrieval_strategy": "hybrid",
+        "top_k": 5
+      },
+      "key_metrics": {
+        "hit_at_1": 0.85,
+        "hit_at_5": 0.95,
+        "mrr": 0.89,
+        "context_precision": 0.9,
+        "context_recall": 0.85,
+        "faithfulness": 0.92,
+        "answer_relevancy": 0.88,
+        "avg_latency_ms": 150.3,
+        "p95_latency_ms": 210.5,
+        "avg_cost_per_query": 0.003,
+        "cache_hit_rate": 0.0,
+        "total_queries": 10,
+        "failed_queries": 0,
+        "error_rate": 0.0
+      }
+    },
+    {
+      "id": "exp_20251217_125615_ec801d2b",
+      "name": "Baseline Vector Search",
+      "start_time": "2025-12-17T12:56:15.987078",
+      "end_time": "2025-12-17T12:56:15.987078",
+      "config_summary": {
+        "embedding_model": "multilingual-e5-base",
+        "retrieval_strategy": "vector",
+        "top_k": 5
+      },
+      "key_metrics": {
+        "hit_at_1": 0.75,
+        "hit_at_5": 0.9,
+        "mrr": 0.82,
+        "context_precision": 0.85,
+        "context_recall": 0.78,
+        "faithfulness": 0.88,
+        "answer_relevancy": 0.83,
+        "avg_latency_ms": 120.5,
+        "p95_latency_ms": 180.2,
+        "avg_cost_per_query": 0.002,
+        "cache_hit_rate": 0.0,
+        "total_queries": 10,
+        "failed_queries": 0,
+        "error_rate": 0.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,237 @@
+{
+    "metadata": {
+        "version": "1.0",
+        "created_date": "2024-12-17",
+        "description": "Baseline evaluation dataset for Indonesian Government Documents RAG system",
+        "total_questions": 10,
+        "language": "Indonesian",
+        "categories": {
+            "factual_lookup": 4,
+            "multi_hop_reasoning": 3,
+            "summarization": 2,
+            "edge_case": 1
+        }
+    },
+    "questions": [
+        {
+            "id": "Q001",
+            "category": "factual_lookup",
+            "difficulty": "easy",
+            "question": "Apa saja persyaratan dokumen untuk mengajukan KTP elektronik?",
+            "question_en": "What are the document requirements for applying for an electronic ID card?",
+            "context_source": "Peraturan Presiden tentang KTP Elektronik",
+            "ground_truth": "Persyaratan dokumen untuk KTP elektronik meliputi: (1) Kartu Keluarga asli dan fotokopi, (2) Akta kelahiran atau surat kenal lahir, (3) Surat keterangan pindah bagi penduduk yang pindah dalam wilayah NKRI, (4) Pas foto berwarna ukuran 3x4 sebanyak 2 lembar, (5) Surat keterangan perekaman KTP-el dari daerah asal bagi penduduk yang pindah.",
+            "expected_answer_length": "medium",
+            "keywords_must_have": [
+                "Kartu Keluarga",
+                "Akta kelahiran",
+                "pas foto"
+            ],
+            "evaluation_criteria": {
+                "factual_accuracy": "Must list at least 3 main requirements",
+                "completeness": "Should mention KK, Akta, and photo",
+                "language_quality": "Natural Indonesian"
+            }
+        },
+        {
+            "id": "Q002",
+            "category": "factual_lookup",
+            "difficulty": "easy",
+            "question": "Berapa lama masa berlaku Surat Izin Mengemudi (SIM) C untuk pengendara motor?",
+            "question_en": "How long is the validity period of a Class C driver's license for motorcyclists?",
+            "context_source": "UU Lalu Lintas dan Angkutan Jalan",
+            "ground_truth": "Masa berlaku SIM C adalah 5 (lima) tahun sejak tanggal diterbitkan. Setelah masa berlaku habis, SIM harus diperpanjang dengan mengikuti prosedur perpanjangan yang ditetapkan oleh Kepolisian Republik Indonesia.",
+            "expected_answer_length": "short",
+            "keywords_must_have": [
+                "5 tahun",
+                "lima tahun"
+            ],
+            "evaluation_criteria": {
+                "factual_accuracy": "Must state 5 years",
+                "completeness": "Should mention renewal requirement",
+                "language_quality": "Clear and concise"
+            }
+        },
+        {
+            "id": "Q003",
+            "category": "factual_lookup",
+            "difficulty": "medium",
+            "question": "Apa perbedaan antara izin usaha OSS (Online Single Submission) dengan izin konvensional?",
+            "question_en": "What is the difference between OSS (Online Single Submission) business license and conventional license?",
+            "context_source": "Peraturan Pemerintah tentang Pelaksanaan Berusaha",
+            "ground_truth": "Perbedaan utama: (1) OSS dilakukan secara online/elektronik sedangkan konvensional manual di kantor, (2) OSS terintegrasi dalam satu sistem sehingga lebih cepat (instant untuk izin dasar), konvensional memerlukan waktu lebih lama dengan proses berbeda di tiap instansi, (3) OSS berbasis risiko (risiko rendah dapat langsung, risiko tinggi perlu inspeksi), konvensional semua harus verifikasi lapangan, (4) OSS menggunakan NIB (Nomor Induk Berusaha) sebagai identitas tunggal, konvensional berbagai nomor izin berbeda.",
+            "expected_answer_length": "long",
+            "keywords_must_have": [
+                "online",
+                "terintegrasi",
+                "NIB",
+                "berbasis risiko"
+            ],
+            "evaluation_criteria": {
+                "factual_accuracy": "Must explain at least 2 key differences",
+                "completeness": "Should cover online nature and speed advantage",
+                "language_quality": "Well-structured comparison"
+            }
+        },
+        {
+            "id": "Q004",
+            "category": "factual_lookup",
+            "difficulty": "medium",
+            "question": "Siapa saja yang berhak menerima Bantuan Langsung Tunai (BLT) dari pemerintah?",
+            "question_en": "Who is eligible to receive Direct Cash Assistance (BLT) from the government?",
+            "context_source": "Peraturan Menteri Sosial tentang Bantuan Sosial",
+            "ground_truth": "Yang berhak menerima BLT adalah keluarga miskin dan rentan yang memenuhi kriteria: (1) Terdaftar dalam Data Terpadu Kesejahteraan Sosial (DTKS), (2) Memiliki skor kesejahteraan di bawah ambang batas kemiskinan, (3) Kriteria rumah tangga seperti: lantai tanah/bambu, tidak memiliki tabungan/aset, penghasilan di bawah upah minimum regional, (4) Memiliki anggota keluarga yang rentan (lansia, disabilitas, anak balita), (5) Tidak sedang menerima bantuan sosial sejenis dari pemerintah.",
+            "expected_answer_length": "long",
+            "keywords_must_have": [
+                "DTKS",
+                "keluarga miskin",
+                "kriteria"
+            ],
+            "evaluation_criteria": {
+                "factual_accuracy": "Must mention DTKS and poverty criteria",
+                "completeness": "Should list multiple eligibility factors",
+                "language_quality": "Clear explanation in Indonesian"
+            }
+        },
+        {
+            "id": "Q005",
+            "category": "multi_hop_reasoning",
+            "difficulty": "medium",
+            "question": "Jika seseorang ingin membuka usaha kuliner di rumah, izin apa saja yang diperlukan dan bagaimana prosesnya?",
+            "question_en": "If someone wants to open a home-based culinary business, what permits are needed and what is the process?",
+            "context_source": "Peraturan tentang UMKM dan Izin Usaha Mikro Kecil",
+            "ground_truth": "Untuk usaha kuliner rumahan diperlukan: (1) NIB (Nomor Induk Berusaha) melalui OSS untuk legalitas usaha, (2) Sertifikat halal dari MUI/BPJPH jika menjual produk halal, (3) Izin PIRT (Pangan Industri Rumah Tangga) dari Dinas Kesehatan setempat, (4) Sertifikat laik higiene dan sanitasi. Prosesnya: Pertama daftar NIB di OSS online, kemudian mengajukan PIRT dengan membawa sampel produk dan mengikuti penyuluhan keamanan pangan, lalu mengurus sertifikat halal secara paralel, dan terakhir mengikuti inspeksi sanitasi dari Dinkes.",
+            "expected_answer_length": "long",
+            "keywords_must_have": [
+                "NIB",
+                "PIRT",
+                "Dinkes",
+                "proses"
+            ],
+            "evaluation_criteria": {
+                "factual_accuracy": "Must mention NIB and PIRT as main permits",
+                "completeness": "Should explain sequential process",
+                "reasoning_quality": "Logical flow from registration to inspection"
+            }
+        },
+        {
+            "id": "Q006",
+            "category": "multi_hop_reasoning",
+            "difficulty": "hard",
+            "question": "Bagaimana cara seorang warga negara asing menikah dengan WNI dan mendapatkan izin tinggal tetap di Indonesia?",
+            "question_en": "How can a foreign citizen marry an Indonesian citizen and obtain permanent residence in Indonesia?",
+            "context_source": "UU Kewarganegaraan dan Peraturan Imigrasi",
+            "ground_truth": "Proses lengkapnya: (1) Pengajuan pemberitahuan kehendak nikah di KUA/Catatan Sipil dengan melampirkan Surat Keterangan Belum Menikah (Certificate of No Impediment) dari negara asal yang dilegalisir kedutaan, (2) Pernikahan dilaksanakan sesuai hukum Indonesia, (3) Setelah menikah, pasangan WNA mengajukan KITAS (Kartu Izin Tinggal Terbatas) dengan sponsor suami/istri WNI, (4) KITAS diperpanjang setiap tahun selama minimal 3 tahun berturut-turut, (5) Setelah 3 tahun dengan KITAS, dapat mengajukan KITAP (Kartu Izin Tinggal Tetap) ke Direktorat Jenderal Imigrasi dengan melampirkan bukti pernikahan yang sah, surat sponsor dari pasangan WNI, dan dokumen keuangan yang memadai, (6) KITAP berlaku 5 tahun dan dapat diperpanjang.",
+            "expected_answer_length": "long",
+            "keywords_must_have": [
+                "KITAS",
+                "KITAP",
+                "3 tahun",
+                "imigrasi"
+            ],
+            "evaluation_criteria": {
+                "factual_accuracy": "Must explain KITAS → KITAP progression",
+                "completeness": "Should mention marriage registration and timeframes",
+                "reasoning_quality": "Clear step-by-step process"
+            }
+        },
+        {
+            "id": "Q007",
+            "category": "multi_hop_reasoning",
+            "difficulty": "hard",
+            "question": "Apa yang harus dilakukan jika akta kelahiran hilang dan perlu mengurus dokumen kependudukan lainnya yang memerlukan akta tersebut?",
+            "question_en": "What should be done if a birth certificate is lost and other civil documents requiring it need to be processed?",
+            "context_source": "UU Administrasi Kependudukan",
+            "ground_truth": "Langkah-langkahnya: (1) Buat surat kehilangan akta kelahiran di kantor polisi, (2) Datang ke Dinas Kependudukan dan Catatan Sipil (Disdukcapil) tempat akta kelahiran pertama kali diterbitkan, (3) Ajukan permohonan penerbitan akta kelahiran pengganti dengan membawa: surat kehilangan dari polisi, KTP orang tua, Kartu Keluarga, surat keterangan dari kelurahan, dan dokumen pendukung lain seperti ijazah atau surat keterangan lahir dari rumah sakit, (4) Isi formulir permohonan dan tunggu proses verifikasi data (biasanya 3-7 hari kerja), (5) Setelah akta kelahiran pengganti terbit, dapat digunakan untuk mengurus dokumen kependudukan lainnya seperti KTP, paspor, atau SIM.",
+            "expected_answer_length": "long",
+            "keywords_must_have": [
+                "surat kehilangan",
+                "Disdukcapil",
+                "pengganti"
+            ],
+            "evaluation_criteria": {
+                "factual_accuracy": "Must mention police report and Disdukcapil",
+                "completeness": "Should explain full process including documents needed",
+                "reasoning_quality": "Logical sequence from reporting loss to getting replacement"
+            }
+        },
+        {
+            "id": "Q008",
+            "category": "summarization",
+            "difficulty": "medium",
+            "question": "Jelaskan secara ringkas prosedur pendaftaran CPNS (Calon Pegawai Negeri Sipil) di Indonesia.",
+            "question_en": "Briefly explain the registration procedure for civil servant candidates (CPNS) in Indonesia.",
+            "context_source": "Peraturan BKN tentang Pengadaan CPNS",
+            "ground_truth": "Prosedur pendaftaran CPNS: (1) Pendaftaran online melalui portal SSCASN (sscasn.bkn.go.id) saat periode pengumuman dibuka, (2) Membuat akun dan mengisi data pribadi serta riwayat pendidikan, (3) Memilih formasi jabatan yang sesuai dengan kualifikasi pendidikan, (4) Mengunggah dokumen persyaratan (ijazah, transkrip, KTP, foto), (5) Mengikuti seleksi administrasi, (6) Jika lolos, mengikuti Seleksi Kompetensi Dasar (SKD) berupa tes CAT (Computer Assisted Test), (7) Jika lolos SKD, mengikuti Seleksi Kompetensi Bidang (SKB) sesuai formasi yang dipilih, (8) Pengumuman hasil akhir dan penetapan NIP bagi yang lulus.",
+            "expected_answer_length": "medium",
+            "keywords_must_have": [
+                "SSCASN",
+                "SKD",
+                "SKB",
+                "online"
+            ],
+            "evaluation_criteria": {
+                "factual_accuracy": "Must mention SSCASN portal and key selection stages",
+                "completeness": "Should cover registration, SKD, and SKB",
+                "summarization_quality": "Concise yet comprehensive"
+            }
+        },
+        {
+            "id": "Q009",
+            "category": "summarization",
+            "difficulty": "medium",
+            "question": "Apa saja hak dan kewajiban warga negara Indonesia menurut UUD 1945?",
+            "question_en": "What are the rights and obligations of Indonesian citizens according to the 1945 Constitution?",
+            "context_source": "UUD 1945 Pasal 27-34",
+            "ground_truth": "Hak warga negara: (1) Kedudukan sama di mata hukum dan pemerintahan, (2) Pekerjaan dan penghidupan yang layak, (3) Kemerdekaan berserikat dan berkumpul, (4) Kemerdekaan memeluk agama dan beribadah, (5) Hak mendapatkan pendidikan, (6) Hak atas jaminan sosial. Kewajiban warga negara: (1) Menaati hukum dan pemerintahan, (2) Ikut serta dalam upaya pembelaan negara, (3) Menghormati hak asasi manusia orang lain, (4) Tunduk kepada pembatasan yang ditetapkan undang-undang, (5) Ikut serta dalam usaha pertahanan dan keamanan negara.",
+            "expected_answer_length": "medium",
+            "keywords_must_have": [
+                "hak",
+                "kewajiban",
+                "hukum",
+                "pendidikan"
+            ],
+            "evaluation_criteria": {
+                "factual_accuracy": "Must list both rights and obligations",
+                "completeness": "Should mention at least 3 rights and 3 obligations",
+                "summarization_quality": "Well-organized in two categories"
+            }
+        },
+        {
+            "id": "Q010",
+            "category": "edge_case",
+            "difficulty": "hard",
+            "question": "Bagaimana status kewarganegaraan anak yang lahir di luar negeri dari orang tua WNI yang sudah tidak memiliki paspor Indonesia?",
+            "question_en": "What is the citizenship status of a child born abroad to Indonesian parents who no longer have Indonesian passports?",
+            "context_source": "UU Kewarganegaraan No. 12 Tahun 2006",
+            "ground_truth": "Menurut UU Kewarganegaraan, anak yang lahir dari orang tua WNI tetap berhak atas kewarganegaraan Indonesia berdasarkan asas ius sanguinis (hak darah), meskipun orang tua tidak memiliki paspor Indonesia yang masih berlaku. Namun, untuk mengurus dokumen kewarganegaraan anak, orang tua perlu: (1) Melaporkan kelahiran ke KBRI/Kjenderal terdekat maksimal 1 tahun setelah kelahiran, (2) Membuktikan kewarganegaraan Indonesia orang tua meskipun paspor habis masa berlaku (dengan menunjukkan paspor lama, KTP, atau dokumen kewarganegaraan lain), (3) Mengajukan permohonan penetapan kewarganegaraan anak di KBRI/Konsulat, (4) Anak akan mendapatkan Surat Keterangan Kewarganegaraan RI dan dapat dibuatkan paspor Indonesia. Penting: Jika tidak dilaporkan sampai anak berusia 18 tahun, anak harus memilih kewarganegaraan dan mengajukan permohonan menjadi WNI.",
+            "expected_answer_length": "long",
+            "keywords_must_have": [
+                "ius sanguinis",
+                "KBRI",
+                "18 tahun",
+                "melaporkan"
+            ],
+            "evaluation_criteria": {
+                "factual_accuracy": "Must explain citizenship by blood and reporting requirement",
+                "completeness": "Should mention age limit and consequences",
+                "complexity_handling": "Handles ambiguous scenario with nuance"
+            },
+            "edge_case_type": "ambiguous_scenario",
+            "challenge": "Parents' expired passport creates uncertainty but doesn't negate citizenship right"
+        }
+    ],
+    "validation_notes": {
+        "ground_truth_source": "Based on actual Indonesian government regulations",
+        "review_status": "Pending peer review",
+        "reviewers": [],
+        "last_updated": "2024-12-17",
+        "quality_checklist": {
+            "diverse_question_types": true,
+            "covers_common_use_cases": true,
+            "includes_edge_cases": true,
+            "natural_indonesian_language": true,
+            "realistic_scenarios": true
+        }
+    }
+}

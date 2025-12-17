@@ -1,0 +1,31 @@
+{
+    "name": "indogovrag",
+    "version": "0.1.0",
+    "description": "Production-ready RAG system for Indonesian government documents",
+    "main": "src/rag/pipeline.py",
+    "scripts": {
+        "test": "pytest tests/",
+        "lint": "flake8 src/",
+        "format": "black src/ tests/"
+    },
+    "keywords": [
+        "rag",
+        "retrieval-augmented-generation",
+        "indonesian",
+        "nlp",
+        "government-documents",
+        "jdih",
+        "gemini",
+        "chromadb"
+    ],
+    "author": "Your Name <your.email@example.com>",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yourusername/indogovrag.git"
+    },
+    "bugs": {
+        "url": "https://github.com/yourusername/indogovrag/issues"
+    },
+    "homepage": "https://github.com/yourusername/indogovrag#readme"
+}

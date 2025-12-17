@@ -1,0 +1,16 @@
+BASELINE EVALUATION QUESTIONS
+======================================================================
+
+1. [factual_lookup] Apa saja persyaratan dokumen untuk mengajukan KTP elektronik?
+2. [factual_lookup] Berapa lama masa berlaku Surat Izin Mengemudi (SIM) C untuk pengendara motor?
+3. [factual_lookup] Apa perbedaan antara izin usaha OSS (Online Single Submission) dengan izin konvensional?
+4. [factual_lookup] Siapa saja yang berhak menerima Bantuan Langsung Tunai (BLT) dari pemerintah?
+5. [multi_hop_reasoning] Jika seseorang ingin membuka usaha kuliner di rumah, izin apa saja yang diperlukan dan bagaimana prosesnya?
+6. [multi_hop_reasoning] Bagaimana cara seorang warga negara asing menikah dengan WNI dan mendapatkan izin tinggal tetap di Indonesia?
+7. [multi_hop_reasoning] Apa yang harus dilakukan jika akta kelahiran hilang dan perlu mengurus dokumen kependudukan lainnya yang memerlukan akta tersebut?
+8. [summarization] Jelaskan secara ringkas prosedur pendaftaran CPNS (Calon Pegawai Negeri Sipil) di Indonesia.
+9. [summarization] Apa saja hak dan kewajiban warga negara Indonesia menurut UUD 1945?
+10. [edge_case] Bagaimana status kewarganegaraan anak yang lahir di luar negeri dari orang tua WNI yang sudah tidak memiliki paspor Indonesia?
+
+======================================================================
+Total: 10 questions
