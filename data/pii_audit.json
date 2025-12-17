@@ -1,0 +1,17 @@
+{
+  "logs": [
+    {
+      "timestamp": "2025-12-17T14:09:04.947820",
+      "text_length": 381,
+      "total_matches": 8,
+      "matches_by_type": {
+        "nik": 2,
+        "phone": 3,
+        "npwp": 1,
+        "email": 2
+      }
+    }
+  ],
+  "total_detections": 1,
+  "created": "2025-12-17T14:09:04.951711"
+}
