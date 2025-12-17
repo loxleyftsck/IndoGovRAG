@@ -36,10 +36,18 @@ wheels/
 .installed.cfg
 *.egg
 
-# Environment
+# Environment Variables & Secrets
 .env
 .env.local
 .env.*.local
+*.env  
+config/*.env
+config/local.env
+
+# Security & Audit Reports
+bandit-report.json
+safety-report.json
+security-audit.txt
 
 # IDE
 .vscode/
