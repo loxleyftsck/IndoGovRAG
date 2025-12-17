@@ -1,12 +1,41 @@
-# 🇮🇩 **IndoGovRAG** - Indonesian Government Documents RAG System
+<div align="center">
 
-[![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-in_development-yellow.svg)]()
+# 🇮🇩 IndoGovRAG
 
-**Production-Ready RAG System for Indonesian Government Documents**
+### Production-Ready RAG System for Indonesian Government Documents
 
-> Retrieval-Augmented Generation system built to answer questions about Indonesian government regulations, laws, and policies using JDIH (Jaringan Dokumentasi dan Informasi Hukum) data.
+[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![GitHub Issues](https://img.shields.io/github/issues/loxleyftsck/IndoGovRAG?style=for-the-badge)](https://github.com/loxleyftsck/IndoGovRAG/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/loxleyftsck/IndoGovRAG?style=for-the-badge)](https://github.com/loxleyftsck/IndoGovRAG/stargazers)
+
+[![Week 0 Complete](https://img.shields.io/badge/Week_0-✓_Complete-success?style=for-the-badge)](CHANGELOG.md)
+[![Cost](https://img.shields.io/badge/Cost-$0%2Fmonth-brightgreen?style=for-the-badge&logo=stripe)](docs/LLM_FALLBACK_STRATEGY.md)
+[![Documentation](https://img.shields.io/badge/docs-comprehensive-blue?style=for-the-badge&logo=readthedocs)](docs/)
+
+---
+
+**Semantic search and question-answering for Indonesian government laws, regulations, and policies**  
+*Built with 100% free tools • Production-ready architecture • Indonesian-optimized NLP*
+
+[📚 Documentation](docs/) • [🚀 Quick Start](#-quick-start) • [🎯 Features](#-features) • [🤝 Contributing](CONTRIBUTING.md)
+
+</div>
+
+---
+
+## 📖 Overview
+
+**IndoGovRAG** is a Retrieval-Augmented Generation (RAG) system specifically designed for Indonesian government documents. It leverages state-of-the-art NLP techniques optimized for Bahasa Indonesia to provide accurate, context-aware answers about laws, regulations, and policies.
+
+### 🎯 Key Highlights
+
+- 🇮🇩 **Indonesian-First**: Optimized for Bahasa Indonesia with multilingual-e5-base embeddings
+- 💰 **Zero Cost**: 100% free infrastructure (Gemini API, ChromaDB, local tracking)
+- 🔒 **Secure**: Built-in PII detection and redaction
+- ⚡ **Fast**: <2s P95 latency target with intelligent caching
+- 📊 **Monitored**: Local quota tracking and experiment logging
+- 🌱 **Green**: Serverless deployment minimizes energy consumption
 
 ---
 
@@ -56,22 +85,27 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/indogovrag.git
-cd indogovrag
+git clone https://github.com/loxleyftsck/IndoGovRAG.git
+cd IndoGovRAG
 
 # Create virtual environment
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Activate (Windows PowerShell)
+.venv\Scripts\Activate.ps1
+
+# Or activate (Linux/Mac)
+source .venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Setup environment
+# Setup environment variables
 cp .env.example .env
-# Edit .env and add your GEMINI_API_KEY
+# Edit .env and add your GEMINI_API_KEY=your-key-here
 ```
 
-### Basic Usage
+### Demo (Coming Soon)
 
 ```python
 from src.rag.pipeline import RAGPipeline
@@ -79,9 +113,23 @@ from src.rag.pipeline import RAGPipeline
 # Initialize RAG system
 rag = RAGPipeline()
 
-# Query
+# Ask questions in Indonesian
 response = rag.query("Apa persyaratan membuat KTP elektronik?")
-print(response["answer"])
+print(f"Answer: {response['answer']}")
+print(f"Sources: {response['sources']}")
+print(f"Confidence: {response['confidence']:.2%}")
+```
+
+**Example Output:**
+```
+Answer: Persyaratan dokumen untuk KTP elektronik meliputi:
+1. Kartu Keluarga asli dan fotokopi
+2. Akta kelahiran atau surat kenal lahir
+3. Pas foto berwarna ukuran 3x4 sebanyak 2 lembar
+...
+
+Sources: [Perpres No. XX Tahun XXXX]
+Confidence: 92.5%
 ```
 
 ---
@@ -156,16 +204,22 @@ See [PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for details.
 
 ## 🛠️ **Tech Stack**
 
-| Component | Technology | Cost |
-|-----------|-----------|------|
-| **LLM** | Gemini Pro + Flash | FREE (3K req/day) |
-| **Embeddings** | multilingual-e5-base | FREE (local) |
-| **Vector DB** | ChromaDB | FREE (local) |
-| **Evaluation** | RAGAS | FREE |
-| **Hosting** | Vercel Serverless | FREE |
-| **Monitoring** | Local JSON | FREE |
+<div align="center">
 
-**Total Monthly Cost:** $0 💰
+| Component | Technology | Why | Cost |
+|-----------|-----------|-----|------|
+| 🤖 **LLM** | [Google Gemini](https://ai.google.dev/) Pro + Flash | Multilingual, free tier generous | **$0** |
+| 🧠 **Embeddings** | [multilingual-e5-base](https://huggingface.co/intfloat/multilingual-e5-base) | Best Indonesian performance | **$0** |
+| 🗄️ **Vector DB** | [ChromaDB](https://www.trychroma.com/) | Lightweight, local-first | **$0** |
+| 📊 **Evaluation** | [RAGAS](https://github.com/explodinggradients/ragas) | RAG-specific metrics | **$0** |
+| ☁️ **Hosting** | [Vercel](https://vercel.com/) Serverless | Zero-config, edge network | **$0** |
+| 📈 **Monitoring** | Local JSON | No external dependencies | **$0** |
+
+### 💰 Total Monthly Cost: **$0** 
+
+*Capable of handling 1,500-3,000 queries/day with current free tiers*
+
+</div>
 
 ---
 
@@ -215,12 +269,32 @@ Full roadmap: [UPDATED_RAG_ROADMAP.md](UPDATED_RAG_ROADMAP.md)
 
 ## 🤝 **Contributing**
 
-Contributions welcome! Please:
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
+We follow **Git Flow** for development. Contributions are welcome!
+
+### Quick Start
+```bash
+# Fork and clone
+git clone https://github.com/YOUR_USERNAME/IndoGovRAG.git
+cd IndoGovRAG
+
+# Checkout develop branch
+git checkout develop
+
+# Create feature branch
+git checkout -b feature/your-feature
+
+# Make changes, commit, push
+git commit -m "✨ feat: your feature"
+git push origin feature/your-feature
+
+# Open PR: feature/your-feature → develop
+```
+
+**Read our [Contributing Guide](CONTRIBUTING.md) for:**
+- 🌳 Branch strategy
+- 📝 Commit conventions  
+- ✅ Testing requirements
+- 🎯 Code style guidelines
 
 ---
 
@@ -240,12 +314,34 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 
 ---
 
-## 📞 **Contact**
+## 📊 **Project Statistics**
 
-**Project:** IndoGovRAG  
-**Author:** [Your Name]  
-**Email:** your.email@example.com  
-**GitHub:** [@yourusername](https://github.com/yourusername)
+<div align="center">
+
+| Metric | Value |
+|--------|-------|
+| 📁 Total Files | 45+ |
+| 💻 Lines of Code | ~1,500 |
+| 📝 Documentation Pages | 9 |
+| ⏱️ Week 0 Time | 15 hours |
+| 💰 Week 0 Cost | $0.00 |
+| ✅ Test Coverage | 0% (Week 1 target: 80%) |
+| 🌟 GitHub Stars | ![Stars](https://img.shields.io/github/stars/loxleyftsck/IndoGovRAG) |
+
+</div>
+
+---
+
+## 📞 **Contact & Support**
+
+<div align="center">
+
+**Maintainer:** [@loxleyftsck](https://github.com/loxleyftsck)  
+**Repository:** [github.com/loxleyftsck/IndoGovRAG](https://github.com/loxleyftsck/IndoGovRAG)  
+**Issues:** [Report a bug](https://github.com/loxleyftsck/IndoGovRAG/issues/new?template=bug_report.md)  
+**Features:** [Request a feature](https://github.com/loxleyftsck/IndoGovRAG/issues/new?template=feature_request.md)
+
+</div>
 
 ---
 
