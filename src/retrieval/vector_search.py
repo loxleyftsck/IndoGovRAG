@@ -162,6 +162,102 @@ class VectorStore:
         
         return search_results
     
+    def hybrid_search(
+        self,
+        query: str,
+        n_results: int = 5,
+        alpha: float = 0.5,
+        filter_metadata: Optional[Dict] = None
+    ) -> List[SearchResult]:
+        """
+        Hybrid search combining BM25 (lexical) and semantic (vector) search.
+        
+        Args:
+            query: Search query
+            n_results: Number of results to return
+            alpha: Fusion weight (0=BM25 only, 0.5=equal, 1=semantic only)
+            filter_metadata: Optional metadata filters
+        
+        Returns:
+            List of SearchResult objects with fused scores
+        """
+        from .bm25_search import BM25Search
+        
+        # Get semantic search results
+        semantic_results = self.search(query, n_results=n_results * 2, filter_metadata=filter_metadata)
+        
+        if not semantic_results:
+            return []
+        
+        # Initialize BM25 with current corpus
+        all_data = self.collection.get(
+            where=filter_metadata,
+            limit=1000  # Limit for performance
+        )
+        
+        if not all_data['documents']:
+            return semantic_results  # Fall back to semantic only
+        
+        bm25_docs = [
+            {
+                'text': doc,
+                'doc_id': doc_id,
+                'metadata': meta
+            }
+            for doc, doc_id, meta in zip(
+                all_data['documents'],
+                all_data['ids'],
+                all_data['metadatas']
+            )
+        ]
+        
+        bm25 = BM25Search(bm25_docs)
+        bm25_results = bm25.search(query, n_results=n_results * 2)
+        
+        # Create score dictionaries
+        semantic_scores = {r.chunk_id: r.score for r in semantic_results}
+        bm25_scores = {r.doc_id: r.score for r in bm25_results}
+        
+        # Normalize scores to [0, 1]
+        max_semantic = max(semantic_scores.values()) if semantic_scores else 1.0
+        max_bm25 = max(bm25_scores.values()) if bm25_scores else 1.0
+        
+        normalized_semantic = {k: v / max_semantic for k, v in semantic_scores.items()}
+        normalized_bm25 = {k: v / max_bm25 for k, v in bm25_scores.items()}
+        
+        # Fuse scores: hybrid_score = alpha * semantic + (1-alpha) * bm25
+        fused_scores = {}
+        all_doc_ids = set(normalized_semantic.keys()) | set(normalized_bm25.keys())
+        
+        for doc_id in all_doc_ids:
+            s_score = normalized_semantic.get(doc_id, 0.0)
+            b_score = normalized_bm25.get(doc_id, 0.0)
+            fused_scores[doc_id] = alpha * s_score + (1 - alpha) * b_score
+        
+        # Sort by fused score
+        sorted_ids = sorted(fused_scores.items(), key=lambda x: x[1], reverse=True)[:n_results]
+        
+        # Build final results
+        hybrid_results = []
+        doc_map = {r.chunk_id: r for r in semantic_results}
+        
+        for doc_id, score in sorted_ids:
+            if doc_id in doc_map:
+                result = doc_map[doc_id]
+                hybrid_results.append(SearchResult(
+                    chunk_id=result.chunk_id,
+                    text=result.text,
+                    score=score,  # Use fused score
+                    metadata={
+                        **result.metadata,
+                        'semantic_score': normalized_semantic.get(doc_id, 0.0),
+                        'bm25_score': normalized_bm25.get(doc_id, 0.0),
+                        'alpha': alpha
+                    }
+                ))
+        
+        return hybrid_results
+    
     def get_stats(self) -> Dict:
         """Get vector store statistics."""
         stats = {

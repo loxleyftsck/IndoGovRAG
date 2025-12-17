@@ -19,6 +19,9 @@ torch>=2.0.0
 ragas>=0.1.0
 datasets>=2.14.0
 
+# Optimization (Week 3)
+rank-bm25>=0.2.2
+
 # Utils
 tqdm>=4.65.0
 requests>=2.31.0
