@@ -80,13 +80,17 @@ long_doc = sample_text * 3  # Make it longer
 chunks = chunker.chunk(long_doc, doc_id="Perpres_26_2009")
 
 print(f"✅ Created {len(chunks)} chunks")
-print(f"✅ Avg tokens: {sum(c.num_tokens for c in chunks) / len(chunks):.0f}")
 
-for chunk in chunks:
-    chunk.coherence_score = chunker.calculate_coherence(chunk)
-
-avg_coherence = sum(c.coherence_score for c in chunks) / len(chunks)
-print(f"✅ Avg coherence: {avg_coherence:.2f}/1.0")
+if len(chunks) > 0:
+    print(f"✅ Avg tokens: {sum(c.num_tokens for c in chunks) / len(chunks):.0f}")
+    
+    for chunk in chunks:
+        chunk.coherence_score = chunker.calculate_coherence(chunk)
+    
+    avg_coherence = sum(c.coherence_score for c in chunks) / len(chunks)
+    print(f"✅ Avg coherence: {avg_coherence:.2f}/1.0")
+else:
+    print("⚠️  No chunks created (document too short)")
 print()
 
 # 4. Vector Store (if data exists)

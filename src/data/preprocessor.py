@@ -190,7 +190,7 @@ class IndonesianPreprocessor:
     def is_indonesian(
         self,
         text: str,
-        min_confidence: float = 0.5
+        min_confidence: float = 0.3
     ) -> bool:
         """
         Check if text is Indonesian.
@@ -203,7 +203,8 @@ class IndonesianPreprocessor:
             True if Indonesian with sufficient confidence
         """
         language, confidence = self._detect_language(text)
-        return language == 'id' and confidence >= min_confidence
+        # Return True if langdetect says Indonesian OR confidence (marker-based) is high
+        return language == 'id' or confidence >= min_confidence
     
     def clean_for_embedding(self, text: str) -> str:
         """
