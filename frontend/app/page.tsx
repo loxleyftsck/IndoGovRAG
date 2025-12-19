@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Search, FileText, Scale, Clock, Shield, BookOpen, AlertCircle, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, FileText, Scale, Clock, Shield, BookOpen, AlertCircle, CheckCircle2, Zap, Database } from 'lucide-react';
 
 interface Source {
   title: string;
@@ -22,6 +22,19 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<QueryResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [history, setHistory] = useState<any[]>([]);
+
+  // Load history on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('indogovrag_history');
+    if (saved) {
+      try {
+        setHistory(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to load history', e);
+      }
+    }
+  }, []);
 
   const exampleQuestions = [
     { title: "Identitas", q: "Bagaimana cara membuat SIM A dan berapa biayanya?" },
@@ -201,7 +214,7 @@ export default function Home() {
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs text-slate-500">Confidence:</span>
                         <span className={`text-xs font-bold ${result.confidence > 0.7 ? 'text-green-600' :
-                            result.confidence > 0.4 ? 'text-amber-600' : 'text-slate-600'
+                          result.confidence > 0.4 ? 'text-amber-600' : 'text-slate-600'
                           }`}>
                           {Math.round(result.confidence * 100)}%
                         </span>
@@ -384,55 +397,56 @@ export default function Home() {
             </div>
           </div>
         )}
+      </div>
 
-        {/* Footer */}
-        <footer className="bg-slate-900 text-white py-12">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <Scale className="w-6 h-6 text-blue-400" />
-                  <span className="font-bold text-lg font-crimson">IndoGovRAG</span>
-                </div>
-                <p className="text-slate-400 text-sm">
-                  Professional legal research platform for Indonesian government documents
-                </p>
+      {/* Footer */}
+      <footer className="bg-slate-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Scale className="w-6 h-6 text-blue-400" />
+                <span className="font-bold text-lg font-crimson">IndoGovRAG</span>
               </div>
-
-              <div>
-                <h5 className="font-semibold mb-4">Product</h5>
-                <ul className="space-y-2 text-sm text-slate-400">
-                  <li><a href="#" className="hover:text-white transition">Features</a></li>
-                  <li><a href="#" className="hover:text-white transition">Pricing</a></li>
-                  <li><a href="#" className="hover:text-white transition">API</a></li>
-                </ul>
-              </div>
-
-              <div>
-                <h5 className="font-semibold mb-4">Resources</h5>
-                <ul className="space-y-2 text-sm text-slate-400">
-                  <li><a href="#" className="hover:text-white transition">Documentation</a></li>
-                  <li><a href="#" className="hover:text-white transition">Guides</a></li>
-                  <li><a href="#" className="hover:text-white transition">Support</a></li>
-                </ul>
-              </div>
-
-              <div>
-                <h5 className="font-semibold mb-4">Company</h5>
-                <ul className="space-y-2 text-sm text-slate-400">
-                  <li><a href="#" className="hover:text-white transition">About</a></li>
-                  <li><a href="#" className="hover:text-white transition">Blog</a></li>
-                  <li><a href="#" className="hover:text-white transition">Contact</a></li>
-                </ul>
-              </div>
+              <p className="text-slate-400 text-sm">
+                Professional legal research platform for Indonesian government documents
+              </p>
             </div>
 
-            <div className="border-t border-slate-800 pt-8 text-center text-slate-400 text-sm">
-              <p>© 2024 IndoGovRAG. Built for Indonesia 🇮🇩</p>
-              <p className="mt-2">Powered by 100% free & open-source technology</p>
+            <div>
+              <h5 className="font-semibold mb-4">Product</h5>
+              <ul className="space-y-2 text-sm text-slate-400">
+                <li><a href="#" className="hover:text-white transition">Features</a></li>
+                <li><a href="#" className="hover:text-white transition">Pricing</a></li>
+                <li><a href="#" className="hover:text-white transition">API</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h5 className="font-semibold mb-4">Resources</h5>
+              <ul className="space-y-2 text-sm text-slate-400">
+                <li><a href="#" className="hover:text-white transition">Documentation</a></li>
+                <li><a href="#" className="hover:text-white transition">Guides</a></li>
+                <li><a href="#" className="hover:text-white transition">Support</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h5 className="font-semibold mb-4">Company</h5>
+              <ul className="space-y-2 text-sm text-slate-400">
+                <li><a href="#" className="hover:text-white transition">About</a></li>
+                <li><a href="#" className="hover:text-white transition">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition">Contact</a></li>
+              </ul>
             </div>
           </div>
-        </footer>
+
+          <div className="border-t border-slate-800 pt-8 text-center text-slate-400 text-sm">
+            <p>© 2024 IndoGovRAG. Built for Indonesia 🇮🇩</p>
+            <p className="mt-2">Powered by 100% free & open-source technology</p>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }

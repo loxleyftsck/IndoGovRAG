@@ -38,12 +38,50 @@ class SimpleVectorStore:
     
     def add_documents(self, docs: List[Dict]):
         """
-        Add documents.
+        Add documents with validation.
         
         Args:
             docs: List of dicts with 'text', 'metadata'
         """
-        self.documents.extend(docs)
+        # Validate each document
+        validated_docs = []
+        for i, doc in enumerate(docs):
+            try:
+                # Basic validation
+                if 'text' not in doc:
+                    raise ValueError(f"Document {i}: missing 'text' field")
+                
+                text = doc['text']
+                metadata = doc.get('metadata', {})
+                
+                # Length check
+                if len(text) > 50000:  # 50K chars max
+                    raise ValueError(f"Document {i}: text too long ({len(text)} chars)")
+                
+                if not text.strip():
+                    raise ValueError(f"Document {i}: empty text")
+                
+                # Sanitize metadata
+                safe_metadata = {}
+                allowed_keys = {'title', 'category', 'source', 'date'}
+                for key in allowed_keys:
+                    if key in metadata:
+                        safe_metadata[key] = str(metadata[key])[:200]
+                
+                validated_docs.append({
+                    'text': text.strip(),
+                    'metadata': safe_metadata
+                })
+                
+            except Exception as e:
+                print(f"⚠️ Skipping invalid document {i}: {e}")
+                continue
+        
+        if not validated_docs:
+            raise ValueError("No valid documents to add")
+        
+        # Add validated documents
+        self.documents.extend(validated_docs)
         
         # Recompute vectors
         all_texts = [d['text'] for d in self.documents]
@@ -52,7 +90,7 @@ class SimpleVectorStore:
         # Save
         self._save()
         
-        print(f"✅ Added {len(docs)} documents (total: {len(self.documents)})")
+        print(f"✅ Added {len(validated_docs)} documents (total: {len(self.documents)})")
     
     def search(self, query: str, top_k: int = 5) -> List[Dict]:
         """

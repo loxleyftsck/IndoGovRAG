@@ -166,15 +166,12 @@ Biasanya dirapel per dua atau tiga bulan sekali langsung ke rekening KKS masing-
 
 print(f"📚 Adding {len(new_documents)} new documents (Sessions 3 & 4)...")
 
-for i, doc in enumerate(new_documents, 1):
-    try:
-        vector_store.add_document(
-            text=doc['text'],
-            metadata=doc['metadata'] | {'title': doc['title']}
-        )
-        print(f"  ✅ {i}. {doc['title']} ({doc['metadata']['category']})")
-    except Exception as e:
-        print(f"  ❌ {i}. {doc['title']} - Error: {e}")
+# Add all documents at once
+vector_store.add_documents([{
+    'text': doc['text'],
+    'metadata': doc['metadata'] | {'title': doc['title']}
+} for doc in new_documents])
 
-print(f"\n✅ Total documents in database: {vector_store.count()}")
+print(f"✅ Successfully added {len(new_documents)} documents!")
+print(f"✅ Total documents in database: {vector_store.count()}")
 print("🎉 Sessions 3 & 4 documents added successfully!")

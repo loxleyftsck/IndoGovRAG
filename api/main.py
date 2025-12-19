@@ -27,15 +27,39 @@ from api.security import (
     log_request,
 )
 
-# Configure Gemini
+# Configure Gemini (VULN-005 FIX - Don't log secrets!)
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
     gemini_model = genai.GenerativeModel('gemini-pro')
-    print("✅ Gemini AI configured")
+    print("✅ Gemini AI configured")  # No key in logs!
 else:
     gemini_model = None
-    print("⚠️ No GEMINI_API_KEY - using fallback answers")
+    print("⚠️ GEMINI_API_KEY not set - AI answers disabled")
+
+# Security middleware
+@app.middleware("http")
+async def security_middleware(request: Request, call_next):
+    """Add security headers and request validation."""
+    
+    # VULN-012 FIX: Request size limit
+    if request.headers.get("content-length"):
+        content_length = int(request.headers["content-length"])
+        if content_length > 100 * 1024:  # 100KB max
+            return JSONResponse(
+                status_code=413,
+                content={"detail": "Request too large (max 100KB)"}
+            )
+    
+    response = await call_next(request)
+    
+    # Security headers (VULN-023 FIX)
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    
+    return response
 
 app = FastAPI(
     title="IndoGovRAG API",
