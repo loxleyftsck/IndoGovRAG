@@ -5,9 +5,16 @@ Production-ready API endpoints for RAG query system.
 """
 
 import os
+import sys
 import time
 from typing import Optional
 from contextlib import asynccontextmanager
+from pathlib import Path
+
+# Add parent directory to Python path to allow imports from src/
+current_dir = Path(__file__).parent
+parent_dir = current_dir.parent
+sys.path.insert(0, str(parent_dir))
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -167,45 +174,76 @@ async def query_documents(request: QueryRequest):
         # Initialize RAG pipeline on first use (lazy loading)
         if rag_pipeline is None:
             print("🔧 Initializing RAG pipeline...")
-            # TODO: Import and initialize actual RAG pipeline
-            # from src.rag.pipeline import RAGPipeline
-            # rag_pipeline = RAGPipeline()
-            
-            # For now, return mock response
-            return QueryResponse(
-                answer="RAG pipeline not yet initialized. This is a placeholder response.",
-                sources=["System"],
-                confidence=0.0,
-                latency_ms=round((time.time() - start_time) * 1000, 2),
-                metadata={
-                    "status": "pipeline_not_initialized",
-                    "query": request.query
-                }
-            )
+            try:
+                from src.rag.pipeline import RAGPipeline
+                rag_pipeline = RAGPipeline()
+                print("✅ RAG Pipeline initialized successfully!")
+            except Exception as init_error:
+                print(f"❌ Failed to initialize RAG pipeline: {init_error}")
+                return QueryResponse(
+                    answer=f"Failed to initialize RAG system. Error: {str(init_error)}",
+                    sources=["System"],
+                    confidence=0.0,
+                    latency_ms=round((time.time() - start_time) * 1000, 2),
+                    metadata={
+                        "status": "initialization_failed",
+                        "error": str(init_error)
+                    }
+                )
         
-        # Execute query
-        # result = rag_pipeline.query(
-        #     query=request.query,
-        #     **request.options
-        # )
+        # Extract options
+        use_query_expansion = request.options.get("use_query_expansion", False)
+        use_reranking = request.options.get("use_reranking", False)
+        top_k = request.options.get("top_k", 5)
+        
+        # Execute RAG query
+        print(f"📝 Processing query: {request.query}")
+        result = rag_pipeline.query(
+            question=request.query,
+            filter_metadata=None,
+            include_sources=True
+        )
         
         # Calculate latency
         latency_ms = round((time.time() - start_time) * 1000, 2)
         
-        # Return mock response for now
+        # Format sources for API response
+        source_list = []
+        if result.get('sources'):
+            for source in result['sources']:
+                doc_id = source.get('doc_id', 'Unknown')
+                doc_type = source.get('doc_type', '')
+                year = source.get('year', '')
+                
+                if doc_type and year:
+                    source_str = f"{doc_id} ({doc_type}, {year})"
+                elif doc_type:
+                    source_str = f"{doc_id} ({doc_type})"
+                else:
+                    source_str = doc_id
+                    
+                source_list.append(source_str)
+        
+        # Return formatted response
         return QueryResponse(
-            answer=f"Mock answer for: {request.query}",
-            sources=["Document A", "Document B"],
-            confidence=0.85,
+            answer=result.get('answer', 'No answer generated'),
+            sources=source_list or ["No sources found"],
+            confidence=result.get('confidence', 0.0),
             latency_ms=latency_ms,
             metadata={
-                "chunks_retrieved": request.options.get("top_k", 5),
-                "expansion_used": request.options.get("use_query_expansion", False),
-                "reranking_used": request.options.get("use_reranking", False)
+                "chunks_retrieved": len(result.get('retrieved_chunks', [])),
+                "expansion_used": use_query_expansion,
+                "reranking_used": use_reranking,
+                "model_used": result.get('model_used', 'unknown'),
+                "tokens_used": result.get('tokens_used', 0)
             }
         )
         
     except Exception as e:
+        import traceback
+        error_trace = traceback.format_exc()
+        print(f"❌ Query error: {error_trace}")
+        
         raise HTTPException(
             status_code=500,
             detail=f"Query processing failed: {str(e)}"

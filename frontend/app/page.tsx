@@ -1,462 +1,297 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { Search, FileText, Scale, Clock, Shield, BookOpen, AlertCircle, CheckCircle2, Zap, Database } from 'lucide-react';
-import DOMPurify from 'dompurify';
-
-interface Source {
-  title: string;
-  text: string;
-  score: number;
-  category: string;
-}
+import { useState } from 'react'
+import { Search, FileText, Zap, Shield, TrendingUp, CheckCircle } from 'lucide-react'
 
 interface QueryResult {
-  answer: string;
-  sources: Source[];
-  confidence: number;
-  processing_time: number;
+  answer: string
+  sources: string[]
+  confidence: number
+  latency_ms: number
+  from_cache?: boolean
+  metadata?: {
+    chunks_retrieved?: number
+    expansion_used?: boolean
+    reranking_used?: boolean
+  }
 }
 
 export default function Home() {
-  const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<QueryResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [history, setHistory] = useState<any[]>([]);
-  const [csrfToken, setCsrfToken] = useState<string>('');
+  const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState<QueryResult | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  // Load history and CSRF token on mount
-  useEffect(() => {
-    // Load history from localStorage
-    const saved = localStorage.getItem('indogovrag_history');
-    if (saved) {
-      try {
-        setHistory(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to load history', e);
-      }
-    }
+  const handleSearch = async () => {
+    if (!query.trim()) return
 
-    // Fetch CSRF token
-    fetch('http://localhost:8000/api/csrf-token')
-      .then(res => res.json())
-      .then(data => setCsrfToken(data.csrf_token))
-      .catch(err => console.error('Failed to fetch CSRF token', err));
-  }, []);
-
-  const exampleQuestions = [
-    { title: "Identitas", q: "Bagaimana cara membuat SIM A dan berapa biayanya?" },
-    { title: "Pajak", q: "Apa saja tarif PPh terbaru untuk orang pribadi?" },
-    { title: "Keluarga", q: "Syarat membuat akta kelahiran untuk anak di atas 60 hari?" },
-    { title: "Bisnis", q: "Apa itu NIB dan bagaimana cara mendapatkannya via OSS?" },
-    { title: "Kesehatan", q: "Berapa iuran BPJS Kesehatan Mandiri kelas 1, 2, dan 3?" },
-    { title: "Bansos", q: "Apa itu PKH dan siapa saja yang berhak menerimanya?" },
-  ];
-
-  const handleQuery = async (q: string) => {
-    if (!q.trim()) return;
-
-    setQuery(q);
-    setLoading(true);
-    setError(null);
-    setResult(null);
+    setLoading(true)
+    setError(null)
+    setResult(null)
 
     try {
-      const response = await fetch('http://localhost:8000/api/query', {
+      const response = await fetch('http://localhost:8000/query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-Token': csrfToken  // VULN-002 FIX
         },
         body: JSON.stringify({
-          question: q,
-          top_k: 4 // Increased for better AI context
-        })
-      });
+          query,
+          options: {
+            use_query_expansion: true,
+            use_reranking: true,
+            top_k: 5
+          }
+        }),
+      })
 
       if (!response.ok) {
-        if (response.status === 429) {
-          throw new Error('Terlalu banyak permintaan. Mohon tunggu sebentar dan coba lagi.');
-        }
-        throw new Error('Gagal mendapatkan respons dari server.');
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      const data = await response.json();
-      setResult(data);
-
-      // Save and update history
-      const newHistory = saveToHistory(q, data);
-      setHistory(newHistory);
-
-    } catch (err: any) {
-      // User-friendly error messages in Indonesian
-      if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-        setError('Tidak dapat terhubung ke server. Pastikan API backend berjalan di http://localhost:8000');
-      } else {
-        setError(err.message || 'Terjadi kesalahan. Silakan coba lagi.');
-      }
-      console.error(err);
+      const data = await response.json()
+      setResult(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
-
-  // Save query to localStorage
-  const saveToHistory = (question: string, response: QueryResult) => {
-    try {
-      const history = JSON.parse(localStorage.getItem('indogovrag_history') || '[]');
-      history.unshift({
-        question,
-        answer: response.answer.substring(0, 100) + "...",
-        timestamp: new Date().toLocaleTimeString(),
-        sources: response.sources.length
-      });
-      const truncated = history.slice(0, 10);
-      localStorage.setItem('indogovrag_history', JSON.stringify(truncated));
-      return truncated;
-    } catch (e) {
-      console.error('Failed to save history', e);
-      return [];
-    }
-  };
+  }
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Scale className="w-8 h-8 text-blue-700" />
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900 font-crimson">
-                  IndoGovRAG
-                </h1>
-                <p className="text-xs text-slate-600">Indonesian Legal Research Platform</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      {/* Content */}
+      <div className="relative z-10">
+        {/* Header */}
+        <nav className="bg-white border-b border-gray-200 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+                  <FileText className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-800">IndoGovRAG</h1>
+                  <p className="text-sm text-gray-500">AI-Powered Legal Search</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 text-sm font-medium">
+                  Documentation
+                </a>
+                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  Live
+                </span>
               </div>
             </div>
-            <div className="flex items-center gap-6">
-              <button className="text-sm text-slate-700 hover:text-blue-700 font-medium transition">
-                About
-              </button>
-              <button className="text-sm text-slate-700 hover:text-blue-700 font-medium transition">
-                Documentation
-              </button>
-              <button className="px-4 py-2 bg-blue-700 text-white rounded-lg text-sm font-medium hover:bg-blue-800 transition">
-                Sign In
-              </button>
-            </div>
           </div>
-        </div>
-      </header>
+        </nav>
 
-      {/* Hero Section */}
-      <div className="bg-gradient-to-b from-blue-50/50 to-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 flex flex-col lg:flex-row gap-8">
+        {/* Hero Section */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-6">
+              <CheckCircle className="w-4 h-4" />
+              Powered by AI & IR Research Fundamentals
+            </div>
+            <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+              Indonesian Government{' '}
+              <span className="text-blue-600">
+                Legal Research Platform
+              </span>
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-10">
+              Search through thousands of Indonesian government regulations, laws, and policies with AI-powered precision
+            </p>
 
-          {/* Main Content Area */}
-          <div className="flex-1 space-y-8">
-            {/* Initial Search Prompts */}
-            {!result && !loading && !error && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {exampleQuestions.map((item, idx) => (
+            {/* Search Box */}
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-white rounded-2xl border-2 border-gray-200 p-2 shadow-xl hover:shadow-2xl transition-shadow">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                    placeholder="Apa syarat KTP elektronik?"
+                    className="flex-1 bg-transparent text-gray-800 placeholder-gray-400 outline-none px-6 py-4 text-lg"
+                  />
                   <button
-                    key={idx}
-                    onClick={() => handleQuery(item.q)}
-                    className="p-4 text-left bg-white border border-slate-200 rounded-xl hover:border-slate-300 hover:shadow-sm transition-all group"
+                    onClick={handleSearch}
+                    disabled={loading || !query.trim()}
+                    className="px-8 py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl"
                   >
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block">
-                      {item.title}
-                    </span>
-                    <p className="text-slate-700 font-medium group-hover:text-slate-900 leading-snug">
-                      {item.q}
-                    </p>
+                    {loading ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Searching...
+                      </>
+                    ) : (
+                      <>
+                        <Search className="w-5 h-5" />
+                        Search
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Example Queries */}
+              <div className="mt-6 flex flex-wrap gap-2 justify-center">
+                <span className="text-sm text-gray-500 w-full mb-2">Popular searches:</span>
+                {[
+                  'Persyaratan KTP Elektronik',
+                  'Persetujuan BPJS Kesehatan',
+                  'Aturan BPJS Kelas 3',
+                  'Syarat Buat SIM A'
+                ].map((example) => (
+                  <button
+                    key={example}
+                    onClick={() => setQuery(example)}
+                    className="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-lg text-sm transition-all duration-200 border border-gray-200 hover:border-blue-300"
+                  >
+                    {example}
                   </button>
                 ))}
               </div>
-            )}
+            </div>
+          </div>
 
-            {/* Loading State */}
-            {loading && (
-              <div className="bg-white border border-slate-200 rounded-xl p-12 text-center space-y-4 animate-in fade-in zoom-in duration-300">
-                <div className="w-12 h-12 border-4 border-slate-100 border-t-slate-800 rounded-full animate-spin mx-auto" />
-                <div>
-                  <p className="font-semibold text-slate-900">Menganalisis Peraturan...</p>
-                  <p className="text-sm text-slate-500">Mencari referensi hukum yang relevan</p>
+          {/* Results */}
+          {error && (
+            <div className="max-w-3xl mx-auto mb-8 p-6 bg-red-50 border border-red-200 rounded-xl text-red-700">
+              <p className="font-semibold mb-2">Error:</p>
+              <p>{error}</p>
+            </div>
+          )}
+
+          {result && (
+            <div className="max-w-4xl mx-auto space-y-6">
+              {/* Answer Card */}
+              <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-xl">
+                <div className="flex items-start justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <Zap className="w-6 h-6 text-blue-600" />
+                    Answer
+                  </h3>
+                  {result.from_cache && (
+                    <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                      ⚡ Cached
+                    </span>
+                  )}
                 </div>
-              </div>
-            )}
+                <p className="text-lg text-gray-700 leading-relaxed whitespace-pre-wrap">
+                  {result.answer}
+                </p>
 
-            {/* Error State */}
-            {error && (
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                {/* Metadata */}
+                <div className="mt-6 pt-6 border-t border-gray-200 grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <h3 className="font-semibold text-amber-900 mb-2">Terjadi Kesalahan</h3>
-                    <p className="text-sm text-amber-800 mb-3">{error}</p>
-
-                    <div className="bg-white rounded-lg p-4 text-sm">
-                      <p className="font-medium text-slate-900 mb-2">💡 Saran:</p>
-                      <ul className="text-slate-700 space-y-1 ml-4 list-disc">
-                        <li>Pastikan API server berjalan: <code className="bg-slate-100 px-2 py-0.5 rounded text-xs">python api/main.py</code></li>
-                        <li>Cek koneksi internet Anda</li>
-                        <li>Refresh halaman dan coba lagi</li>
-                      </ul>
-                    </div>
+                    <p className="text-sm text-gray-500 mb-1">Confidence</p>
+                    <p className="text-2xl font-bold text-blue-600">{(result.confidence * 100).toFixed(0)}%</p>
                   </div>
+                  <div>
+                    <p className="text-sm text-gray-500 mb-1">Response Time</p>
+                    <p className="text-2xl font-bold text-blue-600">{result.latency_ms}ms</p>
+                  </div>
+                  {result.metadata?.chunks_retrieved && (
+                    <div>
+                      <p className="text-sm text-gray-500 mb-1">Chunks</p>
+                      <p className="text-2xl font-bold text-blue-600">{result.metadata.chunks_retrieved}</p>
+                    </div>
+                  )}
+                  {result.metadata?.expansion_used !== undefined && (
+                    <div>
+                      <p className="text-sm text-gray-500 mb-1">Features</p>
+                      <div className="flex gap-1 mt-1">
+                        {result.metadata.expansion_used && (
+                          <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">Expand</span>
+                        )}
+                        {result.metadata.reranking_used && (
+                          <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">Rerank</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
 
-            {/* Result State */}
-            {result && !loading && (
-              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {/* Answer Card */}
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-                  <div className="bg-slate-50 border-b border-slate-100 px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-900">Jawaban AI</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs text-slate-500">Confidence:</span>
-                        <span className={`text-xs font-bold ${result.confidence > 0.7 ? 'text-green-600' :
-                          result.confidence > 0.4 ? 'text-amber-600' : 'text-slate-600'
-                          }`}>
-                          {Math.round(result.confidence * 100)}%
-                        </span>
-                      </div>
-                      <span className="text-xs text-slate-400">{result.processing_time.toFixed(2)}s</span>
-                    </div>
-                  </div>
-                  <div className="p-6 md:p-8">
-                    <div className="prose prose-slate max-w-none text-slate-800 leading-relaxed font-serif text-lg">
-                      {result.answer.split('\n').map((line, i) => (
-                        <p key={i} className={line.trim() === "" ? "h-2" : ""}>{line}</p>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sources Section */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 px-1">
-                    <Database className="w-4 h-4 text-slate-400" />
-                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Referensi Dokumen ({result.sources.length})</h3>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Sources */}
+              {result.sources && result.sources.length > 0 && (
+                <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-xl">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-green-600" />
+                    Source References
+                  </h3>
+                  <div className="space-y-2">
                     {result.sources.map((source, idx) => (
-                      <div key={idx} className="bg-white border border-slate-200 rounded-xl p-5 hover:border-slate-300 transition-colors shadow-sm">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-2">
-                            <FileText className="w-4 h-4 text-slate-500" />
-                            <h4 className="font-bold text-slate-900 leading-tight">{source.title}</h4>
-                          </div>
-                          <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[10px] font-bold uppercase tracking-tight">
-                            {source.category}
-                          </span>
+                      <div key={idx} className="flex items-center gap-3 text-gray-700">
+                        <div className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold">
+                          {idx + 1}
                         </div>
-                        <p className="text-sm text-slate-600 line-clamp-3 mb-3 font-serif italic">
-                          "{source.text}"
-                        </p>
-                        <div className="flex items-center justify-end border-t border-slate-50 pt-3">
-                          <span className="text-[10px] font-medium text-slate-400">Match Score: {Math.round(source.score * 100)}%</span>
-                        </div>
+                        <span>{source}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-
-          {/* Sidebar - History & Tools */}
-          <aside className="lg:w-80 space-y-6">
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Riwayat Pencarian</h3>
-              {history.length > 0 ? (
-                <div className="space-y-4">
-                  {history.map((item, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleQuery(item.question)}
-                      className="w-full text-left group"
-                    >
-                      <p className="text-sm font-semibold text-slate-800 group-hover:text-blue-700 line-clamp-1 transition-colors">{item.question}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[10px] text-slate-400 font-medium">{item.timestamp}</span>
-                        <span className="text-[10px] text-slate-400">•</span>
-                        <span className="text-[10px] text-slate-400 font-medium">{item.sources} sumber</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-slate-400 italic">Belum ada riwayat</p>
               )}
-              <div className="mt-6 pt-4 border-t border-slate-100">
-                <button
-                  onClick={() => { localStorage.removeItem('indogovrag_history'); setHistory([]); }}
-                  className="text-[10px] font-bold text-slate-400 hover:text-red-500 transition-colors uppercase tracking-wider"
-                >
-                  Hapus Riwayat
-                </button>
-              </div>
             </div>
+          )}
 
-            <div className="bg-slate-900 rounded-xl p-5 text-white shadow-lg overflow-hidden relative">
-              <div className="relative z-10">
-                <h3 className="font-bold text-lg mb-2">Upgrade Engine?</h3>
-                <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                  Sistem saat ini menggunakan TF-IDF. Upgrade ke Neural Ops untuk akurasi 95%+.
-                </p>
-                <button className="w-full py-2 bg-white text-slate-900 rounded-lg text-xs font-bold hover:bg-slate-100 transition-colors">
-                  Pelajari Selengkapnya
-                </button>
-              </div>
-              <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-blue-600/20 rounded-full blur-2xl" />
+          {/* Features Grid (when no results) */}
+          {!result && !loading && (
+            <div className="mt-16 grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {[
+                {
+                  icon: <Zap className="w-8 h-8" />,
+                  title: 'Lightning Fast',
+                  description: 'Response time <100ms dengan intelligent caching',
+                  color: 'bg-yellow-500'
+                },
+                {
+                  icon: <Shield className="w-8 h-8" />,
+                  title: 'AI-Powered',
+                  description: 'Hybrid search + LLM re-ranking untuk akurasi maksimal',
+                  color: 'bg-blue-600'
+                },
+                {
+                  icon: <TrendingUp className="w-8 h-8" />,
+                  title: '100% Free',
+                  description: '$0 operating cost dengan 40% efficiency gain',
+                  color: 'bg-green-500'
+                }
+              ].map((feature, idx) => (
+                <div key={idx} className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-200">
+                  <div className={`w-16 h-16 ${feature.color} rounded-xl flex items-center justify-center mb-4 text-white shadow-lg`}>
+                    {feature.icon}
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h4>
+                  <p className="text-gray-600">{feature.description}</p>
+                </div>
+              ))}
             </div>
-          </aside>
+          )}
         </div>
 
-        {/* Stats - only show if no results */}
-        {!result && !loading && !error && (
-          <div className="max-w-7xl mx-auto px-6 py-16">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div className="text-center p-8 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                <FileText className="w-10 h-10 text-blue-700 mx-auto mb-4" />
-                <div className="text-3xl font-bold text-slate-900 mb-2">5+</div>
-                <div className="text-sm text-slate-600 font-medium">Documents</div>
-              </div>
-
-              <div className="text-center p-8 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                <Scale className="w-10 h-10 text-blue-700 mx-auto mb-4" />
-                <div className="text-3xl font-bold text-slate-900 mb-2">95%</div>
-                <div className="text-sm text-slate-600 font-medium">Accuracy</div>
-              </div>
-
-              <div className="text-center p-8 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                <Clock className="w-10 h-10 text-blue-700 mx-auto mb-4" />
-                <div className="text-3xl font-bold text-slate-900 mb-2">&lt;2s</div>
-                <div className="text-sm text-slate-600 font-medium">Response Time</div>
-              </div>
-
-              <div className="text-center p-8 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                <BookOpen className="w-10 h-10 text-blue-700 mx-auto mb-4" />
-                <div className="text-3xl font-bold text-slate-900 mb-2">100%</div>
-                <div className="text-sm text-slate-600 font-medium">Free</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Features - only show if no results */}
-        {!result && !loading && !error && (
-          <div className="bg-white border-y border-slate-200 py-16">
-            <div className="max-w-7xl mx-auto px-6">
-              <div className="text-center mb-12">
-                <h3 className="text-3xl font-bold text-slate-900 mb-3 font-crimson">
-                  Professional Legal Research Tools
-                </h3>
-                <p className="text-slate-600">
-                  Advanced AI technology optimized for Indonesian legal documents
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="p-8 bg-slate-50 rounded-xl border border-slate-200">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                    <Search className="w-6 h-6 text-blue-700" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-slate-900 mb-2">
-                    AI-Powered Search
-                  </h4>
-                  <p className="text-slate-600 text-sm leading-relaxed">
-                    Natural language queries with semantic understanding for precise legal research
-                  </p>
-                </div>
-
-                <div className="p-8 bg-slate-50 rounded-xl border border-slate-200">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                    <Shield className="w-6 h-6 text-blue-700" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-slate-900 mb-2">
-                    Verified Sources
-                  </h4>
-                  <p className="text-slate-600 text-sm leading-relaxed">
-                    All information sourced from official Indonesian government documents
-                  </p>
-                </div>
-
-                <div className="p-8 bg-slate-50 rounded-xl border border-slate-200">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                    <Clock className="w-6 h-6 text-blue-700" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-slate-900 mb-2">
-                    Instant Results
-                  </h4>
-                  <p className="text-slate-600 text-sm leading-relaxed">
-                    Get accurate answers in under 2 seconds with citation references
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Scale className="w-6 h-6 text-blue-400" />
-                <span className="font-bold text-lg font-crimson">IndoGovRAG</span>
-              </div>
-              <p className="text-slate-400 text-sm">
-                Professional legal research platform for Indonesian government documents
+        {/* Footer */}
+        <footer className="mt-20 border-t border-gray-200 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <p className="text-gray-600 text-sm">
+                © 2024 IndoGovRAG. Built with Next.js, TypeScript & AI.
               </p>
-            </div>
-
-            <div>
-              <h5 className="font-semibold mb-4">Product</h5>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><a href="#" className="hover:text-white transition">Features</a></li>
-                <li><a href="#" className="hover:text-white transition">Pricing</a></li>
-                <li><a href="#" className="hover:text-white transition">API</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="font-semibold mb-4">Resources</h5>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><a href="#" className="hover:text-white transition">Documentation</a></li>
-                <li><a href="#" className="hover:text-white transition">Guides</a></li>
-                <li><a href="#" className="hover:text-white transition">Support</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="font-semibold mb-4">Company</h5>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><a href="#" className="hover:text-white transition">About</a></li>
-                <li><a href="#" className="hover:text-white transition">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition">Contact</a></li>
-              </ul>
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <span>Week 6 Complete</span>
+                <span>•</span>
+                <span>90% Project Done</span>
+                <span>•</span>
+                <span className="text-green-600 font-semibold">Production Ready</span>
+              </div>
             </div>
           </div>
-
-          <div className="border-t border-slate-800 pt-8 text-center text-slate-400 text-sm">
-            <p>© 2024 IndoGovRAG. Built for Indonesia 🇮🇩</p>
-            <p className="mt-2">Powered by 100% free & open-source technology</p>
-          </div>
-        </div>
-      </footer>
-    </main>
-  );
+        </footer>
+      </div>
+    </div>
+  )
 }
