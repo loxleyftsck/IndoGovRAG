@@ -1,15 +1,19 @@
 """
 FastAPI Backend for IndoGovRAG
-Production-ready with security, monitoring, and rate limiting
+Production-ready with AI-powered answers via Gemini
 """
 
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import sys
 from pathlib import Path
 import time
+import os
+
+# Gemini AI
+import google.generativeai as genai
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -17,12 +21,21 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.retrieval.simple_vector_store import SimpleVectorStore
 from api.security import (
     limiter,
-    verify_api_key,
+    VALID_API_KEYS,
     validate_query_input,
     audit_log,
     log_request,
-    RATE_LIMITS
 )
+
+# Configure Gemini
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+    gemini_model = genai.GenerativeModel('gemini-pro')
+    print("✅ Gemini AI configured")
+else:
+    gemini_model = None
+    print("⚠️ No GEMINI_API_KEY - using fallback answers")
 
 app = FastAPI(
     title="IndoGovRAG API",
@@ -145,8 +158,43 @@ async def query(
             for r in results
         ]
         
-        # Generate answer (simple version - concat top results)
-        answer = f"Berdasarkan dokumen yang ditemukan:\n\n{results[0]['text'][:300]}..."
+        # Generate AI-powered answer with Gemini
+        if gemini_model and GEMINI_API_KEY:
+            try:
+                # Build context from top results
+                context = "\n\n".join([
+                    f"Dokumen {i+1} ({r['metadata'].get('title', 'Unknown')}):\n{r['text']}"
+                    for i, r in enumerate(results[:3])
+                ])
+                
+                # Create prompt for Gemini
+                prompt = f"""Kamu adalah asisten AI yang membantu menjawab pertanyaan tentang peraturan pemerintah Indonesia.
+
+Pertanyaan: {request.question}
+
+Konteks dari dokumen resmi:
+{context}
+
+Instruksi:
+1. Jawab pertanyaan dengan bahasa yang natural dan mudah dipahami
+2. Gunakan HANYA informasi dari konteks dokumen di atas
+3. Jika konteks tidak cukup untuk menjawab, katakan dengan jelas
+4. Jelaskan secara ringkas dan terstruktur
+5. Gunakan Bahasa Indonesia yang baik dan benar
+
+Jawaban:"""
+
+                # Generate response
+                response = gemini_model.generate_content(prompt)
+                answer = response.text
+                
+            except Exception as e:
+                print(f"Gemini error: {e}")
+                # Fallback to simple answer
+                answer = f"Berdasarkan dokumen yang ditemukan:\n\n{results[0]['text'][:300]}..."
+        else:
+            # Fallback when no Gemini API key
+            answer = f"Berdasarkan dokumen yang ditemukan:\n\n{results[0]['text'][:300]}...\n\n💡 Tip: Set GEMINI_API_KEY untuk jawaban AI yang lebih natural."
         
         # Calculate confidence (average score)
         confidence = sum(r['score'] for r in results) / len(results) if results else 0.0

@@ -11,8 +11,6 @@ from pathlib import Path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List, Dict
-import chromadb
-from chromadb.config import Settings
 
 
 class SimpleVectorStore:
