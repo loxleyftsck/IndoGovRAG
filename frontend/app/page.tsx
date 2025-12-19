@@ -24,9 +24,11 @@ export default function Home() {
   const [result, setResult] = useState<QueryResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<any[]>([]);
+  const [csrfToken, setCsrfToken] = useState<string>('');
 
-  // Load history on mount
+  // Load history and CSRF token on mount
   useEffect(() => {
+    // Load history from localStorage
     const saved = localStorage.getItem('indogovrag_history');
     if (saved) {
       try {
@@ -35,6 +37,12 @@ export default function Home() {
         console.error('Failed to load history', e);
       }
     }
+
+    // Fetch CSRF token
+    fetch('http://localhost:8000/api/csrf-token')
+      .then(res => res.json())
+      .then(data => setCsrfToken(data.csrf_token))
+      .catch(err => console.error('Failed to fetch CSRF token', err));
   }, []);
 
   const exampleQuestions = [
