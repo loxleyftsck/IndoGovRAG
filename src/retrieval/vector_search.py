@@ -127,7 +127,8 @@ class VectorStore:
         self,
         query: str,
         n_results: int = 5,
-        filter_metadata: Optional[Dict] = None
+        filter_metadata: Optional[Dict] = None,
+        use_query_expansion: bool = False
     ) -> List[SearchResult]:
         """
         Semantic search for similar chunks.
@@ -136,13 +137,23 @@ class VectorStore:
             query: Search query
             n_results: Number of results to return
             filter_metadata: Optional metadata filters
+            use_query_expansion: Expand query with synonyms
         
         Returns:
             List of SearchResult objects
         """
+        # Expand query if enabled
+        if use_query_expansion:
+            from .query_expander import QueryExpander
+            expander = QueryExpander()
+            expanded = expander.expand(query)
+            search_query = expanded.expanded
+        else:
+            search_query = query
+        
         # Query collection
         results = self.collection.query(
-            query_texts=[query],
+            query_texts=[search_query],
             n_results=n_results,
             where=filter_metadata
         )
