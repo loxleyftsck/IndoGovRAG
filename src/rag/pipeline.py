@@ -63,19 +63,56 @@ class RAGPipeline:
             if not api_key:
                 print("⚠️  GEMINI_API_KEY not found in .env file")
                 print("   LLM will not work without API key")
-                self.llm = None
-            else:
-                self.llm = MultiTierLLM(
-                    gemini_api_key=api_key,
-                    quota_tracker=self.quota_tracker
+                print()
+                print("   For experiments, API key is REQUIRED.")
+                print("   Add to .env file: GEMINI_API_KEY=your_key_here")
+                print()
+                raise ValueError(
+                    "GEMINI_API_KEY required for RAG experiments. "
+                    "Add to .env file or set LLM_REQUIRED=false for testing."
                 )
+            
+            self.llm = MultiTierLLM(
+                gemini_api_key=api_key,
+                quota_tracker=self.quota_tracker
+            )
         
         self.top_k = top_k
+        
+        # Week 3: Experiment configuration
+        self.config = None
+        self.last_token_count = 0
         
         print("✅ RAG Pipeline initialized")
         print(f"   Top-K: {top_k}")
         print(f"   Vector Store: {self.vector_store.collection.count()} chunks")
         print(f"   LLM: {'Ready' if self.llm else 'Not configured'}")
+    
+    def configure(self, config):
+        """
+        Apply experiment configuration for Week 3 A/B testing.
+        
+        Args:
+            config: ExperimentConfig object or dict with parameters
+        """
+        # Support both ExperimentConfig objects and dicts
+        if hasattr(config, '__dict__'):
+            self.config = config
+        else:
+            # Simple dict-based config
+            from types import SimpleNamespace
+            self.config = SimpleNamespace(**config)
+        
+        # Update parameters
+        if hasattr(self.config, 'top_k'):
+            self.top_k = self.config.top_k
+        
+        print(f"🔧 Pipeline configured:")
+        print(f"   Retrieval: {getattr(self.config, 'retrieval_method', 'vector')}")
+        print(f"   Chunk size: {getattr(self.config, 'chunk_size', 512)}")
+        print(f"   Top-K: {self.top_k}")
+        print(f"   Alpha: {getattr(self.config, 'alpha', 1.0)}")
+
     
     def query(
         self,
@@ -94,23 +131,41 @@ class RAGPipeline:
         Returns:
             Dict with 'answer', 'sources', 'retrieved_chunks'
         """
-        # 1. Retrieve relevant chunks
+        # 1. Retrieve relevant chunks (based on config or default to vector)
         print(f"\n🔍 Retrieving context for: {question[:50]}...")
         
-        results = self.vector_store.search(
-            query=question,
-            n_results=self.top_k,
-            filter_metadata=filter_metadata
-        )
+        retrieval_method = getattr(self.config, 'retrieval_method', 'vector') if self.config else 'vector'
+        alpha = getattr(self.config, 'alpha', 1.0) if self.config else 1.0
+        
+        # Choose retrieval method
+        if retrieval_method == 'hybrid':
+            results = self.vector_store.hybrid_search(
+                query=question,
+                n_results=self.top_k,
+                alpha=alpha,
+                filter_metadata=filter_metadata
+            )
+        else:
+            # Vector-only (default)
+            results = self.vector_store.search(
+                query=question,
+                n_results=self.top_k,
+                filter_metadata=filter_metadata
+            )
         
         if not results:
             return {
                 'answer': "Maaf, saya tidak menemukan informasi yang relevan dalam dokumen.",
                 'sources': [],
+                'contexts': [],
                 'retrieved_chunks': [],
-                'confidence': 0.0
+                'confidence': 0.0,
+                'tokens_used': 0
             }
         
+        print(f"   Method: {retrieval_method}")
+        if retrieval_method == 'hybrid':
+            print(f"   Alpha: {alpha} ({'vector' if alpha > 0.7 else 'BM25' if alpha < 0.3 else 'balanced'})")
         print(f"   Found {len(results)} relevant chunks")
         
         # 2. Prepare chunks for prompting
@@ -167,14 +222,22 @@ class RAGPipeline:
                     seen_docs.add(doc_id)
         
         # 6. Calculate confidence (average retrieval score)
-        confidence = sum(c['score'] for c in chunks) / len(chunks)
+        confidence = sum(c['score'] for c in chunks) / len(chunks) if chunks else 0.0
+        
+        # 7. Track token usage
+        self.last_token_count = response.get('tokens', 0)
+        
+        # 8. Prepare contexts list for RAGAS
+        contexts = [c['text'] for c in chunks]
         
         return {
             'answer': answer,
             'sources': sources,
+            'contexts': contexts,  # For RAGAS evaluation
             'retrieved_chunks': chunks,
             'confidence': confidence,
-            'model_used': model_used
+            'model_used': model_used,
+            'tokens_used': self.last_token_count
         }
     
     def get_stats(self) -> Dict:

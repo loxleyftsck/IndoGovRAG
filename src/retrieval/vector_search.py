@@ -222,6 +222,10 @@ class VectorStore:
         max_semantic = max(semantic_scores.values()) if semantic_scores else 1.0
         max_bm25 = max(bm25_scores.values()) if bm25_scores else 1.0
         
+        # Prevent division by zero if all scores are 0
+        max_semantic = max(max_semantic, 1e-10)
+        max_bm25 = max(max_bm25, 1e-10)
+        
         normalized_semantic = {k: v / max_semantic for k, v in semantic_scores.items()}
         normalized_bm25 = {k: v / max_bm25 for k, v in bm25_scores.items()}
         
