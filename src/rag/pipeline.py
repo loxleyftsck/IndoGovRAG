@@ -153,7 +153,9 @@ class RAGPipeline:
                 filter_metadata=filter_metadata
             )
         
-        if not results:
+        # Enhanced None check
+        if results is None or not results:
+            print(f"   ⚠️ No results returned from vector store")
             return {
                 'answer': "Maaf, saya tidak menemukan informasi yang relevan dalam dokumen.",
                 'sources': [],
@@ -170,12 +172,35 @@ class RAGPipeline:
         
         # 2. Prepare chunks for prompting
         chunks = []
-        for result in results:
-            chunks.append({
-                'text': result.text,
-                'metadata': result.metadata,
-                'score': result.score
-            })
+        try:
+            for result in results:
+                # Handle both SearchResult objects and dicts
+                if hasattr(result, 'text'):
+                    # SearchResult object
+                    chunks.append({
+                        'text': result.text,
+                        'metadata': result.metadata,
+                        'score': result.score
+                    })
+                elif isinstance(result, dict):
+                    # Dict format
+                    chunks.append({
+                        'text': result.get('text', ''),
+                        'metadata': result.get('metadata', {}),
+                        'score': result.get('score', 0.0)
+                    })
+                else:
+                    print(f"   ⚠️ Unknown result type: {type(result)}")
+        except Exception as e:
+            print(f"   ❌ Error processing results: {e}")
+            return {
+                'answer': f"Maaf, terjadi kesalahan saat memproses hasil pencarian: {str(e)}",
+                'sources': [],
+                'contexts': [],
+                'retrieved_chunks': [],
+                'confidence': 0.0,
+                'tokens_used': 0
+            }
         
         # 3. Build prompt
         prompt = build_prompt(
