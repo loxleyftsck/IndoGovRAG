@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Search, FileText, Scale, Clock, Shield, BookOpen, AlertCircle, CheckCircle2, Zap, Database } from 'lucide-react';
+import DOMPurify from 'dompurify';
 
 interface Source {
   title: string;
@@ -58,6 +59,7 @@ export default function Home() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken  // VULN-002 FIX
         },
         body: JSON.stringify({
           question: q,

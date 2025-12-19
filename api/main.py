@@ -120,27 +120,34 @@ async def health_check():
         "documents_indexed": vector_store.count()
     }
 
-# Query Endpoint (public access with optional auth)
+# Query Endpoint (public access with optional auth + CSRF)
 @app.post("/api/query", response_model=QueryResponse)
 @limiter.limit("20/minute")  # Public rate limit
 async def query(
-    request: QueryRequest,
+    request: Request,
+    query_request: QueryRequest,
     api_key: str = Header(None, alias="X-API-Key")
 ):
     """
-    Query the RAG system (public access).
+    Query the RAG system (public access with CSRF protection).
     
-    Rate Limits:
-        - Public (no API key): 10 queries/minute
-        - With API key: 20-100 queries/minute based on tier
+    Security:
+        - CSRF token required (get from /api/csrf-token)
+        - Optional API key for higher rate limits
+        - Input validation and sanitization
     
     Args:
-        request: QueryRequest with question and optional top_k
+        request: FastAPI request object
+        query_request: QueryRequest with question and optional top_k
         api_key: Optional API key for higher rate limits
     
     Returns:
         QueryResponse with answer, sources, confidence
     """
+    # VULN-002 FIX: CSRF Protection
+    from api.security import csrf_protect
+    csrf_protect(request)
+    
     start_time = time.time()
     
     # Determine user tier
@@ -149,19 +156,19 @@ async def query(
         user_info = VALID_API_KEYS[api_key]
     
     # Validate input
-    validate_query_input(request.question)
+    validate_query_input(query_request.question)
     
     try:
         # Log query
         audit_log({
             "event": "query_start",
             "user": user_info["name"],
-            "question_length": len(request.question),
+            "question_length": len(query_request.question),
             "timestamp": time.time()
         })
         
         # Search vector store
-        results = vector_store.search(request.question, top_k=request.top_k)
+        results = vector_store.search(query_request.question, top_k=query_request.top_k)
         
         if not results:
             return QueryResponse(
@@ -194,7 +201,7 @@ async def query(
                 # Create prompt for Gemini
                 prompt = f"""Kamu adalah asisten AI yang membantu menjawab pertanyaan tentang peraturan pemerintah Indonesia.
 
-Pertanyaan: {request.question}
+Pertanyaan: {query_request.question}
 
 Konteks dari dokumen resmi:
 {context}
