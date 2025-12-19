@@ -71,11 +71,38 @@ Ask questions in plain Indonesian, get AI-powered answers with official sources:
 - Mobile-friendly interface
 
 ---
-**Use Cases:**
-- Answer questions about Indonesian laws & regulations
-- Search government policies quickly
-- Understand complex legal documents
-- Reference official government rulings
+---
+
+## 📸 **Screenshots**
+
+### Live Application
+![IndoGovRAG Interface](screenshots/01_homepage.png)
+*Clean, professional interface with categorized examples and intelligent search*
+
+### AI-Powered Results
+![Query Results](screenshots/02_query_result.png)
+*Natural language answers with source citations and relevance scores*
+
+---
+
+## 💡 **Use Cases**
+
+### **For Citizens:**
+- 🔍 "Berapa biaya membuat SIM A 2024?" → Get exact costs instantly
+- 📝 "Cara membuat paspor baru" → Step-by-step procedures
+- 💰 "UMP Jakarta 2024" → Current minimum wage data
+- 🏠 "Syarat sertifikat tanah" → Land certificate requirements
+
+### **For Professionals:**
+- ⚖️ **Lawyers:** Quick reference to regulations
+- 🏢 **HR Managers:** Employment law compliance
+- 📊 **Consultants:** Government procedure guidance  
+- 🎓 **Students:** Research Indonesian law
+
+### **For Businesses:**
+- 📋 Business licensing procedures (NIB/OSS)
+- 💼 Employment regulations (UMP/contracts)
+- 🏭 Permits and compliance requirements
 
 ---
 
