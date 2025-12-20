@@ -180,14 +180,16 @@ async def query_documents(request: QueryRequest):
                 print("✅ RAG Pipeline initialized successfully!")
             except Exception as init_error:
                 print(f"❌ Failed to initialize RAG pipeline: {init_error}")
+                import traceback
+                traceback.print_exc()
                 return QueryResponse(
-                    answer=f"Failed to initialize RAG system. Error: {str(init_error)}",
-                    sources=["System"],
+                    answer="Maaf, sistem sedang dalam perbaikan. Silakan coba lagi nanti.",
+                    sources=[],
                     confidence=0.0,
                     latency_ms=round((time.time() - start_time) * 1000, 2),
                     metadata={
                         "status": "initialization_failed",
-                        "error": str(init_error)
+                        "error_type": type(init_error).__name__
                     }
                 )
         
@@ -196,13 +198,34 @@ async def query_documents(request: QueryRequest):
         use_reranking = request.options.get("use_reranking", False)
         top_k = request.options.get("top_k", 5)
         
-        # Execute RAG query
+        # Execute RAG query with timeout warning
         print(f"📝 Processing query: {request.query}")
-        result = rag_pipeline.query(
-            question=request.query,
-            filter_metadata=None,
-            include_sources=True
-        )
+        
+        # Check query complexity (simple heuristic)
+        query_words = len(request.query.split())
+        if query_words > 50:
+            print("⚠️ Complex query detected (>50 words)")
+        
+        try:
+            result = rag_pipeline.query(
+                question=request.query,
+                filter_metadata=None,
+                include_sources=True
+            )
+        except Exception as query_error:
+            print(f"❌ Query execution failed: {query_error}")
+            import traceback
+            traceback.print_exc()
+            return QueryResponse(
+                answer="Maaf, query Anda tidak dapat diproses. Silakan coba dengan pertanyaan yang lebih sederhana.",
+                sources=[],
+                confidence=0.0,
+                latency_ms=round((time.time() - start_time) * 1000, 2),
+                metadata={
+                    "status": "query_failed",
+                    "error_type": type(query_error).__name__
+                }
+            )
         
         # Calculate latency
         latency_ms = round((time.time() - start_time) * 1000, 2)

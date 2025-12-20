@@ -121,7 +121,7 @@ class RAGPipeline:
         include_sources: bool = True
     ) -> Dict:
         """
-        Query the RAG system.
+        Query the RAG system with comprehensive error handling.
         
         Args:
             question: User question in Indonesian
@@ -131,6 +131,8 @@ class RAGPipeline:
         Returns:
             Dict with 'answer', 'sources', 'retrieved_chunks'
         """
+        import time
+        query_start = time.time()
         # 1. Retrieve relevant chunks (based on config or default to vector)
         print(f"\n🔍 Retrieving context for: {question[:50]}...")
         
@@ -212,18 +214,32 @@ class RAGPipeline:
         # 4. Generate answer with LLM
         if not self.llm:
             return {
-                'answer': "LLM tidak tersedia. Pastikan GEMINI_API_KEY sudah diatur di .env file.",
+                'answer': "Maaf, fitur AI tidak tersedia saat ini.",
                 'sources': [],
                 'retrieved_chunks': chunks,
+                'contexts': [],
                 'confidence': 0.0,
-                'model_used': 'none'
+                'model_used': 'none',
+                'tokens_used': 0
             }
         
         print("🤖 Generating answer with Gemini...")
         
-        response = self.llm.generate(
-            prompt=prompt
-        )
+        try:
+            response = self.llm.generate(
+                prompt=prompt
+            )
+        except Exception as llm_error:
+            print(f"   ❌ LLM generation failed: {llm_error}")
+            return {
+                'answer': "Maaf, AI mengalami kesulitan memproses pertanyaan Anda. Silakan coba lagi.",
+                'sources': [],
+                'retrieved_chunks': chunks,
+                'contexts': [c['text'] for c in chunks],
+                'confidence': 0.0,
+                'model_used': 'error',
+                'tokens_used': 0
+            }
         
         answer = response['text']
         model_used = response['model']

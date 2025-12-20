@@ -1,0 +1,32 @@
+[
+  {
+    "attack_id": 1,
+    "status": "EXCEPTION",
+    "result": "ERROR",
+    "error": "HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)"
+  },
+  {
+    "attack_id": 2,
+    "status": "EXCEPTION",
+    "result": "ERROR",
+    "error": "HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)"
+  },
+  {
+    "attack_id": 3,
+    "status": "EXCEPTION",
+    "result": "ERROR",
+    "error": "HTTPConnectionPool(host='localhost', port=8000): Read timed out. (read timeout=30)"
+  },
+  {
+    "attack_id": 5,
+    "status": "ERROR",
+    "http_code": 500,
+    "result": "SYSTEM_ERROR"
+  },
+  {
+    "attack_id": "BONUS",
+    "status": "ERROR",
+    "http_code": 500,
+    "result": "SYSTEM_ERROR"
+  }
+]
