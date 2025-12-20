@@ -1,0 +1,17 @@
+"""
+Example API Keys Configuration
+Copy this to config/api_keys.json and add your keys (don't commit!)
+"""
+
+{
+  "user-api-key-1": {
+    "name": "Free User",
+    "tier": "free",
+    "rate_limit": "10/minute"
+  },
+  "user-api-key-2": {
+    "name": "Premium User",
+    "tier": "premium",
+    "rate_limit": "100/minute"
+  }
+}

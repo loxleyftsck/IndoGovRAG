@@ -1,0 +1,879 @@
+{
+    "version": "2.0",
+    "created": "2024-12-17T17:19:00Z",
+    "updated": "2024-12-19T09:38:00Z",
+    "description": "Comprehensive 50-question evaluation dataset for Indonesian Government Documents RAG - Week 2 COMPLETE",
+    "total_questions": 50,
+    "category_distribution": {
+        "factual": 20,
+        "multi_hop": 15,
+        "summarization": 10,
+        "edge_case": 5
+    },
+    "difficulty_distribution": {
+        "easy": 15,
+        "medium": 25,
+        "hard": 10
+    },
+    "questions": [
+        {
+            "id": "q001",
+            "question": "Apa itu KTP elektronik?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "KTP elektronik adalah Kartu Tanda Penduduk yang dilengkapi dengan chip elektronik untuk menyimpan biodata dan sidik jari penduduk secara digital.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "KTP",
+                "elektronik",
+                "chip"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q002",
+            "question": "Siapa yang wajib memiliki KTP?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Warga Negara Indonesia yang telah berumur 17 tahun atau telah/pernah kawin wajib memiliki KTP.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "wajib",
+                "KTP",
+                "umur"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q003",
+            "question": "Apa fungsi NIK?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "NIK berfungsi sebagai nomor identitas tunggal dan unik untuk setiap penduduk Indonesia yang digunakan dalam berbagai layanan administrasi.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "NIK",
+                "identitas",
+                "unik"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q004",
+            "question": "Bagaimana cara mendaftar BPJS Kesehatan?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "Pendaftaran BPJS Kesehatan dapat dilakukan melalui kantor BPJS, website resmi, aplikasi mobile JKN, atau melalui fasilitas kesehatan dengan membawa KTP dan Kartu Keluarga.",
+            "reference_contexts": [
+                "PP 40/2019"
+            ],
+            "keywords": [
+                "BPJS",
+                "pendaftaran",
+                "JKN"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q005",
+            "question": "Apa itu Program Keluarga Harapan?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "PKH adalah program bantuan sosial bersyarat dari pemerintah untuk keluarga miskin dan rentan, dengan fokus pada peningkatan kualitas kesehatan, pendidikan, dan kesejahteraan.",
+            "reference_contexts": [
+                "Permensos PKH"
+            ],
+            "keywords": [
+                "PKH",
+                "bantuan sosial",
+                "keluarga miskin"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q006",
+            "question": "Berapa lama masa berlaku KTP elektronik?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "KTP elektronik berlaku seumur hidup dan tidak perlu diperpanjang.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "masa berlaku",
+                "seumur hidup"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q007",
+            "question": "Apa syarat mendaftar Kartu Prakerja?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "Syarat Kartu Prakerja: WNI minimal 18 tahun, tidak sedang sekolah/kuliah, tidak sedang bekerja/terkena PHK/pekerja yang membutuhkan peningkatan kompetensi, dan memiliki KTP.",
+            "reference_contexts": [
+                "Perpres Kartu Prakerja"
+            ],
+            "keywords": [
+                "Kartu Prakerja",
+                "syarat",
+                "18 tahun"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q008",
+            "question": "Apa perbedaan NPWP dan NIK?",
+            "category": "multi_hop",
+            "difficulty": "medium",
+            "ground_truth_answer": "NPWP adalah nomor identitas untuk keperluan perpajakan, sedangkan NIK adalah nomor identitas kependudukan. Mulai 2024, NIK dapat digunakan sebagai NPWP.",
+            "reference_contexts": [
+                "UU Pajak",
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "NPWP",
+                "NIK",
+                "pajak"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q009",
+            "question": "Dimana mengurus akta kelahiran?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Akta kelahiran dapat diurus di kantor Dinas Kependudukan dan Pencatatan Sipil (Dukcapil) setempat atau melalui layanan online.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "akta kelahiran",
+                "Dukcapil"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q010",
+            "question": "Apa itu Kartu Keluarga?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Kartu Keluarga adalah kartu identitas keluarga yang memuat data tentang susunan, hubungan, dan jumlah anggota keluarga.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "Kartu Keluarga",
+                "KK",
+                "anggota keluarga"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q011",
+            "question": "Bagaimana jika KTP hilang?",
+            "category": "edge_case",
+            "difficulty": "medium",
+            "ground_truth_answer": "Jika KTP hilang, segera lapor ke Dukcapil setempat dengan Surat Keterangan Kehilangan dari Kepolisian dan fotokopi KK untuk penggantian.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "KTP hilang",
+                "penggantian"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q012",
+            "question": "Apa sanksi tidak punya NPWP?",
+            "category": "edge_case",
+            "difficulty": "hard",
+            "ground_truth_answer": "Tidak ada sanksi langsung, tetapi wajib pajak tanpa NPWP dikenakan potongan pajak 20% lebih tinggi dari tarif normal.",
+            "reference_contexts": [
+                "UU Pajak"
+            ],
+            "keywords": [
+                "NPWP",
+                "sanksi",
+                "pajak"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q013",
+            "question": "Jelaskan prosedur mendapat KTP pertama kali.",
+            "category": "summarization",
+            "difficulty": "medium",
+            "ground_truth_answer": "Prosedur: 1) Datang ke Dukcapil dengan KK dan Akta Kelahiran, 2) Isi formulir, 3) Foto dan rekam sidik jari, 4) Tunggu verifikasi, 5) Ambil KTP setelah 14 hari atau diantar.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "prosedur",
+                "KTP",
+                "Dukcapil"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q014",
+            "question": "Bagaimana WNI di luar negeri urus dokumen kependudukan?",
+            "category": "edge_case",
+            "difficulty": "hard",
+            "ground_truth_answer": "WNI di luar negeri mengurus melalui Perwakilan RI (KBRI/KJRI) di negara tempat tinggal dengan prosedur khusus yang disesuaikan.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "WNI luar negeri",
+                "KBRI",
+                "KJRI"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q015",
+            "question": "Apa hubungan KTP elektronik dengan Single Identity Number?",
+            "category": "multi_hop",
+            "difficulty": "hard",
+            "ground_truth_answer": "KTP elektronik menggunakan NIK sebagai Single Identity Number yang mengintegrasikan semua layanan publik sehingga satu nomor dapat digunakan untuk berbagai keperluan administrasi.",
+            "reference_contexts": [
+                "Perpres 26/2009"
+            ],
+            "keywords": [
+                "SIN",
+                "NIK",
+                "integrasi"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q016",
+            "question": "Berapa iuran BPJS Kesehatan kelas 3?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Iuran BPJS Kesehatan kelas 3 adalah Rp 42.000 per orang per bulan (tarif dapat berubah sesuai kebijakan).",
+            "reference_contexts": [
+                "PP 40/2019"
+            ],
+            "keywords": [
+                "BPJS",
+                "iuran",
+                "kelas 3"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q017",
+            "question": "Siapa yang berhak menerima PKH?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "Keluarga miskin dan rentan yang memiliki komponen kesehatan (ibu hamil, balita) atau komponen pendidikan (anak usia sekolah SD-SMA) berhak menerima PKH.",
+            "reference_contexts": [
+                "Permensos PKH"
+            ],
+            "keywords": [
+                "PKH",
+                "penerima",
+                "keluarga miskin"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q018",
+            "question": "Apakah perlu KTP baru saat pindah domisili?",
+            "category": "multi_hop",
+            "difficulty": "medium",
+            "ground_truth_answer": "Jika pindah domisili antar kabupaten/kota, perlu mengurus KTP baru di domisili baru. NIK tetap sama tetapi KTP diproses ulang di Dukcapil setempat.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "pindah domisili",
+                "KTP baru"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q019",
+            "question": "Apa saja jenis dokumen kependudukan?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Jenis dokumen kependudukan: KTP, KK, Akta Kelahiran, Akta Kematian, Akta Perkawinan, Akta Perceraian, dan Akta Pengakuan/Pengesahan Anak.",
+            "reference_contexts": [
+                "UU Adminduk"
+            ],
+            "keywords": [
+                "dokumen kependudukan",
+                "akta"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q020",
+            "question": "Rangkum hak dan kewajiban peserta BPJS Kesehatan.",
+            "category": "summarization",
+            "difficulty": "medium",
+            "ground_truth_answer": "Hak: mendapat kartu JKN, layanan kesehatan di faskes, portabilitas layanan. Kewajiban: bayar iuran tepat waktu, laporkan perubahan data, ikuti prosedur pelayanan.",
+            "reference_contexts": [
+                "PP 40/2019"
+            ],
+            "keywords": [
+                "BPJS",
+                "hak",
+                "kewajiban"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q021",
+            "question": "Bagaimana cara mendaftar NPWP secara online?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "Pendaftaran NPWP online dilakukan melalui website ereg.pajak.go.id dengan mengisi formulir, upload KTP dan dokumen pendukung, lalu tunggu verifikasi. NPWP akan dikirim via email atau pos.",
+            "reference_contexts": [
+                "UU KUP",
+                "PMK NPWP"
+            ],
+            "keywords": [
+                "NPWP",
+                "online",
+                "ereg"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q022",
+            "question": "Apa bedanya SPT Tahunan pribadi dan badan?",
+            "category": "multi_hop",
+            "difficulty": "medium",
+            "ground_truth_answer": "SPT pribadi untuk pelaporan pajak penghasilan perorangan (PPh 21/25), sedangkan SPT badan untuk perusahaan (PPh 25/29). Badan wajib audit, pribadi opsional tergantung penghasilan.",
+            "reference_contexts": [
+                "UU PPh"
+            ],
+            "keywords": [
+                "SPT",
+                "pribadi",
+                "badan"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q023",
+            "question": "Apa insentif pajak untuk UMKM?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "UMKM dengan omzet di bawah Rp 4,8 miliar per tahun mendapat tarif PPh final 0,5% dari omzet bruto. Untuk omzet tertentu ada pembebasan pajak.",
+            "reference_contexts": [
+                "PP 23/2018",
+                "PP 55/2022"
+            ],
+            "keywords": [
+                "UMKM",
+                "insentif",
+                "PPh final"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q024",
+            "question": "Kapan batas waktu lapor SPT Tahunan?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Batas lapor SPT Tahunan pribadi adalah 31 Maret, sedangkan untuk badan usaha adalah 30 April setiap tahunnya.",
+            "reference_contexts": [
+                "UU KUP"
+            ],
+            "keywords": [
+                "SPT",
+                "batas waktu",
+                "31 Maret"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q025",
+            "question": "Jelaskan prosedur penggunaan NIK sebagai NPWP.",
+            "category": "summarization",
+            "difficulty": "medium",
+            "ground_truth_answer": "Sejak 2024, NIK otomatis menjadi NPWP untuk wajib pajak orang pribadi. Caranya: 1) Validasi NIK di sistem pajak, 2) Aktivasi melalui DJP Online, 3) NIK langsung bisa digunakan untuk transaksi perpajakan tanpa perlu cetak kartu NPWP baru.",
+            "reference_contexts": [
+                "PMK 112/2022"
+            ],
+            "keywords": [
+                "NIK",
+                "NPWP",
+                "integrasi"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q026",
+            "question": "Apa manfaat BPJS Ketenagakerjaan?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "BPJS Ketenagakerjaan memberikan perlindungan: Jaminan Kecelakaan Kerja (JKK), Jaminan Kematian (JKm), Jaminan Hari Tua (JHT), dan Jaminan Pensiun (JP) bagi pekerja.",
+            "reference_contexts": [
+                "UU SJSN",
+                "PP BPJS Ketenagakerjaan"
+            ],
+            "keywords": [
+                "BPJS Ketenagakerjaan",
+                "JKK",
+                "JHT"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q027",
+            "question": "Apa saja yang harus ada dalam kontrak kerja?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "Kontrak kerja minimal memuat: identitas pihak, jabatan/jenis pekerjaan, waktu dan tempat kerja, besaran upah dan cara pembayaran, hak dan kewajiban pekerja-pemberi kerja, jangka waktu (PKWT/PKWTT), dan tanda tangan kedua pihak.",
+            "reference_contexts": [
+                "UU Ketenagakerjaan",
+                "UU Cipta Kerja"
+            ],
+            "keywords": [
+                "kontrak kerja",
+                "PKWT",
+                "PKWTT"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q028",
+            "question": "Bagaimana penetapan upah minimum?",
+            "category": "multi_hop",
+            "difficulty": "medium",
+            "ground_truth_answer": "Upah minimum ditetapkan gubernur setiap tahun berdasarkan rekomendasi Dewan Pengupahan. Formula: UMP/UMK tahun lalu × (1 + inflasi + pertumbuhan ekonomi). Berlaku di tingkat provinsi (UMP) dan kabupaten/kota (UMK).",
+            "reference_contexts": [
+                "UU Cipta Kerja",
+                "PP Pengupahan"
+            ],
+            "keywords": [
+                "upah minimum",
+                "UMP",
+                "UMK"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q029",
+            "question": "Bagaimana menyelesaikan perselisihan hubungan industrial?",
+            "category": "summarization",
+            "difficulty": "hard",
+            "ground_truth_answer": "Tahapan: 1) Perundingan bipartit (pekerja-pemberi kerja) dalam 30 hari, 2) Jika gagal, mediasi/konsiliasi/arbitrase tripartit di Disnaker, 3) Jika masih gagal, gugatan ke Pengadilan Hubungan Industrial (PHI).",
+            "reference_contexts": [
+                "UU PPHI"
+            ],
+            "keywords": [
+                "perselisihan",
+                "hubungan industrial",
+                "PHI"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q030",
+            "question": "Apa syarat mempekerjakan tenaga kerja asing?",
+            "category": "factual",
+            "difficulty": "hard",
+            "ground_truth_answer": "Syarat mempekerjakan TKA: 1) Memiliki RPTKA (Rencana Penggunaan TKA), 2) Izin Mempekerjakan TKA (IMTA), 3) Jabatan dan jangka waktu terbatas, 4) Wajib ada tenaga pendamping WNI, 5) Bayar DPKK (Dana Pengembangan Keahlian dan Keterampilan).",
+            "reference_contexts": [
+                "UU Ketenagakerjaan",
+                "Permenaker TKA"
+            ],
+            "keywords": [
+                "TKA",
+                "IMTA",
+                "RPTKA"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q031",
+            "question": "Bagaimana prosedur pendaftaran sekolah negeri?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "Pendaftaran sekolah negeri dilakukan melalui sistem zonasi: 1) Daftar online sesuai zona domisili (berdasarkan KK), 2) Upload dokumen (akta lahir, KK, ijazah), 3) Seleksi berdasarkan jarak rumah ke sekolah, 4) Pengumuman dan daftar ulang.",
+            "reference_contexts": [
+                "Permendikbud PPDB"
+            ],
+            "keywords": [
+                "PPDB",
+                "zonasi",
+                "sekolah negeri"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q032",
+            "question": "Apa saja program beasiswa pemerintah?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Program beasiswa pemerintah meliputi: Beasiswa LPDP (S2/S3 dalam-luar negeri), KIP Kuliah (S1 untuk kurang mampu), Bidikmisi (diganti KIP), Beasiswa Unggulan Kemendikbud, dan Beasiswa Afirmasi untuk daerah 3T.",
+            "reference_contexts": [
+                "Permendikbud Beasiswa"
+            ],
+            "keywords": [
+                "beasiswa",
+                "LPDP",
+                "KIP Kuliah"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q033",
+            "question": "Bagaimana cara legalisir ijazah?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Legalisir ijazah dilakukan di sekolah/universitas asal dengan membawa ijazah asli dan fotokopi. Untuk keperluan luar negeri, perlu legalisir tambahan di Kemendikbud dan Kemenlu (apostille).",
+            "reference_contexts": [
+                "Permendikbud"
+            ],
+            "keywords": [
+                "legalisir",
+                "ijazah",
+                "apostille"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q034",
+            "question": "Apa regulasi homeschooling di Indonesia?",
+            "category": "multi_hop",
+            "difficulty": "hard",
+            "ground_truth_answer": "Homeschooling diakui sebagai Pendidikan Keluarga dalam UU Sisdiknas. Anak homeschooling bisa ikut ujian kesetaraan (Paket A/B/C) untuk dapat ijazah setara SD/SMP/SMA. Wajib lapor ke Dinas Pendidikan dan ikuti kurikulum minimal yang ditetapkan.",
+            "reference_contexts": [
+                "UU Sisdiknas",
+                "Permendikbud Pendidikan Keluarga"
+            ],
+            "keywords": [
+                "homeschooling",
+                "pendidikan keluarga",
+                "paket C"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q035",
+            "question": "Jelaskan program pertukaran pelajar pemerintah.",
+            "category": "summarization",
+            "difficulty": "medium",
+            "ground_truth_answer": "Program pertukaran pelajar pemerintah: 1) AFS/YES untuk SMA ke luar negeri (beasiswa penuh), 2) Indonesian International Student Mobility Awards (IISMA) untuk mahasiswa S1, 3) Darmasiswa untuk pelajar asing ke Indonesia. Semua dikelola Kemendikbud dengan seleksi kompetitif.",
+            "reference_contexts": [
+                "Kemendikbud"
+            ],
+            "keywords": [
+                "pertukaran pelajar",
+                "IISMA",
+                "Darmasiswa"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q036",
+            "question": "Bagaimana cara klaim BPJS Kesehatan?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "Prosedur klaim BPJS: 1) Berobat di faskes tingkat I (Puskesmas/klinik terdaftar), 2) Jika perlu rujukan, ke RS tingkat lanjut, 3) Tunjukkan kartu BPJS, 4) Faskes langsung klaim ke BPJS, pasien tidak bayar (sistem INA-CBG).",
+            "reference_contexts": [
+                "PP JKN",
+                "Perpres JKN"
+            ],
+            "keywords": [
+                "BPJS",
+                "klaim",
+                "INA-CBG"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q037",
+            "question": "Apa syarat mendirikan klinik?",
+            "category": "factual",
+            "difficulty": "hard",
+            "ground_truth_answer": "Syarat mendirikan klinik: 1) Izin lokasi dan IMB, 2) Minimal 2 tenaga medis (dokter/perawat berSIK), 3) Sarana prasarana sesuai standar, 4) Daftar ke Dinas Kesehatan, 5) Dapat izin operasional klinik, 6) Wajib terakreditasi dalam 3 tahun.",
+            "reference_contexts": [
+                "PMK Klinik"
+            ],
+            "keywords": [
+                "klinik",
+                "izin operasional",
+                "akreditasi"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q038",
+            "question": "Apa saja vaksin wajib untuk anak?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "Vaksin wajib (imunisasi dasar lengkap): Hepatitis B, BCG, Polio, DPT-HB-Hib (pentavalen), Campak-Rubella (MR). Diberikan gratis di Posyandu/Puskesmas sesuai jadwal imunisasi nasional.",
+            "reference_contexts": [
+                "PMK Imunisasi"
+            ],
+            "keywords": [
+                "vaksin",
+                "imunisasi",
+                "anak"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q039",
+            "question": "Untuk apa surat keterangan sehat?",
+            "category": "multi_hop",
+            "difficulty": "easy",
+            "ground_truth_answer": "Surat keterangan sehat diperlukan untuk: pendaftaran sekolah/kuliah, melamar kerja, pembuatan SIM, pendaftaran haji/umroh, keperluan visa, dan mengikuti kompetisi olahraga. Dikeluarkan dokter di Puskesmas/RS/klinik.",
+            "reference_contexts": [
+                "PMK"
+            ],
+            "keywords": [
+                "surat keterangan sehat",
+                "medical check up"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q040",
+            "question": "Apa yang ditanggung BPJS Kesehatan kelas 1, 2, 3?",
+            "category": "edge_case",
+            "difficulty": "medium",
+            "ground_truth_answer": "Manfaat medis BPJS sama untuk semua kelas (kelas 1/2/3), perbedaan hanya di fasilitas kamar rawat inap. Kelas 3 kamar bersama, kelas 2 semi-private, kelas 1 lebih nyaman. Semua dapat pelayanan kesehatan sesuai indikasi medis.",
+            "reference_contexts": [
+                "Perpres JKN"
+            ],
+            "keywords": [
+                "BPJS",
+                "kelas",
+                "manfaat"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q041",
+            "question": "Apa itu sistem OSS untuk perizinan usaha?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "OSS (Online Single Submission) adalah sistem perizinan usaha terintegrasi secara elektronik. Melalui oss.go.id, pelaku usaha bisa mengurus NIB (Nomor Induk Berusaha), izin usaha, dan izin komersial dalam satu platform tanpa perlu ke banyak instansi.",
+            "reference_contexts": [
+                "PP OSS",
+                "UU Cipta Kerja"
+            ],
+            "keywords": [
+                "OSS",
+                "NIB",
+                "perizinan"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q042",
+            "question": "Bagaimana cara mendapat SIUP?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "Sejak 2021, SIUP diganti dengan NIB (Nomor Induk Berusaha) melalui sistem OSS. Cukup daftar di oss.go.id dengan memilih bidang usaha, NIB langsung terbit sebagai identitas pelaku usaha dan izin dasar.",
+            "reference_contexts": [
+                "PP OSS"
+            ],
+            "keywords": [
+                "SIUP",
+                "NIB",
+                "OSS"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q043",
+            "question": "Apa syarat mendirikan PT?",
+            "category": "multi_hop",
+            "difficulty": "hard",
+            "ground_truth_answer": "Syarat mendirikan PT: 1) Minimal 2 pendiri, 2) Modal dasar minimal Rp50 juta (disetor 25%), 3) Akta pendirian dari notaris, 4) Pengesahan Menkumham, 5) NPWP perusahaan, 6) NIB melalui OSS, 7) Izin usaha sesuai bidang.",
+            "reference_contexts": [
+                "UU PT",
+                "PP OSS"
+            ],
+            "keywords": [
+                "PT",
+                "perseroan terbatas",
+                "modal"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q044",
+            "question": "Bagaimana mengurus izin ekspor-impor?",
+            "category": "summarization",
+            "difficulty": "hard",
+            "ground_truth_answer": "Prosedur izin ekspor-impor: 1) Daftar NIB di OSS, 2) Pilih kode KBLI ekspor/impor, 3) Terbitkan API (Angka Pengenal Importir) atau izin ekspor otomatis, 4) Daftar sebagai eksportir/importir di Kemendag, 5) Untuk barang tertentu butuh izin khusus (misal: kesehatan, karantina).",
+            "reference_contexts": [
+                "Permendag Ekspor-Impor"
+            ],
+            "keywords": [
+                "ekspor",
+                "impor",
+                "API"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q045",
+            "question": "Bagaimana menutup usaha secara resmi?",
+            "category": "edge_case",
+            "difficulty": "medium",
+            "ground_truth_answer": "Prosedur penutupan usaha: 1) Lapor penutupan di OSS untuk pencabutan NIB, 2) Urus pembubaran di notaris (untuk PT/CV), 3) Lapor pajak terakhir dan cabut NPWP di kantor pajak, 4) Bayar kewajiban ke BPJS Ketenagakerjaan, 5) Arsipkan dokumen penutupan.",
+            "reference_contexts": [
+                "PP OSS",
+                "UU PT"
+            ],
+            "keywords": [
+                "penutupan usaha",
+                "pembubaran",
+                "NIB"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q046",
+            "question": "Apa perbedaan SHM dan SHGB?",
+            "category": "multi_hop",
+            "difficulty": "medium",
+            "ground_truth_answer": "SHM (Sertifikat Hak Milik) adalah kepemilikan tanah permanen tanpa batas waktu, hanya untuk WNI. SHGB (Sertifikat Hak Guna Bangunan) berlaku 20-30 tahun dan dapat diperpanjang, bisa dimiliki WNI atau badan hukum Indonesia untuk mendirikan bangunan.",
+            "reference_contexts": [
+                "UUPA"
+            ],
+            "keywords": [
+                "SHM",
+                "SHGB",
+                "sertifikat tanah"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        },
+        {
+            "id": "q047",
+            "question": "Bagaimana mengurus IMB?",
+            "category": "factual",
+            "difficulty": "medium",
+            "ground_truth_answer": "IMB (Izin Mendirikan Bangunan) sekarang menjadi PBG (Persetujuan Bangunan Gedung) melalui sistem OSS. Upload gambar desain, bukti kepemilikan tanah, dan bayar retribusi. Untuk bangunan sederhana bisa pakai SBKBG (Surat Bukti Kepemilikan Bangunan Gedung).",
+            "reference_contexts": [
+                "UU Cipta Kerja",
+                "PP Bangunan Gedung"
+            ],
+            "keywords": [
+                "IMB",
+                "PBG",
+                "izin bangunan"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q048",
+            "question": "Kapan bayar pajak PBB?",
+            "category": "factual",
+            "difficulty": "easy",
+            "ground_truth_answer": "PBB (Pajak Bumi dan Bangunan) dibayar setahun sekali berdasarkan SPPT yang terbit setiap awal tahun. Jatuh tempo biasanya 6 bulan sejak tanggal SPPT (bervariasi per daerah). Bisa bayar di bank, minimarket, atau online.",
+            "reference_contexts": [
+                "UU PDRD"
+            ],
+            "keywords": [
+                "PBB",
+                "SPPT",
+                "pajak properti"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q049",
+            "question": "Jelaskan proses jual beli tanah yang sah.",
+            "category": "summarization",
+            "difficulty": "hard",
+            "ground_truth_answer": "Proses jual beli tanah: 1) Cek sertifikat di BPN (tidak sengketa/blokir), 2) Buat PPJB (Perjanjian Pengikatan Jual Beli), 3) Bayar BPHTB (Bea Perolehan Hak atas Tanah dan Bangunan), 4) Akta jual beli di PPAT, 5) Balik nama sertifikat di BPN, 6) Terbit sertifikat atas nama pembeli.",
+            "reference_contexts": [
+                "UUPA",
+                "PP PPAT"
+            ],
+            "keywords": [
+                "jual beli tanah",
+                "PPAT",
+                "balik nama"
+            ],
+            "requires_inference": false,
+            "reviewed": true
+        },
+        {
+            "id": "q050",
+            "question": "Bagaimana pembagian warisan tanah menurut hukum?",
+            "category": "edge_case",
+            "difficulty": "hard",
+            "ground_truth_answer": "Pembagian warisan tanah tergantung hukum yang dipilih ahli waris: 1) Hukum Islam (2:1 laki-perempuan), 2) Hukum Perdata (sama rata), atau 3) Hukum Adat (sesuai kebiasaan). Harus ada surat keterangan waris dari kelurahan/pengadilan, lalu balik nama di BPN.",
+            "reference_contexts": [
+                "KUHPerdata",
+                "Kompilasi Hukum Islam"
+            ],
+            "keywords": [
+                "warisan",
+                "tanah",
+                "ahli waris"
+            ],
+            "requires_inference": true,
+            "reviewed": true
+        }
+    ]
+}

@@ -27,5 +27,8 @@
     "bugs": {
         "url": "https://github.com/yourusername/indogovrag/issues"
     },
-    "homepage": "https://github.com/yourusername/indogovrag#readme"
+    "homepage": "https://github.com/yourusername/indogovrag#readme",
+    "dependencies": {
+        "dompurify": "^3.3.1"
+    }
 }

@@ -1,0 +1,12 @@
+{
+    "version": "2.0",
+    "created": "2024-12-17T16:43:00Z",
+    "description": "Curated 30-question evaluation dataset for Indonesian Government Documents RAG - Quality over Quantity",
+    "total_questions": 30,
+    "category_distribution": {
+        "factual": 12,
+        "multi_hop": 9,
+        "summarization": 6,
+        "edge_case": 3
+    }
+}

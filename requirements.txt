@@ -17,6 +17,11 @@ torch>=2.0.0
 
 # Evaluation (Week 2)
 ragas>=0.1.0
+datasets>=2.14.0
+
+# Optimization (Week 3)
+rank-bm25>=0.2.2
+scipy>=1.11.0
 
 # Utils
 tqdm>=4.65.0

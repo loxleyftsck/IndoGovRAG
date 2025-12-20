@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # IndoGovRAG API Service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: indogovrag-api
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - ENVIRONMENT=production
+    env_file:
+      - .env
+    volumes:
+      # Persist vector database
+      - ./data/vector_db:/app/data/vector_db
+      # Persist evaluation results
+      - ./data/evaluations:/app/data/evaluations
+      # Persist logs
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - indogovrag-network
+  # ChromaDB Service (Optional - if using separate ChromaDB server)
+  # chroma:
+  #   image: chromadb/chroma:latest
+  #   container_name: indogovrag-chroma
+  #   ports:
+  #     - "8001:8000"
+  #   volumes:
+  #     - ./data/chroma_server:/chroma/chroma
+  #   environment:
+  #     - ALLOW_RESET=TRUE
+  #   networks:
+  #     - indogovrag-network
+
+networks:
+  indogovrag-network:
+    driver: bridge
+
+volumes:
+  vector_db:
+  evaluations:
+  logs:

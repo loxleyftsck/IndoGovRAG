@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+data/raw/
+data/processed/
+data/vector_db/
+logs/
+*.log
+
+# Secrets
+.env
+.env.local
+*.key
+*.pem
+
+# Cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Documentation build
+docs/_build/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Git
+.git/
+.gitignore
+
+# Node modules (if any)
+node_modules/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Large files
+*.pdf
+*.zip
+*.tar.gz
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb

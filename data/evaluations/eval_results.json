@@ -1,0 +1,162 @@
+{
+  "timestamp": "2025-12-17T16:37:24.758430",
+  "total_evaluated": 10,
+  "summary": {
+    "total": 10,
+    "avg_response_time": 0.12632317543029786,
+    "min_response_time": 0.05549883842468262,
+    "max_response_time": 0.6533529758453369
+  },
+  "results": [
+    {
+      "question": "Apa saja persyaratan dokumen untuk mengajukan KTP elektronik?",
+      "answer": "LLM tidak tersedia. Pastikan GEMINI_API_KEY sudah diatur di .env file.",
+      "contexts": [
+        "Kartu Tanda Penduduk (KTP) adalah identitas resmi penduduk sebagai bukti diri yang diterbitkan oleh Instansi Pelaksana yang berlaku di seluruh wilayah Negara Kesatuan Republik Indonesia.",
+        "Nomor Induk Kependudukan (NIK) adalah nomor identitas penduduk yang bersifat unik atau khas, tunggal dan melekat pada seseorang yang terdaftar sebagai Penduduk Indonesia.",
+        "BPJS Kesehatan menyelenggarakan program Jaminan Kesehatan Nasional untuk memberikan jaminan kesehatan yang berkesinambungan bagi seluruh penduduk Indonesia."
+      ],
+      "ground_truth": null,
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "response_time": 0.6533529758453369
+    },
+    {
+      "question": "Berapa lama masa berlaku Surat Izin Mengemudi (SIM) C untuk pengendara motor?",
+      "answer": "LLM tidak tersedia. Pastikan GEMINI_API_KEY sudah diatur di .env file.",
+      "contexts": [
+        "Nomor Induk Kependudukan (NIK) adalah nomor identitas penduduk yang bersifat unik atau khas, tunggal dan melekat pada seseorang yang terdaftar sebagai Penduduk Indonesia.",
+        "Kartu Tanda Penduduk (KTP) adalah identitas resmi penduduk sebagai bukti diri yang diterbitkan oleh Instansi Pelaksana yang berlaku di seluruh wilayah Negara Kesatuan Republik Indonesia.",
+        "BPJS Kesehatan menyelenggarakan program Jaminan Kesehatan Nasional untuk memberikan jaminan kesehatan yang berkesinambungan bagi seluruh penduduk Indonesia."
+      ],
+      "ground_truth": null,
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "response_time": 0.0605466365814209
+    },
+    {
+      "question": "Apa perbedaan antara izin usaha OSS (Online Single Submission) dengan izin konvensional?",
+      "answer": "LLM tidak tersedia. Pastikan GEMINI_API_KEY sudah diatur di .env file.",
+      "contexts": [
+        "Kartu Tanda Penduduk (KTP) adalah identitas resmi penduduk sebagai bukti diri yang diterbitkan oleh Instansi Pelaksana yang berlaku di seluruh wilayah Negara Kesatuan Republik Indonesia.",
+        "Nomor Induk Kependudukan (NIK) adalah nomor identitas penduduk yang bersifat unik atau khas, tunggal dan melekat pada seseorang yang terdaftar sebagai Penduduk Indonesia.",
+        "BPJS Kesehatan menyelenggarakan program Jaminan Kesehatan Nasional untuk memberikan jaminan kesehatan yang berkesinambungan bagi seluruh penduduk Indonesia."
+      ],
+      "ground_truth": null,
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "response_time": 0.0583806037902832
+    },
+    {
+      "question": "Siapa saja yang berhak menerima Bantuan Langsung Tunai (BLT) dari pemerintah?",
+      "answer": "LLM tidak tersedia. Pastikan GEMINI_API_KEY sudah diatur di .env file.",
+      "contexts": [
+        "BPJS Kesehatan menyelenggarakan program Jaminan Kesehatan Nasional untuk memberikan jaminan kesehatan yang berkesinambungan bagi seluruh penduduk Indonesia.",
+        "Kartu Tanda Penduduk (KTP) adalah identitas resmi penduduk sebagai bukti diri yang diterbitkan oleh Instansi Pelaksana yang berlaku di seluruh wilayah Negara Kesatuan Republik Indonesia.",
+        "Nomor Induk Kependudukan (NIK) adalah nomor identitas penduduk yang bersifat unik atau khas, tunggal dan melekat pada seseorang yang terdaftar sebagai Penduduk Indonesia."
+      ],
+      "ground_truth": null,
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "response_time": 0.05549883842468262
+    },
+    {
+      "question": "Jika seseorang ingin membuka usaha kuliner di rumah, izin apa saja yang diperlukan dan bagaimana prosesnya?",
+      "answer": "LLM tidak tersedia. Pastikan GEMINI_API_KEY sudah diatur di .env file.",
+      "contexts": [
+        "Nomor Induk Kependudukan (NIK) adalah nomor identitas penduduk yang bersifat unik atau khas, tunggal dan melekat pada seseorang yang terdaftar sebagai Penduduk Indonesia.",
+        "Kartu Tanda Penduduk (KTP) adalah identitas resmi penduduk sebagai bukti diri yang diterbitkan oleh Instansi Pelaksana yang berlaku di seluruh wilayah Negara Kesatuan Republik Indonesia.",
+        "BPJS Kesehatan menyelenggarakan program Jaminan Kesehatan Nasional untuk memberikan jaminan kesehatan yang berkesinambungan bagi seluruh penduduk Indonesia."
+      ],
+      "ground_truth": null,
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "response_time": 0.05757880210876465
+    },
+    {
+      "question": "Bagaimana cara seorang warga negara asing menikah dengan WNI dan mendapatkan izin tinggal tetap di Indonesia?",
+      "answer": "LLM tidak tersedia. Pastikan GEMINI_API_KEY sudah diatur di .env file.",
+      "contexts": [
+        "Nomor Induk Kependudukan (NIK) adalah nomor identitas penduduk yang bersifat unik atau khas, tunggal dan melekat pada seseorang yang terdaftar sebagai Penduduk Indonesia.",
+        "Kartu Tanda Penduduk (KTP) adalah identitas resmi penduduk sebagai bukti diri yang diterbitkan oleh Instansi Pelaksana yang berlaku di seluruh wilayah Negara Kesatuan Republik Indonesia.",
+        "BPJS Kesehatan menyelenggarakan program Jaminan Kesehatan Nasional untuk memberikan jaminan kesehatan yang berkesinambungan bagi seluruh penduduk Indonesia."
+      ],
+      "ground_truth": null,
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "response_time": 0.05626344680786133
+    },
+    {
+      "question": "Apa yang harus dilakukan jika akta kelahiran hilang dan perlu mengurus dokumen kependudukan lainnya yang memerlukan akta tersebut?",
+      "answer": "LLM tidak tersedia. Pastikan GEMINI_API_KEY sudah diatur di .env file.",
+      "contexts": [
+        "Nomor Induk Kependudukan (NIK) adalah nomor identitas penduduk yang bersifat unik atau khas, tunggal dan melekat pada seseorang yang terdaftar sebagai Penduduk Indonesia.",
+        "Kartu Tanda Penduduk (KTP) adalah identitas resmi penduduk sebagai bukti diri yang diterbitkan oleh Instansi Pelaksana yang berlaku di seluruh wilayah Negara Kesatuan Republik Indonesia.",
+        "BPJS Kesehatan menyelenggarakan program Jaminan Kesehatan Nasional untuk memberikan jaminan kesehatan yang berkesinambungan bagi seluruh penduduk Indonesia."
+      ],
+      "ground_truth": null,
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "response_time": 0.05881214141845703
+    },
+    {
+      "question": "Jelaskan secara ringkas prosedur pendaftaran CPNS (Calon Pegawai Negeri Sipil) di Indonesia.",
+      "answer": "LLM tidak tersedia. Pastikan GEMINI_API_KEY sudah diatur di .env file.",
+      "contexts": [
+        "Nomor Induk Kependudukan (NIK) adalah nomor identitas penduduk yang bersifat unik atau khas, tunggal dan melekat pada seseorang yang terdaftar sebagai Penduduk Indonesia.",
+        "Kartu Tanda Penduduk (KTP) adalah identitas resmi penduduk sebagai bukti diri yang diterbitkan oleh Instansi Pelaksana yang berlaku di seluruh wilayah Negara Kesatuan Republik Indonesia.",
+        "BPJS Kesehatan menyelenggarakan program Jaminan Kesehatan Nasional untuk memberikan jaminan kesehatan yang berkesinambungan bagi seluruh penduduk Indonesia."
+      ],
+      "ground_truth": null,
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "response_time": 0.07956862449645996
+    },
+    {
+      "question": "Apa saja hak dan kewajiban warga negara Indonesia menurut UUD 1945?",
+      "answer": "LLM tidak tersedia. Pastikan GEMINI_API_KEY sudah diatur di .env file.",
+      "contexts": [
+        "Nomor Induk Kependudukan (NIK) adalah nomor identitas penduduk yang bersifat unik atau khas, tunggal dan melekat pada seseorang yang terdaftar sebagai Penduduk Indonesia.",
+        "Kartu Tanda Penduduk (KTP) adalah identitas resmi penduduk sebagai bukti diri yang diterbitkan oleh Instansi Pelaksana yang berlaku di seluruh wilayah Negara Kesatuan Republik Indonesia.",
+        "BPJS Kesehatan menyelenggarakan program Jaminan Kesehatan Nasional untuk memberikan jaminan kesehatan yang berkesinambungan bagi seluruh penduduk Indonesia."
+      ],
+      "ground_truth": null,
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "response_time": 0.12222599983215332
+    },
+    {
+      "question": "Bagaimana status kewarganegaraan anak yang lahir di luar negeri dari orang tua WNI yang sudah tidak memiliki paspor Indonesia?",
+      "answer": "LLM tidak tersedia. Pastikan GEMINI_API_KEY sudah diatur di .env file.",
+      "contexts": [
+        "Nomor Induk Kependudukan (NIK) adalah nomor identitas penduduk yang bersifat unik atau khas, tunggal dan melekat pada seseorang yang terdaftar sebagai Penduduk Indonesia.",
+        "Kartu Tanda Penduduk (KTP) adalah identitas resmi penduduk sebagai bukti diri yang diterbitkan oleh Instansi Pelaksana yang berlaku di seluruh wilayah Negara Kesatuan Republik Indonesia.",
+        "BPJS Kesehatan menyelenggarakan program Jaminan Kesehatan Nasional untuk memberikan jaminan kesehatan yang berkesinambungan bagi seluruh penduduk Indonesia."
+      ],
+      "ground_truth": null,
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "response_time": 0.061003684997558594
+    }
+  ]
+}
