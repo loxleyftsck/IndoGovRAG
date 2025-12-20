@@ -77,11 +77,14 @@ def load_sample_documents():
     
     for doc in documents:
         # Simple chunking (just use whole document for now)
+        text = doc['text'].strip()
         chunk = Chunk(
             doc_id=doc['doc_id'],
             chunk_id=chunk_id,
-            text=doc['text'].strip(),
-            num_tokens=len(doc['text'].split()),
+            text=text,
+            start_char=0,
+            end_char=len(text),
+            num_tokens=len(text.split()),
             metadata={
                 'title': doc['title'],
                 'category': doc['category'],
