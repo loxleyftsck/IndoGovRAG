@@ -122,7 +122,33 @@ class MultiTierLLM:
                     )
             
             start = time.time()
-            response = self.gemini_pro.generate_content(prompt, **kwargs)
+            # Generate using Gemini (with max_tokens for speed)
+            # Merge default generation_config with any provided in kwargs
+            default_gen_config = {
+                "max_output_tokens": 512,  # Limit response length
+                "temperature": 0.1
+            }
+            
+            # If 'generation_config' is in kwargs, update it with defaults, then pass it.
+            # Otherwise, create a new GenerationConfig object.
+            if 'generation_config' in kwargs and isinstance(kwargs['generation_config'], dict):
+                merged_gen_config_dict = {**default_gen_config, **kwargs['generation_config']}
+                gen_config = genai.types.GenerationConfig(**merged_gen_config_dict)
+                del kwargs['generation_config'] # Remove from kwargs to avoid double passing
+            elif 'generation_config' in kwargs and isinstance(kwargs['generation_config'], genai.types.GenerationConfig):
+                # If it's already a GenerationConfig object, we can't easily merge dicts.
+                # For simplicity, we'll let the user-provided GenerationConfig take precedence.
+                # If the user wants to override max_output_tokens/temperature, they should do it in their object.
+                gen_config = kwargs['generation_config']
+                del kwargs['generation_config']
+            else:
+                gen_config = genai.types.GenerationConfig(**default_gen_config)
+
+            response = self.gemini_pro.generate_content(
+                prompt,
+                generation_config=gen_config,
+                **kwargs
+            )
             latency = (time.time() - start) * 1000
             
             # Extract text

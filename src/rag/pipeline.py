@@ -33,7 +33,7 @@ class RAGPipeline:
         vector_store: Optional[VectorStore] = None,
         llm: Optional[MultiTierLLM] = None,
         quota_tracker: Optional[GeminiQuotaTracker] = None,
-        top_k: int = 5
+        top_k: int = 3  # Reduced from 5 for faster retrieval
     ):
         """
         Initialize RAG pipeline.
@@ -133,7 +133,10 @@ class RAGPipeline:
         """
         import time
         query_start = time.time()
+        stage_times = {}  # Track timing for each stage
+        
         # 1. Retrieve relevant chunks (based on config or default to vector)
+        retrieval_start = time.time()
         print(f"\n🔍 Retrieving context for: {question[:50]}...")
         
         retrieval_method = getattr(self.config, 'retrieval_method', 'vector') if self.config else 'vector'
@@ -171,6 +174,8 @@ class RAGPipeline:
         if retrieval_method == 'hybrid':
             print(f"   Alpha: {alpha} ({'vector' if alpha > 0.7 else 'BM25' if alpha < 0.3 else 'balanced'})")
         print(f"   Found {len(results)} relevant chunks")
+        stage_times['retrieval'] = (time.time() - retrieval_start) * 1000
+        print(f"   ⏱️ Retrieval: {stage_times['retrieval']:.0f}ms")
         
         # 2. Prepare chunks for prompting
         chunks = []
@@ -205,11 +210,14 @@ class RAGPipeline:
             }
         
         # 3. Build prompt
+        prompt_start = time.time()
         prompt = build_prompt(
             question=question,
             chunks=chunks,
             include_metadata=include_sources
         )
+        stage_times['prompt_build'] = (time.time() - prompt_start) * 1000
+        print(f"   ⏱️ Prompt building: {stage_times['prompt_build']:.0f}ms")
         
         # 4. Generate answer with LLM
         if not self.llm:
@@ -243,9 +251,11 @@ class RAGPipeline:
         
         answer = response['text']
         model_used = response['model']
+        stage_times['llm_generation'] = (time.time() - retrieval_start - stage_times['retrieval']/1000 - stage_times['prompt_build']/1000) * 1000
         
         print(f"   Model: {model_used}")
         print(f"   Answer length: {len(answer)} chars")
+        print(f"   ⏱️ LLM generation: {stage_times.get('llm_generation', 0):.0f}ms")
         
         # 5. Format sources
         sources = []
@@ -268,7 +278,15 @@ class RAGPipeline:
         # 7. Track token usage
         self.last_token_count = response.get('tokens', 0)
         
-        # 8. Prepare contexts list for RAGAS
+        # 8. Profiling summary
+        total_time = (time.time() - query_start) * 1000
+        print(f"\n📊 Performance Profile:")
+        print(f"   Total: {total_time:.0f}ms")
+        print(f"   Breakdown: Retrieval={stage_times.get('retrieval', 0):.0f}ms, "
+              f"Prompt={stage_times.get('prompt_build', 0):.0f}ms, "
+              f"LLM={stage_times.get('llm_generation', 0):.0f}ms")
+        
+        # 9. Prepare contexts list for RAGAS
         contexts = [c['text'] for c in chunks]
         
         return {
