@@ -1,0 +1,32 @@
+# Development Dependencies for Professional Standards
+# Version: 2.0
+
+# Code Quality
+ruff==0.1.9  # Fast Python linter
+black==23.12.1  # Code formatter
+isort==5.13.2  # Import sorter
+
+# Type Checking
+mypy==1.7.1  # Static type checker
+types-requests==2.31.0.20231231  # Type stubs
+
+# Testing
+pytest==7.4.3  # Test framework
+pytest-cov==4.1.0  # Coverage plugin
+pytest-asyncio==0.21.1  # Async testing
+pytest-mock==3.12.0  # Mocking
+
+# Security
+bandit==1.7.6  # Security linter
+safety==2.3.5  # Dependency vulnerability scanner
+
+# Documentation
+pdoc==14.3.0  # API documentation generator
+
+# Performance
+py-spy==0.3.14  # Performance profiler
+memory-profiler==0.61.0  # Memory profiler
+
+# API
+slowapi==0.1.9  # Rate limiting
+pydantic[email]==2.5.3  # Data validation
