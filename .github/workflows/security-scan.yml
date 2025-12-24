@@ -43,7 +43,7 @@ jobs:
         ! grep -rE "api.*key.*=.*['\"]|password.*=.*['\"]|secret.*=.*['\"]" src/ --include=\*.py
     
     - name: Upload security reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v6
       if: always()
       with:
         name: security-reports
