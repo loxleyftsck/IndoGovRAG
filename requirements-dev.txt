@@ -7,7 +7,7 @@ black==23.12.1  # Code formatter
 isort==5.13.2  # Import sorter
 
 # Type Checking
-mypy==1.7.1  # Static type checker
+mypy==1.19.1  # Static type checker
 types-requests==2.31.0.20231231  # Type stubs
 
 # Testing
