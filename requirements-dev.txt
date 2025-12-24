@@ -2,7 +2,7 @@
 # Version: 2.0
 
 # Code Quality
-ruff==0.1.9  # Fast Python linter
+ruff==0.14.10  # Fast Python linter
 black==23.12.1  # Code formatter
 isort==5.13.2  # Import sorter
 
