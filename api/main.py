@@ -171,25 +171,6 @@ async def query_documents(request: QueryRequest):
     start_time = time.time()
     
     try:
-        # Initialize RAG pipeline on first use (lazy loading)
-        if rag_pipeline is None:
-            print("🔧 Initializing RAG pipeline...")
-            try:
-                print(f"❌ Failed to initialize RAG pipeline: {init_error}")
-                import traceback
-                traceback.print_exc()
-                return QueryResponse(
-                    answer="Maaf, sistem sedang dalam perbaikan. Silakan coba lagi nanti.",
-                    sources=[],
-                    confidence=0.0,
-                    latency_ms=round((time.time() - start_time) * 1000, 2),
-                    metadata={
-                        "status": "initialization_failed",
-                        "error_type": type(init_error).__name__
-                    }
-                )
-        
-        # Extract options
         use_query_expansion = request.options.get("use_query_expansion", False)
         use_reranking = request.options.get("use_reranking", False)
         top_k = request.options.get("top_k", 5)

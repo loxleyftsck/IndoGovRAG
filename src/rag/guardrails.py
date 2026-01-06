@@ -29,9 +29,6 @@ class ProductionGuardrails:
     - Legal disclaimer injection
     - Out-of-scope detection
     """
-    
-    
-    # Legal domain indicators
     LEGAL_KEYWORDS = [
         'dasar hukum', 'sanksi', 'pidana', 'perdata', 'peraturan',
         'undang-undang', 'pasal', 'ayat', 'berlaku', 'sah',
@@ -98,12 +95,6 @@ class ProductionGuardrails:
             suggested_clarification=clarification
         )
     
-    def _generate_clarification(self, query: str) -> str:
-        """Generate clarification prompt for ambiguous query"""
-        
-        
-        # Generic clarification
-        return "Untuk memberikan jawaban yang sesuai, mohon perjelas pertanyaan Anda dengan menyebutkan jenis dokumen atau layanan kependudukan yang dimaksud."
     
     def add_legal_disclaimer(self, answer: str, query_classification: QueryClassification) -> str:
         """
