@@ -12,7 +12,8 @@ from datetime import datetime
 import argparse
 import sys
 
-API_ENDPOINT = "http://localhost:8000/api/query"
+API_ENDPOINT = "http://localhost:8000/query"  # Fixed: was /api/query
+HEALTH_ENDPOINT = "http://localhost:8000/health"
 TIMEOUT = 30
 
 def send_query(query_text, run_id):
@@ -21,7 +22,7 @@ def send_query(query_text, run_id):
     try:
         response = requests.post(
             API_ENDPOINT,
-            json={"query": query_text},
+            json={"query": query_text, "options": {}},  # Fixed: added options
             timeout=TIMEOUT,
             headers={"Content-Type": "application/json"}
         )
@@ -87,7 +88,7 @@ def run_load_test(n_queries=50, n_concurrent=5):
     # Check API reachable first
     try:
         test_response = requests.get(
-            "http://localhost:8000/health",
+            HEALTH_ENDPOINT,  # Fixed: use constant
             timeout=5
         )
         print(f"✅ API Health Check: {test_response.status_code}")
