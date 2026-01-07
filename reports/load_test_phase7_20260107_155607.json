@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-01-07T15:56:07.686565",
+  "config": {
+    "n_queries": 10,
+    "n_concurrent": 2,
+    "api_endpoint": "http://localhost:8000/query"
+  },
+  "results": {
+    "total_time_seconds": 12.37,
+    "success_rate": "100.0%",
+    "ok_count": 10,
+    "error_count": 0,
+    "connection_errors": 0,
+    "timeouts": 0,
+    "latency": {
+      "avg": "2.05s",
+      "min": "2.04s",
+      "max": "2.09s",
+      "p50": "2.05s",
+      "p95": "2.09s",
+      "p99": "2.09s"
+    }
+  },
+  "pass_criteria": {
+    "success_rate_target": "\u226595%",
+    "success_rate_actual": "100.0%",
+    "pass": true
+  }
+}
