@@ -54,3 +54,36 @@ groups:
         annotations:
           summary: "Hallucination rate increased 50% in past hour"
           description: "Current rate: {{ $value | humanize }} hallucinations/sec. Check recent query types."
+
+      # ===== TIER 1: METRIC MISSING ALERTS =====
+      # Detect when critical metrics stop reporting (silent failure prevention)
+
+      - alert: FaithfulnessMetricMissing
+        expr: absent(indogovrag_query_quality_score) == 1
+        for: 5m
+        labels:
+          severity: critical
+          component: evaluation
+        annotations:
+          summary: "Faithfulness metric missing for >5 minutes"
+          description: "LLM evaluation stopped reporting. Check: python api/main.py logs and ProductionRAGPipeline sampling."
+
+      - alert: HallucinationMetricMissing
+        expr: absent(indogovrag_quality_below_threshold_total) ==  1
+        for: 5m
+        labels:
+          severity: critical
+          component: evaluation
+        annotations:
+          summary: "Hallucination metric missing for >5 minutes"
+          description: "Guardrail detection stopped. Check: src/rag/guardrails.py and faithfulness judge."
+
+      - alert: LatencyMetricMissing
+        expr: absent(indogovrag_query_latency_seconds) == 1
+        for: 5m
+        labels:
+          severity: warning
+          component: performance
+        annotations:
+          summary: "Query latency metric missing for >5 minutes"
+          description: "Performance tracking stopped. Check API health and metrics exporter."
