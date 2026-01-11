@@ -1,0 +1,89 @@
+groups:
+  - name: quality_monitoring
+    interval: 1h
+    rules:
+      # P0: Faithfulness Drift Detection
+      - alert: FaithfulnessDrift
+        expr: |
+          (
+            avg_over_time(
+              histogram_quantile(0.5, 
+                sum(rate(indogovrag_query_quality_score_bucket[7d])) by (le)
+              )[7d:1h]
+            ) 
+            < 
+            avg_over_time(
+              histogram_quantile(0.5, 
+                sum(rate(indogovrag_query_quality_score_bucket[14d])) by (le)
+              )[14d:1h]
+            ) * 0.9
+          )
+        for: 2h
+        labels:
+          severity: warning
+          component: quality
+        annotations:
+          summary: "Faithfulness score dropped >10% over past 7 days"
+          description: "7-day median faithfulness is {{ $value | humanizePercentage }} (baseline ~0.82, threshold <0.74). Check for query distribution changes or model degradation."
+          runbook_url: "https://github.com/yourorg/indogovrag/wiki/Runbook-Faithfulness-Drift"
+
+      # Additional: Hard threshold breach
+      - alert: FaithfulnessBelowThreshold
+        expr: |
+          histogram_quantile(0.5, 
+            sum(rate(indogovrag_query_quality_score_bucket[1h])) by (le)
+          ) < 0.74
+        for: 30m
+        labels:
+          severity: critical
+          component: quality
+        annotations:
+          summary: "Faithfulness score below production threshold (0.74)"
+          description: "Current median faithfulness: {{ $value | humanizePercentage }}. Immediate investigation required."
+
+      # Hallucination spike detection
+      - alert: HallucinationRateSpike
+        expr: |
+          rate(indogovrag_quality_below_threshold_total{threshold="0.74"}[1h]) 
+          > 
+          rate(indogovrag_quality_below_threshold_total{threshold="0.74"}[24h]) * 1.5
+        for: 15m
+        labels:
+          severity: warning
+          component: quality
+        annotations:
+          summary: "Hallucination rate increased 50% in past hour"
+          description: "Current rate: {{ $value | humanize }} hallucinations/sec. Check recent query types."
+
+      # ===== TIER 1: METRIC MISSING ALERTS =====
+      # Detect when critical metrics stop reporting (silent failure prevention)
+
+      - alert: FaithfulnessMetricMissing
+        expr: absent(indogovrag_query_quality_score) == 1
+        for: 5m
+        labels:
+          severity: critical
+          component: evaluation
+        annotations:
+          summary: "Faithfulness metric missing for >5 minutes"
+          description: "LLM evaluation stopped reporting. Check: python api/main.py logs and ProductionRAGPipeline sampling."
+
+      - alert: HallucinationMetricMissing
+        expr: absent(indogovrag_quality_below_threshold_total) ==  1
+        for: 5m
+        labels:
+          severity: critical
+          component: evaluation
+        annotations:
+          summary: "Hallucination metric missing for >5 minutes"
+          description: "Guardrail detection stopped. Check: src/rag/guardrails.py and faithfulness judge."
+
+      - alert: LatencyMetricMissing
+        expr: absent(indogovrag_query_latency_seconds) == 1
+        for: 5m
+        labels:
+          severity: warning
+          component: performance
+        annotations:
+          summary: "Query latency metric missing for >5 minutes"
+          description: "Performance tracking stopped. Check API health and metrics exporter."

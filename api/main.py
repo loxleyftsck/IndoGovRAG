@@ -171,32 +171,20 @@ async def query_documents(request: QueryRequest):
     start_time = time.time()
     
     try:
-        # Initialize RAG pipeline on first use (lazy loading)
-        if rag_pipeline is None:
-            print("🔧 Initializing RAG pipeline...")
-            try:
-                from src.rag.pipeline import RAGPipeline
-                rag_pipeline = RAGPipeline()
-                print("✅ RAG Pipeline initialized successfully!")
-            except Exception as init_error:
-                print(f"❌ Failed to initialize RAG pipeline: {init_error}")
-                import traceback
-                traceback.print_exc()
-                return QueryResponse(
-                    answer="Maaf, sistem sedang dalam perbaikan. Silakan coba lagi nanti.",
-                    sources=[],
-                    confidence=0.0,
-                    latency_ms=round((time.time() - start_time) * 1000, 2),
-                    metadata={
-                        "status": "initialization_failed",
-                        "error_type": type(init_error).__name__
-                    }
-                )
-        
-        # Extract options
         use_query_expansion = request.options.get("use_query_expansion", False)
         use_reranking = request.options.get("use_reranking", False)
         top_k = request.options.get("top_k", 5)
+        
+        # CRITICAL: Initialize RAG pipeline on first query (lazy loading)
+        if rag_pipeline is None:
+            print("🔄 Initializing RAG pipeline (first query)...")
+            from src.rag.production_pipeline import ProductionRAGPipeline
+            rag_pipeline = ProductionRAGPipeline(
+                ollama_model="llama3.1:8b-instruct-q4_K_M",
+                sampling_rate=0.10,  # 10% evaluation sampling
+                enable_guardrails=True
+            )
+            print("✅ RAG pipeline initialized!")
         
         # Execute RAG query with timeout warning
         print(f"📝 Processing query: {request.query}")
@@ -227,40 +215,6 @@ async def query_documents(request: QueryRequest):
                 }
             )
         
-        # Calculate latency
-        latency_ms = round((time.time() - start_time) * 1000, 2)
-        
-        # Format sources for API response
-        source_list = []
-        if result.get('sources'):
-            for source in result['sources']:
-                doc_id = source.get('doc_id', 'Unknown')
-                doc_type = source.get('doc_type', '')
-                year = source.get('year', '')
-                
-                if doc_type and year:
-                    source_str = f"{doc_id} ({doc_type}, {year})"
-                elif doc_type:
-                    source_str = f"{doc_id} ({doc_type})"
-                else:
-                    source_str = doc_id
-                    
-                source_list.append(source_str)
-        
-        # Return formatted response
-        return QueryResponse(
-            answer=result.get('answer', 'No answer generated'),
-            sources=source_list or ["No sources found"],
-            confidence=result.get('confidence', 0.0),
-            latency_ms=latency_ms,
-            metadata={
-                "chunks_retrieved": len(result.get('retrieved_chunks', [])),
-                "expansion_used": use_query_expansion,
-                "reranking_used": use_reranking,
-                "model_used": result.get('model_used', 'unknown'),
-                "tokens_used": result.get('tokens_used', 0)
-            }
-        )
         
     except Exception as e:
         import traceback
