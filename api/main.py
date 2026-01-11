@@ -175,6 +175,17 @@ async def query_documents(request: QueryRequest):
         use_reranking = request.options.get("use_reranking", False)
         top_k = request.options.get("top_k", 5)
         
+        # CRITICAL: Initialize RAG pipeline on first query (lazy loading)
+        if rag_pipeline is None:
+            print("🔄 Initializing RAG pipeline (first query)...")
+            from src.rag.production_pipeline import ProductionRAGPipeline
+            rag_pipeline = ProductionRAGPipeline(
+                ollama_model="llama3.1:8b-instruct-q4_K_M",
+                sampling_rate=0.10,  # 10% evaluation sampling
+                enable_guardrails=True
+            )
+            print("✅ RAG pipeline initialized!")
+        
         # Execute RAG query with timeout warning
         print(f"📝 Processing query: {request.query}")
         

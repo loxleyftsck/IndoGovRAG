@@ -26,7 +26,7 @@ class OllamaRAGPipeline(RAGPipeline):
     - Structured JSON logging
     """
     
-    def __init__(self, *args, ollama_model: str = "llama3.1:8b", **kwargs):
+    def __init__(self, *args, ollama_model: str = "llama3.1:8b-instruct-q4_K_M", **kwargs):
         """
         Initialize RAG pipeline with Ollama
         

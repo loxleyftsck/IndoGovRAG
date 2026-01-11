@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="IndoGovRAG - AI-Powered Search Engine for Indonesian Government Documents">
+    <title>IndoGovRAG - Document Assistant</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇮🇩</text></svg>">
+</head>
+
+<body>
+    <!-- Background Mesh Gradient -->
+    <div class="bg-mesh"></div>
+
+    <!-- App Container -->
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="header" id="header">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <div class="logo-icon">🇮🇩</div>
+                    <span class="logo-text">IndoGovRAG</span>
+                </a>
+
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <span id="themeIcon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Chat Container -->
+        <main class="chat-container">
+
+            <!-- Messages Area -->
+            <div class="messages-area" id="messagesArea">
+                <!-- Welcome Message -->
+                <div class="message assistant fade-in-up">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            <p><strong>Selamat datang di IndoGovRAG!</strong></p>
+                            <p>Saya siap membantu Anda menemukan informasi dari dokumen pemerintah Indonesia. Silakan
+                                ajukan pertanyaan Anda tentang:</p>
+                            <ul style="margin: var(--space-sm) 0; padding-left: var(--space-lg);">
+                                <li>Persyaratan KTP, KK, Akta Kelahiran</li>
+                                <li>Prosedur NPWP dan perpajakan</li>
+                                <li>Peraturan pemerintah (UU, PP, Perpres)</li>
+                                <li>Dan banyak lagi...</li>
+                            </ul>
+                        </div>
+                        <div class="message-meta">
+                            <span class="message-time" id="welcomeTime"></span>
+                            <span class="message-badge">System</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <form class="input-container" id="chatForm">
+                    <div class="input-wrapper">
+                        <textarea class="message-input" id="messageInput"
+                            placeholder="Tanyakan tentang dokumen pemerintah..." rows="1" maxlength="500"></textarea>
+                    </div>
+                    <button type="submit" class="btn-send" id="sendButton" aria-label="Send message">
+                        <span>📤</span>
+                    </button>
+                </form>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+    <script src="js/animations.js"></script>
+</body>
+
+</html>

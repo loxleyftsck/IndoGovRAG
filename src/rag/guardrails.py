@@ -35,6 +35,15 @@ class ProductionGuardrails:
         'hukum', 'legal', 'yuridis', 'perda', 'perpres'
     ]
     
+    # Ambiguous query patterns
+    AMBIGUOUS_PATTERNS = [
+        r'\b(berapa lama|kapan|waktu)\b.*\?$',  # Time-related without context
+        r'^\s*(itu|ini)\s*\?$',  # Just "itu?" or "ini?"
+        r'\b(bagaimana|gimana)\s*\?$',  # Just "how?" without subject
+        r'\b(syarat|persyaratan)\s*\?$',  # "requirements?" without specifying what for
+        r'\b(dokumen|berkas)\s*(apa|mana)\s*\?$',  # "what documents?" too vague
+    ]
+    
     # Out-of-scope indicators
     OUT_OF_SCOPE_PATTERNS = [
         r'\b(harga|biaya|tarif|ongkos)\b',  # Pricing
@@ -94,6 +103,19 @@ class ProductionGuardrails:
             confidence=confidence,
             suggested_clarification=clarification
         )
+    
+    def _generate_clarification(self, query_lower: str) -> str:
+        """Generate clarification suggestion for ambiguous query"""
+        if 'berapa lama' in query_lower or 'kapan' in query_lower:
+            return "Mohon sebutkan dokumen atau layanan yang dimaksud (contoh: 'Berapa lama proses pembuatan KTP?')"
+        elif query_lower.strip() in ['itu?', 'ini?']:
+            return "Mohon sebutkan secara spesifik dokumen atau informasi yang dimaksud"
+        elif 'bagaimana' in query_lower or 'gimana' in query_lower:
+            return "Mohon lengkapi pertanyaan dengan dokumen atau proses yang ingin ditanyakan"
+        elif 'syarat' in query_lower or 'persyaratan' in query_lower:
+            return "Mohon sebutkan dokumen atau layanan yang dimaksud (contoh: 'Apa persyaratan membuat paspor?')"
+        else:
+            return "Mohon perjelas pertanyaan Anda untuk mendapatkan jawaban yang lebih akurat"
     
     
     def add_legal_disclaimer(self, answer: str, query_classification: QueryClassification) -> str:

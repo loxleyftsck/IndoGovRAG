@@ -33,7 +33,7 @@ class ProductionRAGPipeline:
     
     def __init__(
         self,
-        ollama_model: str = "llama3.1:8b",
+        ollama_model: str = "llama3.1:8b-instruct-q4_K_M",  # Quantized (4.9GB vs 8GB)
         sampling_rate: float = 0.10,  # 10% sampled for evaluation
         enable_guardrails: bool = True
     ):
