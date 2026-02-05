@@ -1,89 +1,96 @@
+# Prometheus Alert Rules for Quality Drift
+
 groups:
-  - name: quality_monitoring
-    interval: 1h
+  - name: rag_quality_alerts
+    interval: 5m
     rules:
-      # P0: Faithfulness Drift Detection
-      - alert: FaithfulnessDrift
+      # Faithfulness Score Degradation
+      - alert: FaithfulnessScoreDrop
         expr: |
           (
-            avg_over_time(
-              histogram_quantile(0.5, 
-                sum(rate(indogovrag_query_quality_score_bucket[7d])) by (le)
-              )[7d:1h]
-            ) 
-            < 
-            avg_over_time(
-              histogram_quantile(0.5, 
-                sum(rate(indogovrag_query_quality_score_bucket[14d])) by (le)
-              )[14d:1h]
-            ) * 0.9
-          )
-        for: 2h
-        labels:
-          severity: warning
-          component: quality
-        annotations:
-          summary: "Faithfulness score dropped >10% over past 7 days"
-          description: "7-day median faithfulness is {{ $value | humanizePercentage }} (baseline ~0.82, threshold <0.74). Check for query distribution changes or model degradation."
-          runbook_url: "https://github.com/yourorg/indogovrag/wiki/Runbook-Faithfulness-Drift"
-
-      # Additional: Hard threshold breach
-      - alert: FaithfulnessBelowThreshold
-        expr: |
-          histogram_quantile(0.5, 
-            sum(rate(indogovrag_query_quality_score_bucket[1h])) by (le)
-          ) < 0.74
-        for: 30m
-        labels:
-          severity: critical
-          component: quality
-        annotations:
-          summary: "Faithfulness score below production threshold (0.74)"
-          description: "Current median faithfulness: {{ $value | humanizePercentage }}. Immediate investigation required."
-
-      # Hallucination spike detection
-      - alert: HallucinationRateSpike
-        expr: |
-          rate(indogovrag_quality_below_threshold_total{threshold="0.74"}[1h]) 
-          > 
-          rate(indogovrag_quality_below_threshold_total{threshold="0.74"}[24h]) * 1.5
+            avg_over_time(rag_faithfulness_score[1h])
+            /
+            avg_over_time(rag_faithfulness_score[7d] offset 1h)
+          ) < 0.85
         for: 15m
         labels:
           severity: warning
-          component: quality
+          component: rag_generation
         annotations:
-          summary: "Hallucination rate increased 50% in past hour"
-          description: "Current rate: {{ $value | humanize }} hallucinations/sec. Check recent query types."
-
-      # ===== TIER 1: METRIC MISSING ALERTS =====
-      # Detect when critical metrics stop reporting (silent failure prevention)
-
-      - alert: FaithfulnessMetricMissing
-        expr: absent(indogovrag_query_quality_score) == 1
-        for: 5m
+          summary: "RAG faithfulness score dropped by >15%"
+          description: "Current 1h avg: {{ $value | humanizePercentage }}"
+          
+      - alert: FaithfulnessScoreCritical
+        expr: |
+          (
+            avg_over_time(rag_faithfulness_score[1h])
+            /
+            avg_over_time(rag_faithfulness_score[7d] offset 1h)
+          ) < 0.70
+        for: 10m
         labels:
           severity: critical
-          component: evaluation
+          component: rag_generation
         annotations:
-          summary: "Faithfulness metric missing for >5 minutes"
-          description: "LLM evaluation stopped reporting. Check: python api/main.py logs and ProductionRAGPipeline sampling."
-
-      - alert: HallucinationMetricMissing
-        expr: absent(indogovrag_quality_below_threshold_total) ==  1
-        for: 5m
+          summary: "RAG faithfulness score dropped by >30% - CRITICAL"
+          description: "Current 1h avg: {{ $value | humanizePercentage }}"
+      
+      # Latency Spike
+      - alert: LatencySpike
+        expr: |
+          (
+            avg_over_time(rag_query_latency_ms[1h])
+            /
+            avg_over_time(rag_query_latency_ms[7d] offset 1h)
+          ) > 1.5
+        for: 10m
+        labels:
+          severity: warning
+          component: rag_performance
+        annotations:
+          summary: "RAG latency increased by >50%"
+          description: "Current avg: {{ $value }}ms"
+      
+      # Retrieval Quality Drop
+      - alert: RetrievalQualityDrop
+        expr: |
+          avg_over_time(rag_retrieval_confidence[1h]) < 0.6
+        for: 15m
+        labels:
+          severity: warning
+          component: rag_retrieval
+        annotations:
+          summary: "Retrieval confidence below 0.6"
+          description: "May indicate vector store degradation"
+      
+      # Hallucination Rate Spike
+      - alert: HallucinationRateHigh
+        expr: |
+          (
+            sum(rate(rag_hallucination_total[1h]))
+            /
+            sum(rate(rag_queries_total[1h]))
+          ) > 0.1
+        for: 10m
         labels:
           severity: critical
-          component: evaluation
+          component: rag_generation
         annotations:
-          summary: "Hallucination metric missing for >5 minutes"
-          description: "Guardrail detection stopped. Check: src/rag/guardrails.py and faithfulness judge."
-
-      - alert: LatencyMetricMissing
-        expr: absent(indogovrag_query_latency_seconds) == 1
+          summary: "Hallucination rate >10%"
+          description: "{{ $value | humanizePercentage }} of queries contain hallucinations"
+      
+      # Error Rate
+      - alert: RAGErrorRateHigh
+        expr: |
+          (
+            sum(rate(rag_errors_total[5m]))
+            /
+            sum(rate(rag_queries_total[5m]))
+          ) > 0.05
         for: 5m
         labels:
           severity: warning
-          component: performance
+          component: rag_system
         annotations:
-          summary: "Query latency metric missing for >5 minutes"
-          description: "Performance tracking stopped. Check API health and metrics exporter."
+          summary: "RAG error rate >5%"
+          description: "{{ $value | humanizePercentage }} queries failing"
