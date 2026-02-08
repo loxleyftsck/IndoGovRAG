@@ -149,13 +149,16 @@ async def health_check():
 @app.get("/metrics")
 async def get_metrics():
     """Get API metrics."""
-    # TODO: Implement metrics collection
-    return {
-        "total_queries": 0,
-        "avg_latency_ms": 0,
-        "success_rate": 1.0,
-        "cache_hit_rate": 0.0
-    }
+    from src.mlops.api_metrics import get_metrics_collector
+    
+    metrics_collector = get_metrics_collector()
+    metrics = metrics_collector.get_metrics()
+    
+    # Also persist metrics to disk
+    metrics_collector.persist_metrics()
+    
+    return metrics
+
 
 
 @app.post("/query", response_model=QueryResponse)
@@ -200,15 +203,55 @@ async def query_documents(request: QueryRequest):
                 filter_metadata=None,
                 include_sources=True
             )
+            
+            # Record successful query metrics
+            from src.mlops.api_metrics import get_metrics_collector
+            metrics_collector = get_metrics_collector()
+            
+            latency_ms = (time.time() - start_time) * 1000
+            input_tokens = result.get("metadata", {}).get("input_tokens", 0)
+            output_tokens = result.get("metadata", {}).get("output_tokens", 0)
+            compression_ratio = result.get("metadata", {}).get("compression_ratio", 1.0)
+            cache_hit = result.get("metadata", {}).get("cache_hit", False)
+            
+            metrics_collector.record_query(
+                success=True,
+                latency_ms=latency_ms,
+                cache_hit=cache_hit,
+                input_tokens=input_tokens,
+                output_tokens=output_tokens,
+                compression_ratio=compression_ratio
+            )
+            
+            # Return successful response
+            return QueryResponse(
+                answer=result.get("answer", ""),
+                sources=result.get("sources", []),
+                confidence=result.get("confidence", 0.0),
+                latency_ms=round(latency_ms, 2),
+                metadata=result.get("metadata", {})
+            )
+            
         except Exception as query_error:
             print(f"❌ Query execution failed: {query_error}")
             import traceback
             traceback.print_exc()
+            
+            # Record failed query metrics
+            from src.mlops.api_metrics import get_metrics_collector
+            metrics_collector = get_metrics_collector()
+            latency_ms = (time.time() - start_time) * 1000
+            metrics_collector.record_query(
+                success=False,
+                latency_ms=latency_ms,
+                cache_hit=False
+            )
+            
             return QueryResponse(
                 answer="Maaf, query Anda tidak dapat diproses. Silakan coba dengan pertanyaan yang lebih sederhana.",
                 sources=[],
                 confidence=0.0,
-                latency_ms=round((time.time() - start_time) * 1000, 2),
+                latency_ms=round(latency_ms, 2),
                 metadata={
                     "status": "query_failed",
                     "error_type": type(query_error).__name__
@@ -220,6 +263,16 @@ async def query_documents(request: QueryRequest):
         import traceback
         error_trace = traceback.format_exc()
         print(f"❌ Query error: {error_trace}")
+        
+        # Record critical failure
+        from src.mlops.api_metrics import get_metrics_collector
+        metrics_collector = get_metrics_collector()
+        latency_ms = (time.time() - start_time) * 1000
+        metrics_collector.record_query(
+            success=False,
+            latency_ms=latency_ms,
+            cache_hit=False
+        )
         
         raise HTTPException(
             status_code=500,

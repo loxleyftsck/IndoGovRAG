@@ -3,7 +3,7 @@ RAG-Specific Metrics Logger
 Custom metrics for retrieval and generation quality
 """
 
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from datetime import datetime
 import numpy as np
 
