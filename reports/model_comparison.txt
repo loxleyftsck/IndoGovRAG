@@ -1,0 +1,17 @@
+IndoGovRAG Model Comparison Results
+================================================================================
+
+Model: llama3.1:8b-instruct-q4_K_M
+  Latency P50: 33069ms
+  Latency P95: 75909ms
+  Latency Mean: 34747ms
+  RAM Mean: 35.2MB
+  Success: 10/10
+
+Model: qwen2.5:7b
+  Latency P50: 18944ms
+  Latency P95: 36756ms
+  Latency Mean: 19388ms
+  RAM Mean: -0.0MB
+  Success: 10/10
+

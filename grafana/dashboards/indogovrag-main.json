@@ -1,0 +1,274 @@
+{
+    "dashboard": {
+        "title": "IndoGovRAG Production Monitoring",
+        "uid": "indogovrag-main",
+        "timezone": "browser",
+        "refresh": "5s",
+        "time": {
+            "from": "now-1h",
+            "to": "now"
+        },
+        "panels": [
+            {
+                "id": 1,
+                "title": "Query Rate (QPS)",
+                "type": "graph",
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 0
+                },
+                "targets": [
+                    {
+                        "expr": "sum(rate(indogovrag_queries_total[5m]))",
+                        "legendFormat": "Total QPS"
+                    },
+                    {
+                        "expr": "sum(rate(indogovrag_queries_total{status='success'}[5m]))",
+                        "legendFormat": "Success QPS"
+                    },
+                    {
+                        "expr": "sum(rate(indogovrag_queries_total{status!='success'}[5m]))",
+                        "legendFormat": "Error QPS"
+                    }
+                ],
+                "yaxes": [
+                    {
+                        "format": "reqps"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "title": "Error Rate (%)",
+                "type": "graph",
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 0
+                },
+                "targets": [
+                    {
+                        "expr": "sum(rate(indogovrag_queries_total{status!='success'}[5m])) / sum(rate(indogovrag_queries_total[5m])) * 100",
+                        "legendFormat": "Error Rate"
+                    }
+                ],
+                "yaxes": [
+                    {
+                        "format": "percent",
+                        "max": 100
+                    }
+                ],
+                "alert": {
+                    "conditions": [
+                        {
+                            "evaluator": {
+                                "params": [
+                                    5
+                                ],
+                                "type": "gt"
+                            },
+                            "query": {
+                                "params": [
+                                    "A",
+                                    "5m",
+                                    "now"
+                                ]
+                            }
+                        }
+                    ],
+                    "name": "High Error Rate"
+                }
+            },
+            {
+                "id": 3,
+                "title": "Latency Percentiles (P50/P95/P99)",
+                "type": "graph",
+                "gridPos": {
+                    "h": 8,
+                    "w": 24,
+                    "x": 0,
+                    "y": 8
+                },
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.50, rate(indogovrag_query_latency_seconds_bucket[5m]))",
+                        "legendFormat": "P50"
+                    },
+                    {
+                        "expr": "histogram_quantile(0.95, rate(indogovrag_query_latency_seconds_bucket[5m]))",
+                        "legendFormat": "P95"
+                    },
+                    {
+                        "expr": "histogram_quantile(0.99, rate(indogovrag_query_latency_seconds_bucket[5m]))",
+                        "legendFormat": "P99"
+                    }
+                ],
+                "yaxes": [
+                    {
+                        "format": "s"
+                    }
+                ],
+                "thresholds": [
+                    {
+                        "value": 30,
+                        "op": "gt",
+                        "colorMode": "warning"
+                    },
+                    {
+                        "value": 60,
+                        "op": "gt",
+                        "colorMode": "critical"
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "title": "Latency Breakdown by Component",
+                "type": "graph",
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 16
+                },
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.95, rate(indogovrag_retrieval_latency_seconds_bucket[5m]))",
+                        "legendFormat": "Retrieval P95"
+                    },
+                    {
+                        "expr": "histogram_quantile(0.95, rate(indogovrag_llm_latency_seconds_bucket[5m]))",
+                        "legendFormat": "LLM P95"
+                    }
+                ],
+                "yaxes": [
+                    {
+                        "format": "s"
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "title": "Query Cost (P95)",
+                "type": "graph",
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 16
+                },
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.95, rate(indogovrag_query_cost_usd_bucket[5m]))",
+                        "legendFormat": "P95 Cost"
+                    },
+                    {
+                        "expr": "histogram_quantile(0.99, rate(indogovrag_query_cost_usd_bucket[5m]))",
+                        "legendFormat": "P99 Cost"
+                    }
+                ],
+                "yaxes": [
+                    {
+                        "format": "currencyUSD"
+                    }
+                ],
+                "thresholds": [
+                    {
+                        "value": 0.05,
+                        "op": "gt",
+                        "colorMode": "warning"
+                    }
+                ]
+            },
+            {
+                "id": 6,
+                "title": "RAGAS Faithfulness Score",
+                "type": "stat",
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 0,
+                    "y": 24
+                },
+                "targets": [
+                    {
+                        "expr": "indogovrag_ragas_faithfulness",
+                        "legendFormat": "Faithfulness"
+                    }
+                ],
+                "thresholds": {
+                    "steps": [
+                        {
+                            "value": 0,
+                            "color": "red"
+                        },
+                        {
+                            "value": 0.70,
+                            "color": "yellow"
+                        },
+                        {
+                            "value": 0.85,
+                            "color": "green"
+                        }
+                    ]
+                }
+            },
+            {
+                "id": 7,
+                "title": "Queries (Last Hour)",
+                "type": "stat",
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 6,
+                    "y": 24
+                },
+                "targets": [
+                    {
+                        "expr": "sum(increase(indogovrag_queries_total[1h]))",
+                        "legendFormat": "Total"
+                    }
+                ]
+            },
+            {
+                "id": 8,
+                "title": "Avg Latency (Last 5min)",
+                "type": "stat",
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 12,
+                    "y": 24
+                },
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.50, rate(indogovrag_query_latency_seconds_bucket[5m]))",
+                        "legendFormat": "P50"
+                    }
+                ],
+                "unit": "s"
+            },
+            {
+                "id": 9,
+                "title": "Total Cost (Last Hour)",
+                "type": "stat",
+                "gridPos": {
+                    "h": 4,
+                    "w": 6,
+                    "x": 18,
+                    "y": 24
+                },
+                "targets": [
+                    {
+                        "expr": "sum(increase(indogovrag_query_cost_usd_sum[1h]))",
+                        "legendFormat": "Cost"
+                    }
+                ],
+                "unit": "currencyUSD"
+            }
+        ]
+    }
+}

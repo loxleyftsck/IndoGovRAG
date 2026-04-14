@@ -1,0 +1,233 @@
+# === IDEAL RAG REQUEST TRACE ===
+# This is the complete trace structure for ONE RAG query
+# Use this as reference when implementing tracing
+
+{
+  # === TRACE METADATA ===
+  "trace_id": "a1b2c3d4e5f6789",
+    "service_name": "indogovrag",
+    "timestamp_start": "2026-01-06T09:20:00.123Z",
+    "timestamp_end": "2026-01-06T09:20:12.573Z",
+    "total_duration_ms": 12450,
+  
+  # === REQUEST CONTEXT (MANDATORY) ===
+  "request": {
+        "request_id": "550e8400-e29b-41d4-a716-446655440000",  # UUID
+    "method": "POST",
+        "endpoint": "/query",
+        "user_context": {
+            "ip_anonymized": "192.168.xxx.xxx",  # Anonymized for privacy
+      "user_agent": "Mozilla/5.0...",
+            "session_id": "anon_session_123"  # Optional: for multi-turn tracking
+        }
+    },
+  
+  # === QUERY DETAILS (MANDATORY) ===
+  "query": {
+        "text": "Apa syarat membuat KTP elektronik?",  # First 100 chars
+    "text_full_hash": "sha256:abc123...",  # Hash of full query for privacy
+    "length_chars": 35,
+        "word_count": 5,
+        "language": "id"  # Indonesian
+    },
+  
+  # === SPANS (Hierarchical breakdown) ===
+  "spans": [
+        {
+            "span_id": "root",
+            "operation": "POST /query",
+            "duration_ms": 12450,
+            "status": "success"
+        },
+        {
+            "span_id": "span-001",
+            "parent_id": "root",
+            "operation": "rag_pipeline.query",
+            "duration_ms": 12400,
+            "attributes": {
+                "pipeline.version": "v1.0",
+                "pipeline.config": "hybrid_alpha_0.5"
+            }
+        },
+        {
+            "span_id": "span-002",
+            "parent_id": "span-001",
+            "operation": "retrieval",
+            "duration_ms": 450,
+            "attributes": {
+                "retrieval.method": "hybrid",  # MANDATORY
+        "retrieval.alpha": 0.5,
+                "retrieval.top_k": 5,
+                "retrieval.num_results": 5,  # MANDATORY
+        
+        # MANDATORY: Retrieved document IDs
+        "retrieval.doc_ids": [
+                    "perpres_26_2009",
+                    "uu_24_2013",
+                    "peraturan_ktp_001",
+                    "panduan_ektp_002",
+                    "syarat_ktp_003"
+                ],
+        
+        # MANDATORY: Retrieval scores
+        "retrieval.scores": [
+                    0.89,
+                    0.78,
+                    0.65,
+                    0.54,
+                    0.48
+                ],
+                "retrieval.max_score": 0.89,
+                "retrieval.min_score": 0.48,
+                "retrieval.avg_score": 0.668,
+        
+        # Vector DB details
+        "vector_db.collection": "indonesian_gov_docs",
+                "vector_db.total_chunks": 53,
+                "vector_db.embedding_model": "multilingual-e5-base-v1.0"
+            }
+        },
+        {
+            "span_id": "span-003",
+            "parent_id": "span-002",
+            "operation": "reranking",  # If re-ranker used
+      "duration_ms": 120,
+            "attributes": {
+                "reranker.model": "cross-encoder-ms-marco",
+                "reranker.input_count": 5,
+                "reranker.output_count": 3,
+        
+        # MANDATORY: Reranker scores (after reranking)
+        "reranker.scores": [
+                    0.95,
+                    0.87,
+                    0.72
+                ],
+                "reranker.score_delta": [
+                    0.06,
+                    0.09,
+                    0.07
+                ],  # Improvement from retrieval
+        
+        # Final doc IDs after reranking
+        "reranker.final_doc_ids": [
+                    "perpres_26_2009",
+                    "uu_24_2013",
+                    "peraturan_ktp_001"
+                ]
+            }
+        },
+        {
+            "span_id": "span-004",
+            "parent_id": "span-001",
+            "operation": "llm_generation",
+            "duration_ms": 11800,
+            "attributes": {
+                "llm.provider": "gemini",
+                "llm.model": "gemini-flash",  # MANDATORY
+        "llm.model_version": "1.5",
+        
+        # Token usage (MANDATORY)
+        "llm.input_tokens": 1024,
+                "llm.output_tokens": 256,
+                "llm.total_tokens": 1280,
+        
+        # Generation params
+        "llm.temperature": 0.7,
+                "llm.max_tokens": 512,
+                "llm.top_p": 0.95,
+        
+        # Prompt details
+        "llm.prompt_version": "v2.1",
+                "llm.system_prompt_hash": "sha256:def456...",
+        
+        # Cost (MANDATORY)
+        "llm.cost_usd": 0.000192,  # (1280 tokens / 1000) * $0.00015
+        "llm.pricing_model": "gemini_flash_jan2026"
+            }
+        }
+    ],
+  
+  # === RESPONSE DETAILS (MANDATORY) ===
+  "response": {
+        "answer_preview": "Syarat membuat KTP elektronik: (1) KTP lama...",  # First 100 chars
+    "answer_length_chars": 256,
+        "answer_word_count": 45,
+        "answer_hash": "sha256:xyz789...",  # Full answer hash
+    
+    # Sources cited
+    "sources_count": 3,
+        "sources": [
+            {
+                "doc_id": "perpres_26_2009",
+                "doc_type": "Peraturan Presiden",
+                "year": "2009",
+                "relevance_score": 0.95
+            },
+            {
+                "doc_id": "uu_24_2013",
+                "doc_type": "Undang-Undang",
+                "year": "2013",
+                "relevance_score": 0.87
+            },
+            {
+                "doc_id": "peraturan_ktp_001",
+                "doc_type": "Peraturan",
+                "year": "2020",
+                "relevance_score": 0.72
+            }
+        ],
+    
+    # Quality metrics
+    "confidence": 0.87,  # Average retrieval confidence
+    "status": "success"
+    },
+  
+  # === PERFORMANCE BREAKDOWN (MANDATORY) ===
+  "performance": {
+        "latency_total_ms": 12450,
+        "latency_breakdown": {
+            "retrieval_ms": 450,
+            "reranking_ms": 120,
+            "llm_generation_ms": 11800,
+            "overhead_ms": 80  # Request processing, serialization
+        },
+        "latency_percentile": {
+            "vs_p50": 2.49,  # 2.49x slower than p50 (5s)
+      "vs_p95": 0.42,  # 0.42x of p95 (30s)
+      "vs_p99": 0.21   # 0.21x of p99 (60s)
+        }
+    },
+  
+  # === COST BREAKDOWN ===
+  "cost": {
+        "total_usd": 0.000192,
+        "breakdown": {
+            "embedding_usd": 0.0,      # Cached embeddings
+      "retrieval_usd": 0.0,      # Local vector DB
+      "reranking_usd": 0.0,      # Local model
+      "llm_usd": 0.000192        # Gemini Flash
+        },
+        "cost_per_token": 0.00015,
+        "monthly_projection_usd": 5.76  # If 1K queries/day
+    },
+  
+  # === VERSIONS (MANDATORY for reproducibility) ===
+  "versions": {
+        "system": "1.0.0-beta",
+        "prompt_template": "v2.1",
+        "embedding_model": "multilingual-e5-base-v1.0",
+        "chunking_strategy": "recursive-512-v1.0",
+        "retrieval_config": "hybrid-alpha-0.5-v1.0",
+        "reranker_model": "cross-encoder-v1.0",
+        "llm_model": "gemini-flash-1.5"
+    },
+  
+  # === METADATA ===
+  "metadata": {
+        "environment": "production",
+        "region": "asia-southeast1",
+        "pod_id": "indogovrag-pod-abc123",
+        "deployment_version": "release-2026-01-06"
+    }
+}

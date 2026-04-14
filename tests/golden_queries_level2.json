@@ -1,0 +1,178 @@
+{
+    "queries": [
+        {
+            "id": "fuzzy-001",
+            "query": "Kalau NIK belum update tapi mau daftar BPJS gimana?",
+            "category": "fuzzy_ambiguous",
+            "complexity": "high",
+            "expected_behavior": "request_clarification",
+            "notes": "Ambiguous - butuh klarifikasi tentang 'update' apa, BPJS jenis apa"
+        },
+        {
+            "id": "fuzzy-002",
+            "query": "KTP hilang, bisa langsung bikin yang baru atau harus lapor dulu?",
+            "category": "fuzzy_ambiguous",
+            "complexity": "medium",
+            "expected_context_keywords": [
+                "kehilangan",
+                "prosedur",
+                "laporan"
+            ],
+            "notes": "Pertanyaan umum tapi konteks bisa jelas dari dokumen"
+        },
+        {
+            "id": "fuzzy-003",
+            "query": "Berapa lama waktu yang dibutuhkan?",
+            "category": "fuzzy_ambiguous",
+            "complexity": "high",
+            "expected_behavior": "request_clarification",
+            "notes": "Sangat ambigu - untuk proses apa tidak disebutkan"
+        },
+        {
+            "id": "multi-001",
+            "query": "Kalau pindah alamat, dokumen apa saja yang harus diupdate dan bagaimana urutannya?",
+            "category": "multi_document",
+            "complexity": "high",
+            "expected_context_keywords": [
+                "pindah",
+                "alamat",
+                "KTP",
+                "KK",
+                "prosedur"
+            ],
+            "notes": "Butuh info dari multiple dokumen (KTP, KK, prosedur pindah)"
+        },
+        {
+            "id": "multi-002",
+            "query": "Apa sanksi jika tidak memiliki KTP elektronik setelah batas waktu yang ditentukan?",
+            "category": "multi_document",
+            "complexity": "medium",
+            "expected_context_keywords": [
+                "sanksi",
+                "KTP",
+                "elektronik",
+                "batas"
+            ],
+            "notes": "Cross-reference sanksi + aturan KTP-el"
+        },
+        {
+            "id": "multi-003",
+            "query": "Bagaimana proses lengkap dari kelahiran bayi sampai mendapat NIK dan KK?",
+            "category": "multi_document",
+            "complexity": "high",
+            "expected_context_keywords": [
+                "akta",
+                "kelahiran",
+                "NIK",
+                "KK",
+                "prosedur"
+            ],
+            "notes": "Multi-step process across different documents"
+        },
+        {
+            "id": "cross-001",
+            "query": "Apakah bisa pakai KTP sementara untuk pengurusan pajak kendaraan?",
+            "category": "cross_domain",
+            "complexity": "high",
+            "expected_response": "partial_information",
+            "notes": "Mix admin identity + tax domain (may be out of scope)"
+        },
+        {
+            "id": "cross-002",
+            "query": "Dokumen kependudukan apa yang diperlukan untuk mengurus paspor?",
+            "category": "cross_domain",
+            "complexity": "medium",
+            "expected_context_keywords": [
+                "kependudukan",
+                "KTP",
+                "KK"
+            ],
+            "notes": "Cross-domain but core docs should be covered"
+        },
+        {
+            "id": "cross-003",
+            "query": "Bagaimana hubungan antara NIK dengan nomor NPWP?",
+            "category": "cross_domain",
+            "complexity": "high",
+            "expected_response": "partial_or_none",
+            "notes": "Mix identity + tax system (likely out of scope)"
+        },
+        {
+            "id": "adv-001",
+            "query": "Berapa biaya pengurusan KTP elektronik?",
+            "category": "adversarial",
+            "complexity": "medium",
+            "expected_response": "no_information_or_general",
+            "notes": "Seems relevant but specific pricing may not be in docs"
+        },
+        {
+            "id": "adv-002",
+            "query": "Di mana alamat kantor Dukcapil terdekat?",
+            "category": "adversarial",
+            "complexity": "high",
+            "expected_response": "no_information",
+            "notes": "Location info - definitely out of scope"
+        },
+        {
+            "id": "adv-003",
+            "query": "Siapa Menteri Dalam Negeri Indonesia saat ini?",
+            "category": "adversarial",
+            "complexity": "high",
+            "expected_response": "no_information",
+            "notes": "Political/current events - out of scope"
+        },
+        {
+            "id": "adv-004",
+            "query": "Bagaimana cara menghubungi call center Dukcapil?",
+            "category": "adversarial",
+            "complexity": "medium",
+            "expected_response": "no_information",
+            "notes": "Contact info - likely not in policy docs"
+        },
+        {
+            "id": "legal-001",
+            "query": "Apa dasar hukum diterbitkannya KTP elektronik dan apa sanksi pidananya jika memalsukan?",
+            "category": "multi_document_legal",
+            "complexity": "high",
+            "expected_context_keywords": [
+                "dasar",
+                "hukum",
+                "peraturan",
+                "sanksi",
+                "pidana"
+            ],
+            "notes": "Legal basis + criminal sanctions (high precision needed)"
+        },
+        {
+            "id": "legal-002",
+            "query": "Apakah KTP elektronik yang rusak secara fisik masih berlaku secara hukum?",
+            "category": "fuzzy_legal",
+            "complexity": "high",
+            "expected_behavior": "careful_answer",
+            "notes": "Legal interpretation - needs precise context"
+        }
+    ],
+    "metadata": {
+        "total_queries": 15,
+        "level": 2,
+        "categories": {
+            "fuzzy_ambiguous": 3,
+            "multi_document": 3,
+            "cross_domain": 3,
+            "adversarial": 4,
+            "legal": 2
+        },
+        "complexity_distribution": {
+            "high": 11,
+            "medium": 4
+        },
+        "created": "2026-01-06",
+        "purpose": "Robustness and edge case testing for Ollama RAG - fuzzy queries, multi-doc, cross-domain, adversarial",
+        "risk_areas": [
+            "Hallucination increase on ambiguous queries",
+            "Over-confident answers on out-of-scope",
+            "Incorrect multi-doc synthesis",
+            "Legal precision failures"
+        ]
+    }
+}

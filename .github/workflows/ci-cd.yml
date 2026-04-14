@@ -1,0 +1,182 @@
+name: IndoGovRAG CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, feature/* ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Daily drift detection at 00:00 UTC
+    - cron: '0 0 * * *'
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install -r requirements-mlops.txt
+          pip install pytest pytest-cov
+      
+      - name: Run unit tests
+        run: |
+          pytest tests/test_data_pipeline.py -v --cov=src --cov-report=xml
+      
+      - name: Run MLOps tests
+        run: |
+          pytest tests/test_mlops.py -v --cov-append --cov=src/mlops --cov-report=xml
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-indogovrag
+
+  e2e-test:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    needs: test
+    
+    services:
+      ollama:
+        image: ollama/ollama:latest
+        ports:
+          - 11434:11434
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Pull Ollama model
+        run: |
+          docker exec ollama ollama pull llama3.1:8b-instruct-q4_K_M
+      
+      - name: Start API server
+        run: |
+          python api/main.py &
+          sleep 10
+      
+      - name: Run E2E tests
+        run: |
+          python scripts/test_e2e.py
+        env:
+          OLLAMA_HOST: localhost:11434
+
+  drift-detection:
+    name: Daily Drift Detection
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-mlops.txt
+      
+      - name: Run drift detection
+        run: |
+          python -c "
+          from src.monitoring.drift_detector import get_drift_detector
+          detector = get_drift_detector()
+          detector.load_history('drift_history.json')
+          report = detector.detect_drift()
+          print(report)
+          if report.get('drifts_detected', 0) > 0:
+            exit(1)  # Fail if drift detected
+          "
+      
+      - name: Notify on drift
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Data Drift Detected',
+              body: 'Automated drift detection found quality degradation. Check logs for details.',
+              labels: ['drift', 'monitoring']
+            })
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [test, e2e-test]
+    if: github.ref == 'refs/heads/develop'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build Docker image
+        run: |
+          docker build -t indogovrag:staging .
+      
+      - name: Deploy to staging
+        run: |
+          echo "Deploy to staging environment"
+          # Add actual deployment commands here
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [test, e2e-test]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build Docker image
+        run: |
+          docker build -t indogovrag:${{ github.sha }} .
+          docker tag indogovrag:${{ github.sha }} indogovrag:latest
+      
+      - name: Deploy to production
+        run: |
+          echo "Deploy to production environment"
+          # Add actual deployment commands (e.g., kubectl, terraform)
+      
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+          body: |
+            Automated production deployment
+            - Tests passed: ✅
+            - E2E validated: ✅
+            - Commit: ${{ github.sha }}

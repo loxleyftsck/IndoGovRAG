@@ -1,0 +1,125 @@
+{
+    "queries": [
+        {
+            "id": "ktpe-001",
+            "query": "Apa itu KTP elektronik?",
+            "expected_context_keywords": [
+                "identitas",
+                "elektronik",
+                "chip",
+                "KTP"
+            ],
+            "category": "definition"
+        },
+        {
+            "id": "ktpe-002",
+            "query": "Apa fungsi utama KTP elektronik?",
+            "expected_context_keywords": [
+                "fungsi",
+                "identitas",
+                "pelayanan"
+            ],
+            "category": "definition"
+        },
+        {
+            "id": "kk-001",
+            "query": "Bagaimana cara membuat Kartu Keluarga?",
+            "expected_context_keywords": [
+                "keluarga",
+                "prosedur",
+                "dokumen",
+                "KK"
+            ],
+            "category": "procedure"
+        },
+        {
+            "id": "kk-002",
+            "query": "Siapa saja yang harus terdaftar di Kartu Keluarga?",
+            "expected_context_keywords": [
+                "anggota",
+                "keluarga",
+                "kepala"
+            ],
+            "category": "definition"
+        },
+        {
+            "id": "akta-001",
+            "query": "Apa persyaratan membuat akta kelahiran?",
+            "expected_context_keywords": [
+                "akta",
+                "kelahiran",
+                "persyaratan",
+                "dokumen"
+            ],
+            "category": "procedure"
+        },
+        {
+            "id": "dukcapil-001",
+            "query": "Apa itu Dinas Kependudukan dan Pencatatan Sipil?",
+            "expected_context_keywords": [
+                "dukcapil",
+                "kependudukan",
+                "pencatatan"
+            ],
+            "category": "definition"
+        },
+        {
+            "id": "nik-001",
+            "query": "Apa itu Nomor Induk Kependudukan (NIK)?",
+            "expected_context_keywords": [
+                "NIK",
+                "nomor",
+                "identitas",
+                "unik"
+            ],
+            "category": "definition"
+        },
+        {
+            "id": "complex-001",
+            "query": "Bagaimana prosedur lengkap untuk mendapatkan KTP elektronik pertama kali?",
+            "expected_context_keywords": [
+                "prosedur",
+                "KTP",
+                "elektronik",
+                "persyaratan"
+            ],
+            "category": "procedure_complex"
+        },
+        {
+            "id": "out-001",
+            "query": "Siapa presiden Indonesia saat ini?",
+            "expected_response": "no_information",
+            "category": "out_of_domain"
+        },
+        {
+            "id": "out-002",
+            "query": "Bagaimana cara memasak nasi goreng?",
+            "expected_response": "no_information",
+            "category": "out_of_domain"
+        },
+        {
+            "id": "edge-001",
+            "query": "",
+            "expected_response": "error",
+            "category": "edge_case"
+        },
+        {
+            "id": "edge-002",
+            "query": "a",
+            "expected_response": "no_information",
+            "category": "edge_case"
+        }
+    ],
+    "metadata": {
+        "total_queries": 12,
+        "categories": {
+            "definition": 5,
+            "procedure": 2,
+            "procedure_complex": 1,
+            "out_of_domain": 2,
+            "edge_case": 2
+        },
+        "created": "2026-01-06",
+        "purpose": "Regression testing and quality evaluation for Ollama RAG"
+    }
+}

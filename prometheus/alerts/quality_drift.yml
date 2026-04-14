@@ -1,0 +1,96 @@
+# Prometheus Alert Rules for Quality Drift
+
+groups:
+  - name: rag_quality_alerts
+    interval: 5m
+    rules:
+      # Faithfulness Score Degradation
+      - alert: FaithfulnessScoreDrop
+        expr: |
+          (
+            avg_over_time(rag_faithfulness_score[1h])
+            /
+            avg_over_time(rag_faithfulness_score[7d] offset 1h)
+          ) < 0.85
+        for: 15m
+        labels:
+          severity: warning
+          component: rag_generation
+        annotations:
+          summary: "RAG faithfulness score dropped by >15%"
+          description: "Current 1h avg: {{ $value | humanizePercentage }}"
+          
+      - alert: FaithfulnessScoreCritical
+        expr: |
+          (
+            avg_over_time(rag_faithfulness_score[1h])
+            /
+            avg_over_time(rag_faithfulness_score[7d] offset 1h)
+          ) < 0.70
+        for: 10m
+        labels:
+          severity: critical
+          component: rag_generation
+        annotations:
+          summary: "RAG faithfulness score dropped by >30% - CRITICAL"
+          description: "Current 1h avg: {{ $value | humanizePercentage }}"
+      
+      # Latency Spike
+      - alert: LatencySpike
+        expr: |
+          (
+            avg_over_time(rag_query_latency_ms[1h])
+            /
+            avg_over_time(rag_query_latency_ms[7d] offset 1h)
+          ) > 1.5
+        for: 10m
+        labels:
+          severity: warning
+          component: rag_performance
+        annotations:
+          summary: "RAG latency increased by >50%"
+          description: "Current avg: {{ $value }}ms"
+      
+      # Retrieval Quality Drop
+      - alert: RetrievalQualityDrop
+        expr: |
+          avg_over_time(rag_retrieval_confidence[1h]) < 0.6
+        for: 15m
+        labels:
+          severity: warning
+          component: rag_retrieval
+        annotations:
+          summary: "Retrieval confidence below 0.6"
+          description: "May indicate vector store degradation"
+      
+      # Hallucination Rate Spike
+      - alert: HallucinationRateHigh
+        expr: |
+          (
+            sum(rate(rag_hallucination_total[1h]))
+            /
+            sum(rate(rag_queries_total[1h]))
+          ) > 0.1
+        for: 10m
+        labels:
+          severity: critical
+          component: rag_generation
+        annotations:
+          summary: "Hallucination rate >10%"
+          description: "{{ $value | humanizePercentage }} of queries contain hallucinations"
+      
+      # Error Rate
+      - alert: RAGErrorRateHigh
+        expr: |
+          (
+            sum(rate(rag_errors_total[5m]))
+            /
+            sum(rate(rag_queries_total[5m]))
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          component: rag_system
+        annotations:
+          summary: "RAG error rate >5%"
+          description: "{{ $value | humanizePercentage }} queries failing"

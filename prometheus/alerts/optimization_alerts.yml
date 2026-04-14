@@ -1,0 +1,23 @@
+groups:
+  - name: optimization_quality
+    rules:
+      - alert: FaithfulnessScoreBelowThreshold
+        expr: histogram_quantile(0.5, sum(rate(indogovrag_query_quality_score_bucket[10m])) by (le)) < 0.74
+        for: 5m
+        annotations:
+          summary: "Median Faithfulness below 0.74"
+          description: "Median sampled faithfulness score has dropped below the quality threshold. Check for potential hallucinations or model degradation."
+
+      - alert: HighCacheFalsePositiveRate
+        expr: rate(indogovrag_cache_false_positives_total[5m]) / (rate(indogovrag_cache_requests_total{result="hit"}[5m]) + 0.001) > 0.05
+        for: 2m
+        annotations:
+          summary: "Cache false positive rate > 5%"
+          description: "Semantic cache is returning too many unrelated results. Consider increasing the similarity threshold."
+
+      - alert: LatencySLOBreach
+        expr: histogram_quantile(0.95, sum(rate(indogovrag_query_latency_seconds_bucket[5m])) by (le)) > 15.0
+        for: 5m
+        annotations:
+          summary: "P95 Latency > 15s"
+          description: "System latency is consistently high. Check LLM response times or retrieval bottleneck."
