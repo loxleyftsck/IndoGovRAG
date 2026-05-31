@@ -34,17 +34,22 @@ jobs:
       
       - name: Lint with ruff
         run: |
-          ruff check . --output-format=github
+          ruff check . --output-format=github --format=github
         continue-on-error: true
-      
+
+      - name: Format check with ruff
+        run: |
+          ruff format --check .
+        continue-on-error: true
+
       - name: Type check with mypy
         run: |
-          mypy src/ --ignore-missing-imports
+          mypy src/ api/ --ignore-missing-imports
         continue-on-error: true
-      
+
       - name: Run tests
         run: |
-          pytest tests/ --cov=src --cov-report=xml --cov-report=term
+          pytest tests/ --cov=src --cov-report=xml --cov-report=term --cov-report=html
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       

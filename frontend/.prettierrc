@@ -1,0 +1,37 @@
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "arrowParens": "avoid",
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "endOfLine": "lf",
+  "jsxSingleQuote": false,
+  "jsxBracketSameLine": false,
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "pluginSearchDirs": ["."],
+  "overrides": [
+    {
+      "files": "*.{js,jsx,ts,tsx,mjs,cjs}",
+      "options": {
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": "*.{json,yml,yaml}",
+      "options": {
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": "*.md",
+      "options": {
+        "tabWidth": 2,
+        "printWidth": 80
+      }
+    }
+  ]
+}

@@ -263,14 +263,14 @@ def demo_query_cache():
     """Demo query cache functionality."""
     
     print("="*70)
-    print(" 🧪 QUERY RESULT CACHE DEMO")
+    print(" [TEST] QUERY RESULT CACHE DEMO")
     print("="*70)
     print()
     
     # Create cache with short TTL for demo
     cache = QueryCache(max_size=10, default_ttl=5)  # 5 second TTL
     
-    print("📝 Simulating query requests:\\n")
+    print("[MSG] Simulating query requests:\\n")
     
     # Simulate queries
     queries = [
@@ -286,10 +286,10 @@ def demo_query_cache():
         cached = cache.get(query, options)
         
         if cached is not None:
-            print(f"{i}. ✅ CACHE HIT: '{query[:35]}...' (options={options})")
+            print(f"{i}. [OK] CACHE HIT: '{query[:35]}...' (options={options})")
             print(f"   → Result: {cached}")
         else:
-            print(f"{i}. ❌ CACHE MISS: '{query[:35]}...' (options={options})")
+            print(f"{i}. [ERR] CACHE MISS: '{query[:35]}...' (options={options})")
             # Simulate RAG result
             result = f"Answer to: {query[:30]}..."
             cache.put(query, result, options)
@@ -301,7 +301,7 @@ def demo_query_cache():
     stats = cache.get_stats()
     
     print("="*70)
-    print(" 📊 CACHE STATISTICS")
+    print(" [STAT] CACHE STATISTICS")
     print("="*70)
     print(f"Cache size: {stats['size']}/{stats['max_size']}")
     print(f"Hits: {stats['hits']}")
@@ -310,7 +310,7 @@ def demo_query_cache():
     print(f"Memory: {stats['memory_mb']:.2f} MB")
     print()
     
-    print("✅ Demo complete!")
+    print("[OK] Demo complete!")
     print()
     print("💡 With 30% hit rate:")
     print("   - 30% fewer LLM calls")

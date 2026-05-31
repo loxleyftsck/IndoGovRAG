@@ -53,7 +53,7 @@ class PIIDetector:
         'nik': r'\b\d{16}\b',  # 16 consecutive digits
         'npwp': r'\b\d{2}\.\d{3}\.\d{3}\.\d{1}-\d{3}\.\d{3}\b',  # XX.XXX.XXX.X-XXX.XXX
         'email': r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
-        'phone': r'(\+62|62|0)[0-9]{2,3}-?[0-9]{3,4}-?[0-9]{3,4}',  # Indonesian phones
+        'phone': r'\b(\+62|62|0)[0-9]{2,3}-?[0-9]{3,4}-?[0-9]{3,4}\b',  # Indonesian phones
     }
     
     # Redaction placeholders
@@ -241,7 +241,7 @@ class PIIDetector:
                 'created': datetime.now().isoformat()
             }, f, indent=2)
         
-        print(f"📊 Audit logs saved to: {filepath}")
+        print(f"[STAT] Audit logs saved to: {filepath}")
     
     def get_statistics(self) -> Dict:
         """Get PII detection statistics across all logs."""
@@ -269,7 +269,7 @@ class PIIDetector:
 def demo_pii_detector():
     """Demo PII detection."""
     
-    print("🧪 PII Detector Demo\n")
+    print("[TEST] PII Detector Demo\n")
     
     # Sample text with PII
     sample_text = """
@@ -295,7 +295,7 @@ def demo_pii_detector():
     # Detect PII
     report = detector.detect(sample_text)
     
-    print("📊 PII Detection Report")
+    print("[STAT] PII Detection Report")
     print("="*60)
     print(f"Text Length: {report.text_length} characters")
     print(f"Total PII Found: {report.total_matches}")
@@ -303,7 +303,7 @@ def demo_pii_detector():
     for pii_type, count in report.matches_by_type.items():
         print(f"  {pii_type.upper()}: {count}")
     
-    print(f"\n🔍 Detected PII:")
+    print(f"\n[SEARCH] Detected PII:")
     print("="*60)
     for match in report.matches:
         print(f"\nType: {match.type.upper()}")
@@ -315,15 +315,15 @@ def demo_pii_detector():
     print(report.redacted_text)
     
     # Validate NIK
-    print(f"\n✅ NIK Validation:")
+    print(f"\n[OK] NIK Validation:")
     print("="*60)
     for match in report.matches:
         if match.type == 'nik':
             is_valid = detector.validate_nik(match.value)
-            print(f"{match.value}: {'✅ Valid' if is_valid else '❌ Invalid'}")
+            print(f"{match.value}: {'[OK] Valid' if is_valid else '[ERR] Invalid'}")
     
     # Statistics
-    print(f"\n📈 Statistics:")
+    print(f"\n[UP] Statistics:")
     print("="*60)
     stats = detector.get_statistics()
     for key, value in stats.items():
@@ -332,7 +332,7 @@ def demo_pii_detector():
     # Save audit log
     detector.save_audit_logs()
     
-    print("\n✅ Demo complete!")
+    print("\n[OK] Demo complete!")
 
 
 if __name__ == "__main__":

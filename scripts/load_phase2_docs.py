@@ -13,7 +13,7 @@ from src.data.chunker import Chunk
 def load_phase2_documents():
     """Load 30 additional comprehensive government documents."""
     
-    print("🔥 PHASE 2 AUTONOMOUS EXPANSION - Loading 30 Documents...")
+    print(" PHASE 2 AUTONOMOUS EXPANSION - Loading 30 Documents...")
     print()
     
     # 30 additional government topics
@@ -53,7 +53,7 @@ def load_phase2_documents():
     ]
     
     # Initialize
-    print("📦 Initializing Vector Store...")
+    print(" Initializing Vector Store...")
     store = VectorStore()
     current = store.collection.count()
     print(f"   Current: {current} chunks")
@@ -82,10 +82,10 @@ def load_phase2_documents():
         chunk_id += 1
     
     # Load
-    print(f"📝 Preparing {len(chunks)} chunks...")
+    print(f"[MSG] Preparing {len(chunks)} chunks...")
     prepared = prepare_chunks_for_indexing(chunks)
     
-    print("💾 Adding to vector store...")
+    print(" Adding to vector store...")
     store.add_chunks(prepared, show_progress=True)
     
     # Results
@@ -93,18 +93,18 @@ def load_phase2_documents():
     added = final - current
     
     print()
-    print(f"✅ Added {added} new documents!")
-    print(f"📊 Total: {final} chunks")
-    print(f"🎯 Target: 50+ chunks")
-    print(f"📈 Progress: {final/50*100:.0f}%")
+    print(f"[OK] Added {added} new documents!")
+    print(f"[STAT] Total: {final} chunks")
+    print(f" Target: 50+ chunks")
+    print(f"[UP] Progress: {final/50*100:.0f}%")
     
     if final >= 50:
         print()
-        print("🎉🎉🎉 TARGET ACHIEVED! 50+ CHUNKS! 🎉🎉🎉")
+        print(" TARGET ACHIEVED! 50+ CHUNKS! ")
         print("     System PRODUCTION READY!")
     
     return final
 
 if __name__ == "__main__":
     total = load_phase2_documents()
-    print(f"\n🚀 Final total: {total} chunks - Phase 2 COMPLETE!")
+    print(f"\n Final total: {total} chunks - Phase 2 COMPLETE!")

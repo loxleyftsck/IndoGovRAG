@@ -1,4 +1,18 @@
-# Python
+# =============================================================================
+# IndoGovRAG - Comprehensive .dockerignore
+# Exclude everything except what's needed for the build
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Version Control
+# -----------------------------------------------------------------------------
+.git/
+.gitignore
+.gitattributes
+
+# -----------------------------------------------------------------------------
+# Virtual Environments & Python
+# -----------------------------------------------------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
@@ -6,63 +20,135 @@ __pycache__/
 .Python
 .venv/
 venv/
-ENV/
 env/
+ENV/
+*.egg-info/
+*.egg
+build/
+dist/
+sdist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+.installed.cfg
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+*.log
+logs/
 
-# IDE
+# -----------------------------------------------------------------------------
+# Environment & Secrets
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+*.env
+config/local.env
+config/*.json
+!config/*.example.json
+
+# -----------------------------------------------------------------------------
+# Data & Model Files (large, not needed in image)
+# -----------------------------------------------------------------------------
+data/documents/
+data/raw/
+data/processed/
+data/vector_db/
+data/evaluations/
+*.pdf
+*.pkl
+*.pth
+*.bin
+*.h5
+*.ckpt
+
+# -----------------------------------------------------------------------------
+# Frontend artifacts
+# -----------------------------------------------------------------------------
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/dist/
+frontend/coverage/
+
+# -----------------------------------------------------------------------------
+# IDE & Editor
+# -----------------------------------------------------------------------------
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Project specific
-data/raw/
-data/processed/
-data/vector_db/
-logs/
-*.log
-
-# Secrets
-.env
-.env.local
-*.key
-*.pem
-
-# Cache
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-
-# Documentation build
+# -----------------------------------------------------------------------------
+# Documentation & Reports
+# -----------------------------------------------------------------------------
+*.md
+!README.md
+LICENSE
+CHANGELOG.md
+CONTRIBUTING.md
+SECURITY.md
 docs/_build/
+*.txt
+reports/
+bandit-report.json
+safety-report.json
+security-audit.txt
 
-# Temporary files
+# -----------------------------------------------------------------------------
+# Jupyter & Notebooks
+# -----------------------------------------------------------------------------
+.ipynb_checkpoints/
+*.ipynb
+
+# -----------------------------------------------------------------------------
+# Experiments & Temp
+# -----------------------------------------------------------------------------
+experiments/exp_*.json
+experiments/results/
 tmp/
 temp/
 *.tmp
+test-results/
+*.tmp
+*.temp
 
-# Git
-.git/
-.gitignore
+# -----------------------------------------------------------------------------
+# CI/CD & GitHub
+# -----------------------------------------------------------------------------
+.github/
 
-# Node modules (if any)
+# -----------------------------------------------------------------------------
+# Scripts (not needed in production image)
+# -----------------------------------------------------------------------------
+scripts/
+scrapers/
+tests/
+*.sh
+*.ps1
+
+# -----------------------------------------------------------------------------
+# Node (root level)
+# -----------------------------------------------------------------------------
 node_modules/
-
-# Build artifacts
-build/
-dist/
-*.egg-info/
-
-# Large files
-*.pdf
-*.zip
-*.tar.gz
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb
+package.json
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

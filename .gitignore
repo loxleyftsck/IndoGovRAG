@@ -1,53 +1,26 @@
-# Virtual environment
-.venv/
-venv/
-env/
-ENV/
-
-# Data files
-data/documents/
-data/vector_db/
-*.pdf
-*.pkl
-*.pth
-
-# Experiments (keep index, ignore individual runs)
-experiments/exp_*.json
-
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+.venv/
+venv/
+ENV/
+env/
 
-# Environment Variables & Secrets
-.env
-.env.local
-.env.*.local
-*.env  
-config/*.env
-config/local.env
+# Data files
+data/raw/
+data/processed/
+data/vector_db/
+logs/
+*.log
+*.pdf
+*.pkl
+*.pth
 
-# Security & Audit Reports
-bandit-report.json
-safety-report.json
-security-audit.txt
+# Experiments
+experiments/exp_*.json
 
 # IDE
 .vscode/
@@ -59,21 +32,64 @@ security-audit.txt
 # OS
 .DS_Store
 Thumbs.db
-desktop.ini
 
-# Logs
-*.log
-logs/
+# Secrets
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+config/local.env
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Testing
+# Cache
 .pytest_cache/
-.coverage
-htmlcov/
+.mypy_cache/
+.ruff_cache/
 
-# Temporary
+# Documentation build
+docs/_build/
+
+# Temporary files
 tmp/
 temp/
 *.tmp
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/
+
+# Node modules (frontend)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Git
+.git/
+.gitignore
+
+# Coverage
+htmlcov/
+.coverage
+coverage.xml
+
+# Node modules (root)
+node_modules/
+
+# Local data & database directories
+data/chromadb/
+data/documents/
+data/government_data/
+data/amendment_history.json
+data/fetched_raw_data.json
+data/gov_sitemap_results.json
+data/other_jdih_results.json
+data/quota_tracking.json
+data/sample_metadata.json
+
+# Local query results
+*_query_result.json

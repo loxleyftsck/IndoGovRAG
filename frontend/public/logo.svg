@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 80" role="img" aria-label="IndoGovRAG Logo">
+  <title>IndoGovRAG — Platform Penelusuran Regulasi &amp; Dokumen Hukum Indonesia</title>
+  <desc>Logo for IndoGovRAG, an Indonesian Government Legal Research Platform</desc>
+
+  <defs>
+    <!-- Premium Midnight Navy gradient for the shield -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#16243a"/>
+      <stop offset="100%" stop-color="#080f1a"/>
+    </linearGradient>
+    <!-- Polished Gold/Bronze gradient for accent elements -->
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d4af65"/>
+      <stop offset="100%" stop-color="#997434"/>
+    </linearGradient>
+    <!-- White gradient for highlights -->
+    <linearGradient id="whiteGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#faf9f6"/>
+    </linearGradient>
+    <!-- Subtle drop shadow -->
+    <filter id="logoShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#080f1a" flood-opacity="0.25"/>
+    </filter>
+    <!-- Clip for the shield shape -->
+    <clipPath id="shieldClip">
+      <path d="M40,8 L64,8 Q64,4 60,4 L44,4 Q40,4 40,8 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!--  SYMBOL MARK — Stylized shield with embedded book  -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <g id="symbol-mark" filter="url(#logoShadow)">
+
+    <!-- Outer shield body -->
+    <path d="M40,8 L64,8 Q64,4 60,4 L44,4 Q40,4 40,8 Z"
+          fill="url(#shieldGrad)"/>
+    <!-- Shield body — main rounded rectangle -->
+    <rect x="40" y="8" width="24" height="58" rx="3" ry="3"
+          fill="url(#shieldGrad)"/>
+
+    <!-- Shield bottom point -->
+    <path d="M40,66 L64,66 L52,76 Z"
+          fill="#080f1a"/>
+
+    <!-- Shield highlight edge (left) -->
+    <rect x="40" y="8" width="3" height="58" rx="1.5"
+          fill="#233854" opacity="0.4"/>
+
+    <!-- Shield highlight edge (top) -->
+    <rect x="40" y="8" width="24" height="3" rx="1.5"
+          fill="#314e70" opacity="0.3"/>
+
+    <!-- ─── GARUDA EAGLE SILHOUETTE (stylized, abstract) ─── -->
+    <!-- Body -->
+    <ellipse cx="52" cy="32" rx="3.5" ry="5"
+             fill="#e3ecf5" opacity="0.95"/>
+    <!-- Head facing right -->
+    <circle cx="55" cy="29" r="2.5"
+            fill="#e3ecf5" opacity="0.95"/>
+    <!-- Beak -->
+    <path d="M57.2,28.8 Q58.5,29.3 57.5,30.2"
+          stroke="#e3ecf5" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+    <!-- Left wing sweep -->
+    <path d="M49,30 Q45,27 43,31 Q45,33 49,32"
+          fill="#e3ecf5" opacity="0.85"/>
+    <!-- Right wing sweep -->
+    <path d="M55,30 Q59,27 61,31 Q59,33 55,32"
+          fill="#e3ecf5" opacity="0.85"/>
+    <!-- Small tail feathers -->
+    <path d="M50,37 Q52,42 52,46 Q52,42 54,37"
+          fill="#e3ecf5" opacity="0.75"/>
+
+    <!-- ─── RAG DATA STREAM (representing Retrieval) ─── -->
+    <!-- Three horizontal data lines flowing from the book, gold colored -->
+    <line x1="40" y1="54" x2="52" y2="54"
+          stroke="#b89047" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="40" y1="58" x2="48" y2="58"
+          stroke="#d4af65" stroke-width="1.4" stroke-linecap="round"/>
+    <line x1="40" y1="62" x2="50" y2="62"
+          stroke="#b89047" stroke-width="1.8" stroke-linecap="round"/>
+
+    <!-- ─── BRONZE STAR ACCENT (top of shield) ─── -->
+    <circle cx="52" cy="8" r="2" fill="url(#amberGrad)"/>
+    <circle cx="52" cy="8" r="1" fill="#faf7f2"/>
+
+    <!-- ─── BORDER LINES ON SHIELD ─── -->
+    <rect x="40" y="8" width="24" height="58" rx="3" ry="3"
+          fill="none" stroke="#233854" stroke-width="0.6" opacity="0.5"/>
+
+    <!-- Bottom shield join -->
+    <line x1="40" y1="66" x2="64" y2="66"
+          stroke="#233854" stroke-width="0.8" opacity="0.4"/>
+  </g>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!--  TEXT BLOCK                                          -->
+  <!-- ═══════════════════════════════════════════════════ -->
+
+  <!-- Primary wordmark: IndoGovRAG -->
+  <text x="72" y="40"
+        font-family="'Segoe UI', 'SF Pro Display', Helvetica Neue, Arial, sans-serif"
+        font-size="26"
+        font-weight="800"
+        letter-spacing="0.5"
+        fill="#080f1a">
+    IndoGov<tspan fill="#b89047">RAG</tspan>
+  </text>
+
+  <!-- Horizontal rule accent -->
+  <rect x="72" y="47" width="165" height="2" rx="1" fill="#b89047" opacity="0.85"/>
+
+  <!-- Subtitle -->
+  <text x="72" y="62"
+        font-family="'Segoe UI', 'SF Pro Text', Helvetica Neue, Arial, sans-serif"
+        font-size="9.5"
+        font-weight="400"
+        letter-spacing="0.3"
+        fill="#6a7582">
+    Platform Penelusuran Regulasi &amp; Dokumen Hukum Indonesia
+  </text>
+
+  <!-- Tagline accent dot -->
+  <circle cx="72" cy="70" r="2" fill="#b89047" opacity="0.6"/>
+  <text x="76" y="73"
+        font-family="'Segoe UI', Arial, sans-serif"
+        font-size="8"
+        font-weight="500"
+        letter-spacing="1.5"
+        fill="#cbd0d8">
+    AI-POWERED LEGAL RESEARCH
+  </text>
+
+</svg>

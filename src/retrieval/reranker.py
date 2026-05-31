@@ -5,10 +5,13 @@ Re-ranks retrieved chunks using LLM relevance scoring.
 """
 
 import os
+import logging
 from typing import List, Dict
 from dataclasses import dataclass
 import google.generativeai as genai
 from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -88,7 +91,7 @@ Jawab dengan satu angka saja."""
             return min(max(score, 0.0), 10.0)  # Clamp to 0-10
             
         except Exception as e:
-            print(f"⚠️  Re-ranking error: {e}")
+            logger.warning(f"[WARN] Re-ranking error: {e}")
             return 5.0  # Neutral score on error
     
     def rerank(
@@ -160,34 +163,33 @@ Jawab dengan satu angka saja."""
 
 def demo_reranking():
     """Demo LLM-based re-ranking."""
-    
-    print("="*70)
-    print(" 🧪 LLM RE-RANKING DEMO")
-    print("="*70)
-    print()
-    
+
+    logger.info("[TEST] LLM RE-RANKING DEMO")
+    logger.info("=" * 70)
+    logger.info("")
+
     reranker = LLMReranker()
-    
+
     if not reranker.available:
-        print("⚠️  GEMINI_API_KEY not set - using neutral scores")
-        print("   Set GEMINI_API_KEY in .env to enable LLM re-ranking")
-        print()
+        logger.warning("[WARN] GEMINI_API_KEY not set - using neutral scores")
+        logger.warning("   Set GEMINI_API_KEY in .env to enable LLM re-ranking")
+        logger.info("")
     else:
-        print(f"✅ Using model: {reranker.model_name}")
-        print()
-    
+        logger.info(f"[OK] Using model: {reranker.model_name}")
+        logger.info("")
+
     # Demo with synthetic results
     from dataclasses import dataclass
-    
+
     @dataclass
     class DemoResult:
         text: str
         chunk_id: str
         score: float
         metadata: Dict
-    
+
     query = "Apa syarat mendaftar BPJS Kesehatan?"
-    
+
     demo_results = [
         DemoResult(
             text="BPJS Kesehatan memberikan jaminan kesehatan untuk seluruh rakyat Indonesia dengan berbagai manfaat.",
@@ -208,33 +210,32 @@ def demo_reranking():
             metadata={}
         ),
     ]
-    
-    print(f"📝 Query: {query}")
-    print()
-    
-    print("**Before Re-ranking (by vector similarity):**")
+
+    logger.info(f"[MSG] Query: {query}")
+    logger.info("")
+
+    logger.info("**Before Re-ranking (by vector similarity):**")
     for i, r in enumerate(demo_results, 1):
-        print(f"{i}. Score: {r.score:.3f}")
-        print(f"   {r.text[:100]}...")
-        print()
-    
-    print("🔄 Re-ranking with LLM...")
-    print()
-    
+        logger.info(f"{i}. Score: {r.score:.3f}")
+        logger.info(f"   {r.text[:100]}...")
+        logger.info("")
+
+    logger.info("[TRY] Re-ranking with LLM...")
+    logger.info("")
+
     reranked = reranker.rerank(query, demo_results, alpha=0.6)
-    
-    print("**After Re-ranking (LLM + vector):**")
+
+    logger.info("**After Re-ranking (LLM + vector):**")
     for i, r in enumerate(reranked, 1):
-        print(f"{i}. Score: {r.final_score:.3f} (LLM: {r.relevance_score:.1f}/10, Original: {r.original_score:.3f})")
-        print(f"   {r.text[:100]}...")
-        print()
-    
-    print("="*70)
-    print("✅ Demo complete!")
-    print()
-    
-    print("💡 Note: Re-ranking helps prioritize chunks that are")
-    print("   semantically close AND contextually relevant to the query.")
+        logger.info(f"{i}. Score: {r.final_score:.3f} (LLM: {r.relevance_score:.1f}/10, Original: {r.original_score:.3f})")
+        logger.info(f"   {r.text[:100]}...")
+        logger.info("")
+
+    logger.info("=" * 70)
+    logger.info("[OK] Demo complete!")
+    logger.info("")
+    logger.info("[NOTE] Re-ranking helps prioritize chunks that are")
+    logger.info("   semantically close AND contextually relevant to the query.")
 
 
 if __name__ == "__main__":

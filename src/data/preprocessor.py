@@ -179,8 +179,11 @@ class IndonesianPreprocessor:
                 if marker in sample_lower
             )
             
-            # Confidence based on markers
-            confidence = min(marker_count / 5.0, 1.0)
+            # Confidence based on markers + language code
+            if language == 'id':
+                confidence = 0.6 + 0.4 * min(marker_count / 5.0, 1.0)
+            else:
+                confidence = min(marker_count / 5.0, 1.0)
             
             return (language, confidence)
         
@@ -247,7 +250,7 @@ class IndonesianPreprocessor:
 def demo_preprocessor():
     """Demo text preprocessing."""
     
-    print("🧪 Indonesian Preprocessor Demo\n")
+    print("[TEST] Indonesian Preprocessor Demo\n")
     
     # Sample Indonesian government text
     sample_text = """
@@ -278,13 +281,13 @@ def demo_preprocessor():
     # Preprocess
     result = preprocessor.preprocess(sample_text)
     
-    print("📊 Language Detection")
+    print("[STAT] Language Detection")
     print("="*60)
     print(f"Detected: {result.language}")
     print(f"Confidence: {result.confidence:.2%}")
     print(f"Is Indonesian: {preprocessor.is_indonesian(sample_text)}")
     
-    print("\n📝 Text Statistics")
+    print("\n[MSG] Text Statistics")
     print("="*60)
     for key, value in result.stats.items():
         print(f"{key}: {value}")
@@ -298,7 +301,7 @@ def demo_preprocessor():
     cleaned = preprocessor.clean_for_embedding(sample_text)
     print(cleaned[:300])
     
-    print("\n✅ Demo complete!")
+    print("\n[OK] Demo complete!")
 
 
 if __name__ == "__main__":

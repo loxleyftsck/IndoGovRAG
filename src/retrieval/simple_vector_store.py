@@ -33,7 +33,7 @@ class SimpleVectorStore:
         # Load if exists
         self._load()
         
-        print(f"✅ Simple Vector Store initialized")
+        print(f"[OK] Simple Vector Store initialized")
         print(f"   Documents: {len(self.documents)}")
     
     def add_documents(self, docs: List[Dict]):
@@ -74,7 +74,7 @@ class SimpleVectorStore:
                 })
                 
             except Exception as e:
-                print(f"⚠️ Skipping invalid document {i}: {e}")
+                print(f"[WARN] Skipping invalid document {i}: {e}")
                 continue
         
         if not validated_docs:
@@ -90,7 +90,7 @@ class SimpleVectorStore:
         # Save
         self._save()
         
-        print(f"✅ Added {len(validated_docs)} documents (total: {len(self.documents)})")
+        print(f"[OK] Added {len(validated_docs)} documents (total: {len(self.documents)})")
     
     def search(self, query: str, top_k: int = 5) -> List[Dict]:
         """
@@ -150,7 +150,7 @@ class SimpleVectorStore:
 def load_sample_documents_simple():
     """Load Indonesian government documents - SIMPLE VERSION."""
     
-    print("🔧 Loading Sample Documents (Simple Version - No Neural Networks)")
+    print("[CONFIG] Loading Sample Documents (Simple Version - No Neural Networks)")
     print()
     
     # Sample documents
@@ -199,11 +199,11 @@ def load_sample_documents_simple():
     store.add_documents(docs)
     
     # Test search
-    print("\n🔍 Testing search...")
+    print("\n[SEARCH] Testing search...")
     results = store.search("Apa itu KTP elektronik?", top_k=2)
     
     if results:
-        print("✅ Search working!")
+        print("[OK] Search working!")
         for i, res in enumerate(results, 1):
             print(f"   {i}. Score: {res['score']:.3f} | {res['metadata']['title']}")
             print(f"      Text: {res['text'][:80]}...")

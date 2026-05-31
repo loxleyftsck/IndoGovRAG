@@ -220,7 +220,7 @@ def demo_embedding_cache():
     """Demo embedding cache functionality."""
     
     print("="*70)
-    print(" 🧪 EMBEDDING CACHE DEMO")
+    print(" [TEST] EMBEDDING CACHE DEMO")
     print("="*70)
     print()
     
@@ -237,16 +237,16 @@ def demo_embedding_cache():
         "Apa itu KTP elektronik?",  # Duplicate again
     ]
     
-    print("📝 Simulating embedding requests:\\n")
+    print("[MSG] Simulating embedding requests:\\n")
     
     for i, text in enumerate(texts, 1):
         # Check cache
         cached = cache.get(text)
         
         if cached is not None:
-            print(f"{i}. ✅ CACHE HIT: '{text[:30]}...'")
+            print(f"{i}. [OK] CACHE HIT: '{text[:30]}...'")
         else:
-            print(f"{i}. ❌ CACHE MISS: '{text[:30]}...'")
+            print(f"{i}. [ERR] CACHE MISS: '{text[:30]}...'")
             # Simulate embedding computation
             embedding = np.random.rand(384)
             cache.put(text, embedding)
@@ -258,7 +258,7 @@ def demo_embedding_cache():
     stats = cache.get_stats()
     
     print("="*70)
-    print(" 📊 CACHE STATISTICS")
+    print(" [STAT] CACHE STATISTICS")
     print("="*70)
     print(f"Cache size: {stats['size']}/{stats['max_size']}")
     print(f"Hits: {stats['hits']}")
@@ -267,7 +267,7 @@ def demo_embedding_cache():
     print(f"Memory: {stats['memory_mb']:.2f} MB")
     print()
     
-    print("✅ Demo complete!")
+    print("[OK] Demo complete!")
     print()
     print("💡 With 50% hit rate:")
     print("   - 50% fewer embedding computations")

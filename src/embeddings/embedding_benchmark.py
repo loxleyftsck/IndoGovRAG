@@ -79,7 +79,7 @@ class IndonesianEmbeddingBenchmark:
             model = SentenceTransformer(hf_model_id)
             
             load_time = time.time() - start
-            print(f"✅ ({load_time:.2f}s)")
+            print(f"[OK] ({load_time:.2f}s)")
             
             self.models[model_name] = {
                 "model": model,
@@ -88,7 +88,7 @@ class IndonesianEmbeddingBenchmark:
             return True
             
         except Exception as e:
-            print(f"❌ Failed: {e}")
+            print(f"[ERR] Failed: {e}")
             return False
     
     def get_model_size(self, model: SentenceTransformer) -> float:
@@ -237,7 +237,7 @@ class IndonesianEmbeddingBenchmark:
                     results[model_name] = result
                     self.results[model_name] = result
                 except Exception as e:
-                    print(f"❌ Benchmark failed for {model_name}: {e}")
+                    print(f"[ERR] Benchmark failed for {model_name}: {e}")
         
         return results
     
@@ -248,7 +248,7 @@ class IndonesianEmbeddingBenchmark:
             return
         
         print("\n" + "="*90)
-        print("📊 EMBEDDING MODEL COMPARISON")
+        print("[STAT] EMBEDDING MODEL COMPARISON")
         print("="*90)
         
         # Header
@@ -314,7 +314,7 @@ class IndonesianEmbeddingBenchmark:
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(export_data, f, indent=2, ensure_ascii=False)
         
-        print(f"\n✅ Results exported to: {filepath}")
+        print(f"\n[OK] Results exported to: {filepath}")
 
 
 def main():
@@ -338,7 +338,7 @@ def main():
     for name, hf_id in models_to_test:
         print(f"   - {name} ({hf_id})")
     
-    print(f"\n📊 Test configuration:")
+    print(f"\n[STAT] Test configuration:")
     print(f"   Test queries: {len(benchmark.TEST_QUERIES)}")
     print(f"   Sample docs: {len(benchmark.SAMPLE_DOCS)}")
     
@@ -352,10 +352,10 @@ def main():
         benchmark.print_comparison()
         benchmark.export_results()
     else:
-        print("\n❌ No models were successfully benchmarked")
+        print("\n[ERR] No models were successfully benchmarked")
     
     print("\n" + "="*90)
-    print("✅ Benchmark complete!")
+    print("[OK] Benchmark complete!")
     print("="*90 + "\n")
 
 
