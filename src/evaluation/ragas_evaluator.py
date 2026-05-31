@@ -69,13 +69,13 @@ class RAGASEvaluator:
                 'context_recall': context_recall,
             }
             
-            print("✅ RAGAS initialized with metrics")
+            print("[OK] RAGAS initialized with metrics")
             
         except ImportError:
-            print("⚠️  RAGAS not installed. Run: pip install ragas")
+            print("[WARN]  RAGAS not installed. Run: pip install ragas")
             self.use_api = False
         except Exception as e:
-            print(f"⚠️  RAGAS initialization failed: {e}")
+            print(f"[WARN]  RAGAS initialization failed: {e}")
             self.use_api = False
     
     def evaluate_single(
@@ -159,7 +159,7 @@ class RAGASEvaluator:
             )
         
         except Exception as e:
-            print(f"⚠️  Evaluation failed: {e}")
+            print(f"[WARN]  Evaluation failed: {e}")
             return EvaluationResult(
                 question=question,
                 answer=answer,
@@ -286,7 +286,7 @@ class RAGASEvaluator:
         summary = self.get_summary()
         
         print("\n" + "="*60)
-        print("📊 RAGAS EVALUATION SUMMARY")
+        print("[STAT] RAGAS EVALUATION SUMMARY")
         print("="*60)
         print(f"Total Evaluated: {summary['total']}")
         
@@ -316,7 +316,7 @@ class RAGASEvaluator:
 def demo_ragas():
     """Demo RAGAS evaluation."""
     
-    print("🧪 RAGAS Evaluator Demo\n")
+    print("[TEST] RAGAS Evaluator Demo\n")
     
     # Initialize evaluator (without API for demo)
     evaluator = RAGASEvaluator(use_api=False)
@@ -343,13 +343,13 @@ def demo_ragas():
     # Evaluate
     result = evaluator.evaluate_single(**sample_data[0])
     
-    print(f"\n📊 Evaluation Result:")
+    print(f"\n[STAT] Evaluation Result:")
     print(f"   Faithfulness: {result.faithfulness or 'N/A (API required)'}")
     print(f"   Answer Relevancy: {result.answer_relevancy or 'N/A (API required)'}")
     print(f"   Response Time: {result.response_time}s")
     
-    print("\n✅ Demo complete!")
-    print("\n📝 Note: Full RAGAS metrics require LLM API (Gemini/OpenAI)")
+    print("\n[OK] Demo complete!")
+    print("\n[MSG] Note: Full RAGAS metrics require LLM API (Gemini/OpenAI)")
     print("   Set GEMINI_API_KEY in .env to enable complete evaluation")
 
 

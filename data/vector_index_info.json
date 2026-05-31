@@ -1,16 +1,45 @@
 {
-  "total_chunks": 3,
+  "total_chunks": 176,
   "collection_name": "indonesian_gov_docs",
-  "persist_directory": "data\\vector_db\\chroma",
+  "persist_directory": "D:/IndoGov/IndoGovRAG/data/vector_db/chroma",
   "doc_types": {
-    "Perpres": 2,
-    "PP": 1
+    "Perpres": 1,
+    "PP": 1,
+    "kemenkeu": 1,
+    "KMK": 12,
+    "PMK": 25,
+    "Lainnya": 2,
+    "PER": 6,
+    "unknown": 7,
+    "sample": 5,
+    "sample_extended": 15,
+    "Peraturan": 5
   },
   "categories": {
-    "civil_administration": 2,
-    "social_assistance": 1
+    "administrasi_kependudukan": 5,
+    "kesehatan": 3,
+    "keuangan": 21,
+    "perpajakan": 4,
+    "bisnis": 1,
+    "sosial": 1,
+    "pelayanan_publik": 1,
+    "ekonomi": 2,
+    "pendidikan": 1,
+    "lalu_lintas": 1,
+    "keimigrasian": 1,
+    "catatan_sipil": 2,
+    "ketenagakerjaan": 2,
+    "hukum_bisnis": 3,
+    "pertanahan": 1,
+    "perizinan": 1,
+    "umum": 30
   },
   "embedding_model": "intfloat/multilingual-e5-base",
   "embedding_dimension": 768,
-  "distance_metric": "cosine"
+  "distance_metric": "cosine",
+  "sources": [
+    "manual_docs",
+    "phase2_docs",
+    "gov_api_jdih_kemenkeu"
+  ]
 }

@@ -10,11 +10,14 @@ Gemini Pro Free Tier Limits (as of Dec 2024):
 """
 
 import json
+import logging
 import os
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, Optional
 import time
+
+logger = logging.getLogger(__name__)
 
 
 class GeminiQuotaTracker:
@@ -44,14 +47,14 @@ class GeminiQuotaTracker:
     def _load_data(self) -> Dict:
         """Load tracking data from JSON file."""
         if self.storage_path.exists():
-            with open(self.storage_path, 'r') as f:
+            with open(self.storage_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         else:
             return self._create_new_data()
     
     def _save_data(self):
         """Save tracking data to JSON file."""
-        with open(self.storage_path, 'w') as f:
+        with open(self.storage_path, 'w', encoding='utf-8') as f:
             json.dump(self.data, f, indent=2)
     
     def _create_new_data(self) -> Dict:
@@ -74,12 +77,27 @@ class GeminiQuotaTracker:
                 "requests": self.data["daily_requests"],
                 "tokens": self.data["daily_tokens"],
             }
-            
-            # Create new day
-            self.data = self._create_new_data()
-            print(f"📅 New day started! Previous day: {old_summary}")
+            logger.info(f"[DAY] New day started! Previous: {old_summary['date']} ({old_summary['requests']} req, {old_summary['tokens']} tokens)")
+
+            # Save old data BEFORE replacing self.data — this ensures history is
+            # never lost even if the new-day write fails on Windows.
             self._save_data()
-    
+
+            # Create new day (never raises, all fields are plain Python types)
+            self.data = self._create_new_data()
+
+            # Write new-day file — use utf-8 explicitly and catch Windows
+            # file-permission / emoji-in-path errors so they never propagate
+            # up to RAGPipeline.__init__ and leave rag_pipeline as None.
+            try:
+                self._save_data()
+            except Exception:
+                try:
+                    with open(self.storage_path, 'w', encoding='utf-8') as f:
+                        json.dump(self.data, f, indent=2)
+                except Exception:
+                    pass  # Non-fatal: tracking data stays in memory
+
     def _get_current_minute_bucket(self) -> str:
         """Get current minute bucket key (YYYY-MM-DD HH:MM)."""
         return datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -193,54 +211,69 @@ class GeminiQuotaTracker:
     def _check_alerts(self, minute_stats: Dict) -> list:
         """Check if any quota thresholds are exceeded."""
         alerts = []
-        
+
         # Daily requests
         daily_usage = self.data["daily_requests"] / self.FREE_TIER_LIMITS["rpd"]
         if daily_usage >= self.ALERT_THRESHOLDS["critical"]:
             alerts.append({
                 "level": "CRITICAL",
                 "type": "daily_requests",
-                "message": f"🚨 CRITICAL: {self.data['daily_requests']}/{self.FREE_TIER_LIMITS['rpd']} daily requests used ({daily_usage*100:.1f}%)",
+                "message": f"[CRIT] {self.data['daily_requests']}/{self.FREE_TIER_LIMITS['rpd']} daily requests used ({daily_usage*100:.1f}%)",
             })
         elif daily_usage >= self.ALERT_THRESHOLDS["warning"]:
             alerts.append({
                 "level": "WARNING",
                 "type": "daily_requests",
-                "message": f"⚠️  WARNING: {self.data['daily_requests']}/{self.FREE_TIER_LIMITS['rpd']} daily requests used ({daily_usage*100:.1f}%)",
+                "message": f"[WARN]  {self.data['daily_requests']}/{self.FREE_TIER_LIMITS['rpd']} daily requests used ({daily_usage*100:.1f}%)",
             })
-        
+
         # Minute requests
         minute_req_usage = minute_stats["requests"] / self.FREE_TIER_LIMITS["rpm"]
         if minute_req_usage >= self.ALERT_THRESHOLDS["critical"]:
             alerts.append({
                 "level": "CRITICAL",
                 "type": "minute_requests",
-                "message": f"🚨 CRITICAL: {minute_stats['requests']}/{self.FREE_TIER_LIMITS['rpm']} requests/min ({minute_req_usage*100:.1f}%)",
+                "message": f"[CRIT] {minute_stats['requests']}/{self.FREE_TIER_LIMITS['rpm']} requests/min ({minute_req_usage*100:.1f}%)",
             })
         elif minute_req_usage >= self.ALERT_THRESHOLDS["warning"]:
             alerts.append({
                 "level": "WARNING",
                 "type": "minute_requests",
-                "message": f"⚠️  WARNING: {minute_stats['requests']}/{self.FREE_TIER_LIMITS['rpm']} requests/min ({minute_req_usage*100:.1f}%)",
+                "message": f"[WARN]  {minute_stats['requests']}/{self.FREE_TIER_LIMITS['rpm']} requests/min ({minute_req_usage*100:.1f}%)",
             })
-        
+
         # Minute tokens
         minute_tok_usage = minute_stats["tokens"] / self.FREE_TIER_LIMITS["tpm"]
         if minute_tok_usage >= self.ALERT_THRESHOLDS["critical"]:
             alerts.append({
                 "level": "CRITICAL",
                 "type": "minute_tokens",
-                "message": f"🚨 CRITICAL: {minute_tok_usage['tokens']:,}/{self.FREE_TIER_LIMITS['tpm']:,} tokens/min ({minute_tok_usage*100:.1f}%)",
+                "message": f"[CRIT] {minute_tok_usage['tokens']:,}/{self.FREE_TIER_LIMITS['tpm']:,} tokens/min ({minute_tok_usage*100:.1f}%)",
             })
         elif minute_tok_usage >= self.ALERT_THRESHOLDS["warning"]:
             alerts.append({
                 "level": "WARNING",
                 "type": "minute_tokens",
-                "message": f"⚠️  WARNING: {minute_stats['tokens']:,}/{self.FREE_TIER_LIMITS['tpm']:,} tokens/min ({minute_tok_usage*100:.1f}%)",
+                "message": f"[WARN]  {minute_stats['tokens']:,}/{self.FREE_TIER_LIMITS['tpm']:,} tokens/min ({minute_tok_usage*100:.1f}%)",
             })
-        
+
         return alerts
     
+    def get_stats(self) -> Dict:
+        """Get current quota statistics."""
+        minute_stats = self._get_minute_stats()
+
+        return {
+            "date": self.data["date"],
+            "daily_requests": self.data["daily_requests"],
+            "daily_tokens": self.data["daily_tokens"],
+            "daily_limit": self.FREE_TIER_LIMITS["rpd"],
+            "minute_requests": minute_stats["requests"],
+            "minute_limit": self.FREE_TIER_LIMITS["rpm"],
+            "minute_tokens": minute_stats["tokens"],
+            "minute_token_limit": self.FREE_TIER_LIMITS["tpm"],
+        }
+
     def get_status(self) -> Dict:
         """Get current quota status."""
         minute_stats = self._get_minute_stats()
@@ -268,13 +301,13 @@ class GeminiQuotaTracker:
         status = self.get_status()
         
         print("\n" + "="*60)
-        print("📊 GEMINI PRO QUOTA STATUS (FREE TIER)")
+        print("[STAT] GEMINI PRO QUOTA STATUS (FREE TIER)")
         print("="*60)
-        print(f"📅 Date: {status['date']}")
-        print(f"\n🗓️  DAILY USAGE:")
+        print(f"DATE  : {status['date']}")
+        print(f"\n[DATE]  DAILY USAGE:")
         print(f"   Requests: {status['daily']['requests']:,}/{status['daily']['requests_limit']:,} ({status['daily']['requests_percent']:.1f}%)")
         print(f"   Tokens:   {status['daily']['tokens']:,}")
-        print(f"\n⏱️  CURRENT MINUTE:")
+        print(f"\n[TIME]  CURRENT MINUTE:")
         print(f"   Requests: {status['minute']['requests']}/{status['minute']['requests_limit']} ({status['minute']['requests_percent']:.1f}%)")
         print(f"   Tokens:   {status['minute']['tokens']:,}/{status['minute']['tokens_limit']:,} ({status['minute']['tokens_percent']:.1f}%)")
         print("="*60 + "\n")
@@ -344,13 +377,13 @@ def check_throttle() -> bool:
     
     Usage:
         if check_throttle():
-            print("⏸️  Rate limit reached, waiting...")
+            print("[PAUSE]  Rate limit reached, waiting...")
             time.sleep(60)
     """
     tracker = get_tracker()
     should_throttle, reason = tracker.should_throttle()
     if should_throttle:
-        print(f"⏸️  THROTTLE: {reason}")
+        print(f"[PAUSE]  THROTTLE: {reason}")
     return should_throttle
 
 
@@ -359,7 +392,7 @@ def check_throttle() -> bool:
 # =============================================================================
 
 if __name__ == "__main__":
-    print("🧪 Testing Gemini Quota Tracker\n")
+    print("[TEST] Testing Gemini Quota Tracker\n")
     
     # Initialize tracker
     tracker = GeminiQuotaTracker()
@@ -368,7 +401,7 @@ if __name__ == "__main__":
     tracker.print_status()
     
     # Simulate some API calls
-    print("📝 Simulating API calls...\n")
+    print("[MSG] Simulating API calls...\n")
     
     for i in range(5):
         result = tracker.track_request(
@@ -393,9 +426,9 @@ if __name__ == "__main__":
     tracker.print_status()
     
     # Test throttle check
-    print("🔍 Testing throttle check...")
+    print("[SEARCH] Testing throttle check...")
     should_throttle, reason = tracker.should_throttle()
     if should_throttle:
-        print(f"⏸️  {reason}")
+        print(f"[PAUSE]  {reason}")
     else:
-        print("✅ All good, no throttling needed")
+        print("[OK] All good, no throttling needed")

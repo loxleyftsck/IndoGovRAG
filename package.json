@@ -5,8 +5,18 @@
     "main": "src/rag/pipeline.py",
     "scripts": {
         "test": "pytest tests/",
-        "lint": "flake8 src/",
-        "format": "black src/ tests/"
+        "lint": "ruff check .",
+        "lint:fix": "ruff check --fix .",
+        "format": "ruff format .",
+        "format:check": "ruff format --check .",
+        "type-check": "mypy src/ api/",
+        "security": "bandit -r src/ api/ && safety check",
+        "dev": "uvicorn api.main:app --reload",
+        "build": "docker-compose build",
+        "start": "docker-compose up -d",
+        "stop": "docker-compose down",
+        "clean": "make clean",
+        "validate": "python scripts/validate_dataset.py"
     },
     "keywords": [
         "rag",
@@ -29,6 +39,7 @@
     },
     "homepage": "https://github.com/yourusername/indogovrag#readme",
     "dependencies": {
-        "dompurify": "^3.3.1"
+        "dompurify": "^3.3.1",
+        "playwright": "^1.60.0"
     }
 }

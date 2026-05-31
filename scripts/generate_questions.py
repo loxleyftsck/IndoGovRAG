@@ -200,7 +200,7 @@ def validate_dataset(filepath: str) -> Dict:
 def print_validation_report(report: Dict):
     """Print validation report."""
     print("\n" + "="*70)
-    print(" 📊 DATASET VALIDATION REPORT")
+    print(" [STAT] DATASET VALIDATION REPORT")
     print("="*70)
     print()
     
@@ -228,9 +228,9 @@ def print_validation_report(report: Dict):
     print()
     
     if report['valid']:
-        print("✅ Dataset is valid!")
+        print("[OK] Dataset is valid!")
     else:
-        print(f"⚠️  Found {report['total_issues']} issues")
+        print(f"[WARN]  Found {report['total_issues']} issues")
         print("\nFirst 10 Issues:")
         for issue in report['issues']:
             print(f"  - {issue}")
@@ -261,7 +261,7 @@ def main():
     args = parser.parse_args()
     
     if args.mode == 'generate':
-        print(f"🔄 Generating {args.count} questions...")
+        print(f"[TRY] Generating {args.count} questions...")
         
         # Load existing or create new
         data = load_existing_dataset(args.output)
@@ -279,10 +279,10 @@ def main():
         with open(args.output, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         
-        print(f"✅ Generated {len(new_questions)} questions")
-        print(f"📄 Saved to: {args.output}")
+        print(f"[OK] Generated {len(new_questions)} questions")
+        print(f" Saved to: {args.output}")
         print()
-        print("⚠️  IMPORTANT: Manual review required!")
+        print("[WARN]  IMPORTANT: Manual review required!")
         print("   1. Review question templates")
         print("   2. Fill in placeholders")
         print("   3. Add ground truth answers")
@@ -292,10 +292,10 @@ def main():
         print(f"Then run: python {__file__} --mode validate --output {args.output}")
     
     elif args.mode == 'validate':
-        print(f"🔍 Validating dataset: {args.output}")
+        print(f"[SEARCH] Validating dataset: {args.output}")
         
         if not Path(args.output).exists():
-            print(f"❌ File not found: {args.output}")
+            print(f"[ERR] File not found: {args.output}")
             return
         
         report = validate_dataset(args.output)

@@ -1,0 +1,21 @@
+{
+  "_comment": "IndoGovRAG Pipeline Notification Configuration",
+  "_comment2": "Copy this file to notifications.json and fill in your values",
+
+  "email": {
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "username": "your-email@gmail.com",
+    "password": "your-app-password",
+    "to": "admin@example.com",
+    "enabled": false
+  },
+
+  "webhook_url": "https://your-webhook-endpoint.com/notify",
+  "webhook_timeout": 10,
+  "webhook_enabled": false,
+
+  "_example_usage": "Pipeline sends notification on each run:",
+  "_example1": "✅ Pipeline selesai: 5 dokumen baru, 2 chunks",
+  "_example2": "❌ Pipeline GAGAL: Connection timeout"
+}

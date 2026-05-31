@@ -40,8 +40,8 @@ class DocumentChunker:
     def __init__(
         self,
         chunk_size: int = 512,
-        overlap: int = 128,
-        min_chunk_size: int = 100
+        overlap: int = 64,
+        min_chunk_size: int = 50
     ):
         """
         Initialize chunker.
@@ -134,7 +134,7 @@ class DocumentChunker:
             char_position += len(para)
         
         # Add final chunk
-        if current_chunk and current_tokens >= self.min_chunk_size:
+        if current_chunk and (current_tokens >= self.min_chunk_size or not chunks):
             chunk = self._create_chunk(
                 current_chunk,
                 doc_id,
@@ -251,7 +251,7 @@ class DocumentChunker:
             **metadata,
             'has_title': self._has_title(text),
             'has_list': self._has_list(text),
-            'has_numbers': bool(re.search(r'\d+', text)),
+            'has_numbers': self._has_numbers(text),
         }
         
         return Chunk(
@@ -263,15 +263,19 @@ class DocumentChunker:
             num_tokens=tokens,
             metadata=chunk_metadata
         )
+
+    def _has_numbers(self, text: str) -> bool:
+        """Check if chunk contains numbers."""
+        return bool(re.search(r'\d+', text))
     
     def _count_tokens(self, text: str) -> int:
         """
         Estimate token count.
-        
-        Simple approximation: ~1.3 words per token for Indonesian
+
+        Simple approximation: ~1.3 tokens per word for Indonesian.
         """
         words = len(text.split())
-        return int(words / 1.3)
+        return int(words * 1.3)
     
     def _has_title(self, text: str) -> bool:
         """Check if chunk starts with title."""
@@ -285,14 +289,14 @@ class DocumentChunker:
         if first_line.isupper() and len(first_line.split()) <= 10:
             return True
         
-        if re.match(r'^(BAB|Pasal|Bagian)\s+[IVXLCDM\d]+', first_line):
+        if re.match(r'^(BAB|Pasal|Bagian)\s+([IVXLCDM\d]+|Ke[a-z]+|Pertama)', first_line):
             return True
         
         return False
     
     def _has_list(self, text: str) -> bool:
         """Check if chunk contains list."""
-        return bool(re.search(r'^\s*[\d\-\•]\s+', text, re.MULTILINE))
+        return bool(re.search(r'^\s*([\d\-\•]\.?)\s+', text, re.MULTILINE))
     
     def calculate_coherence(self, chunk: Chunk) -> float:
         """
@@ -365,7 +369,7 @@ class DocumentChunker:
 def demo_chunker():
     """Demo document chunking."""
     
-    print("🧪 Document Chunker Demo\n")
+    print("[TEST] Document Chunker Demo\n")
     
     # Sample Indonesian government document
     sample_doc = """
@@ -424,7 +428,7 @@ Pasal 2
         }
     )
     
-    print(f"📊 Chunking Results")
+    print(f"[STAT] Chunking Results")
     print("="*60)
     print(f"Total Chunks: {len(chunks)}")
     print(f"Avg Tokens/Chunk: {sum(c.num_tokens for c in chunks) / len(chunks):.1f}")
@@ -436,7 +440,7 @@ Pasal 2
     avg_coherence = sum(c.coherence_score for c in chunks) / len(chunks)
     print(f"Avg Coherence: {avg_coherence:.2f}")
     
-    print(f"\n📝 Chunks Preview:")
+    print(f"\n[MSG] Chunks Preview:")
     print("="*60)
     for i, chunk in enumerate(chunks[:3]):  # Show first 3
         print(f"\nChunk {i+1}:")
@@ -447,7 +451,7 @@ Pasal 2
         print(f"  Text Preview:")
         print(f"  {chunk.text[:200]}...")
     
-    print("\n✅ Demo complete!")
+    print("\n[OK] Demo complete!")
 
 
 if __name__ == "__main__":

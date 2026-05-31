@@ -13,7 +13,7 @@ from src.data.chunker import Chunk
 def load_extended_documents():
     """Load 15 comprehensive Indonesian government document samples."""
     
-    print("🚀 AUTONOMOUS DATA EXPANSION - Loading 15 Documents...")
+    print(" AUTONOMOUS DATA EXPANSION - Loading 15 Documents...")
     print()
     
     # Extended government topics
@@ -171,7 +171,7 @@ def load_extended_documents():
     ]
     
     # Initialize vector store
-    print("📦 Initializing Vector Store...")
+    print(" Initializing Vector Store...")
     store = VectorStore()
     print(f"   Current chunks: {store.collection.count()}")
     
@@ -199,10 +199,10 @@ def load_extended_documents():
         chunk_id += 1
     
     # Prepare & add
-    print(f"📝 Preparing {len(chunks)} chunks...")
+    print(f"[MSG] Preparing {len(chunks)} chunks...")
     prepared_chunks = prepare_chunks_for_indexing(chunks)
     
-    print("💾 Adding to vector store...")
+    print(" Adding to vector store...")
     store.add_chunks(prepared_chunks, show_progress=True)
     
     # Final count
@@ -210,12 +210,12 @@ def load_extended_documents():
     added = final_count - 8  # We had 8 before
     
     print()
-    print(f"✅ Successfully added {added} new documents!")
-    print(f"📊 Total chunks now: {final_count}")
+    print(f"[OK] Successfully added {added} new documents!")
+    print(f"[STAT] Total chunks now: {final_count}")
     print()
     
     # Test coverage
-    print("🧪 Testing topic coverage...")
+    print("[TEST] Testing topic coverage...")
     test_topics = [
         ("KTP", "administrasi"),
         ("SIM", "lalu_lintas"),
@@ -228,12 +228,12 @@ def load_extended_documents():
     for topic, category in test_topics:
         results = store.search(topic, n_results=1)
         if results:
-            print(f"   ✅ {topic}: Found ({results[0].score:.3f})")
+            print(f"   [OK] {topic}: Found ({results[0].score:.3f})")
         else:
-            print(f"   ❌ {topic}: Not found")
+            print(f"   [ERR] {topic}: Not found")
     
     print()
-    print(f"🎉 Total: {final_count} chunks | Target: 50+ | Progress: {final_count/50*100:.0f}%")
+    print(f" Total: {final_count} chunks | Target: 50+ | Progress: {final_count/50*100:.0f}%")
     
     return final_count
 

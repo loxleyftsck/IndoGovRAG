@@ -1,45 +1,143 @@
-version: '3.8'
+# =============================================================================
+# IndoGovRAG - Docker Compose for Production
+# =============================================================================
+# Usage:
+#   docker-compose up -d          # Start all services
+#   docker-compose up --build     # Rebuild and start
+#   docker-compose down -v        # Stop and remove volumes
+# =============================================================================
 
 services:
-  # IndoGovRAG API Service
+
+  # ---------------------------------------------------------------------------
+  # FastAPI Backend Service
+  # ---------------------------------------------------------------------------
   api:
     build:
       context: .
       dockerfile: Dockerfile
+      target: production
     container_name: indogovrag-api
     ports:
       - "8000:8000"
     environment:
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
       - ENVIRONMENT=production
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      # Database / ChromaDB
+      - CHROMA_DB_DIR=/app/data/vector_db/chroma
+      - DATA_DIR=/app/data
     env_file:
       - .env
     volumes:
       # Persist vector database
-      - ./data/vector_db:/app/data/vector_db
+      - indogovrag-vector-db:/app/data/vector_db
       # Persist evaluation results
-      - ./data/evaluations:/app/data/evaluations
+      - indogovrag-evaluations:/app/data/evaluations
       # Persist logs
-      - ./logs:/app/logs
+      - indogovrag-logs:/app/logs
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
     networks:
       - indogovrag-network
-  # ChromaDB Service (Optional - if using separate ChromaDB server)
+
+  # ---------------------------------------------------------------------------
+  # Frontend Service (Next.js via Node server)
+  # ---------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: indogovrag-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api:8000
+      - NEXT_TELEMETRY_DISABLED=1
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    networks:
+      - indogovrag-network
+
+  # ---------------------------------------------------------------------------
+  # Optional: Redis Cache (uncomment to enable)
+  # ---------------------------------------------------------------------------
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: indogovrag-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - indogovrag-redis-data:/data
+  #   command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 30s
+  #     timeout: 5s
+  #     retries: 3
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.5'
+  #         memory: 256M
+  #   networks:
+  #     - indogovrag-network
+
+  # ---------------------------------------------------------------------------
+  # Optional: ChromaDB standalone service (uncomment to enable)
+  # ---------------------------------------------------------------------------
   # chroma:
   #   image: chromadb/chroma:latest
   #   container_name: indogovrag-chroma
   #   ports:
   #     - "8001:8000"
   #   volumes:
-  #     - ./data/chroma_server:/chroma/chroma
+  #     - indogovrag-chroma:/chroma/chroma
   #   environment:
   #     - ALLOW_RESET=TRUE
+  #     - ANONYMIZED_TELEMETRY=FALSE
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-sf", "http://localhost:8000/v1/health"]
+  #     interval: 30s
+  #     timeout: 5s
+  #     retries: 3
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '1'
+  #         memory: 1G
   #   networks:
   #     - indogovrag-network
 
@@ -48,6 +146,8 @@ networks:
     driver: bridge
 
 volumes:
-  vector_db:
-  evaluations:
-  logs:
+  indogovrag-vector-db:
+  indogovrag-evaluations:
+  indogovrag-logs:
+  # indogovrag-redis-data:
+  # indogovrag-chroma:

@@ -115,7 +115,7 @@ class ExperimentTracker:
             "logs": [],
         }
         
-        print(f"🧪 Started experiment: {experiment_name or exp_id}")
+        print(f"[TEST] Started experiment: {experiment_name or exp_id}")
         print(f"   ID: {exp_id}")
         
         return exp_id
@@ -140,7 +140,7 @@ class ExperimentTracker:
         self.current_experiment["metrics_history"].append(log_entry)
         
         # Print key metrics
-        print(f"📊 Step {step}: " + ", ".join(f"{k}={v:.3f}" for k, v in metrics.items()))
+        print(f"[STAT] Step {step}: " + ", ".join(f"{k}={v:.3f}" for k, v in metrics.items()))
     
     def log(self, message: str, level: str = "INFO"):
         """Log a message for current experiment."""
@@ -181,7 +181,7 @@ class ExperimentTracker:
         # Add to log
         self.experiment_log.append(self.current_experiment)
         
-        print(f"\n✅ Experiment finished: {self.current_experiment['name']}")
+        print(f"\n[OK] Experiment finished: {self.current_experiment['name']}")
         print(f"   Duration: {duration:.1f}s")
         print(f"   Hit@1: {results.hit_at_1:.2%}")
         print(f"   MRR: {results.mrr:.3f}")
@@ -321,11 +321,11 @@ class ExperimentTracker:
             return
         
         print("\n" + "="*90)
-        print("📊 EXPERIMENT COMPARISON")
+        print("[STAT] EXPERIMENT COMPARISON")
         print("="*90)
         
         # Print configs
-        print("\n🔧 Configurations:")
+        print("\n[CONFIG] Configurations:")
         for exp in comp["experiments"]:
             print(f"\n  {exp['name']} ({exp['id']}):")
             config = exp["config"]
@@ -335,7 +335,7 @@ class ExperimentTracker:
             print(f"    Chunk size: {config['chunk_size']}")
         
         # Print metrics table
-        print("\n📈 Results:")
+        print("\n[UP] Results:")
         print(f"\n{'Metric':<25}", end="")
         for exp in comp["experiments"]:
             print(f"{exp['name'][:15]:<20}", end="")
@@ -406,7 +406,7 @@ def create_experiment_config(
 # =============================================================================
 
 if __name__ == "__main__":
-    print("🧪 Testing Experiment Tracker\n")
+    print("[TEST] Testing Experiment Tracker\n")
     
     # Initialize tracker
     tracker = ExperimentTracker()
@@ -485,5 +485,5 @@ if __name__ == "__main__":
     print()
     tracker.print_comparison([exp1_id, exp2_id])
     
-    print("\n✅ Experiment tracking demo complete!")
+    print("\n[OK] Experiment tracking demo complete!")
     print(f"📁 Data saved to: {tracker.storage_path}")

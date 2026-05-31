@@ -76,7 +76,7 @@ class GeminiClient:
         # Check if we should throttle BEFORE making request
         should_throttle, reason = self.tracker.should_throttle()
         if should_throttle:
-            print(f"⏸️  Pre-check throttle: {reason}")
+            print(f"[PAUSE]  Pre-check throttle: {reason}")
             print(f"   Waiting {retry_delay}s before retry...")
             time.sleep(retry_delay)
         
@@ -107,7 +107,7 @@ class GeminiClient:
                 # Print alerts if any
                 if tracking_result["alerts"]:
                     print(f"\n{'='*60}")
-                    print("⚠️  QUOTA ALERTS:")
+                    print("[WARN]  QUOTA ALERTS:")
                     for alert in tracking_result["alerts"]:
                         print(f"   {alert['message']}")
                     print(f"{'='*60}\n")
@@ -125,7 +125,7 @@ class GeminiClient:
                 # Check if it's a quota/rate limit error
                 if "quota" in error_msg.lower() or "rate" in error_msg.lower() or "429" in error_msg:
                     if attempt < max_retries - 1:
-                        print(f"⏸️  Rate limit hit (attempt {attempt+1}/{max_retries})")
+                        print(f"[PAUSE]  Rate limit hit (attempt {attempt+1}/{max_retries})")
                         print(f"   Waiting {retry_delay}s before retry...")
                         time.sleep(retry_delay)
                         continue
@@ -174,9 +174,9 @@ class GeminiClient:
             results.append(result)
             
             if result["success"]:
-                print("✅")
+                print("[OK]")
             else:
-                print(f"❌ {result.get('error', 'Unknown error')}")
+                print(f"[ERR] {result.get('error', 'Unknown error')}")
             
             # Wait before next request (respect rate limits)
             if i < len(prompts) - 1:
@@ -207,11 +207,11 @@ if __name__ == "__main__":
     api_key = os.getenv("GEMINI_API_KEY")
     
     if not api_key:
-        print("❌ GEMINI_API_KEY not found in environment!")
+        print("[ERR] GEMINI_API_KEY not found in environment!")
         print("💡 Set it in .env file or export GEMINI_API_KEY=your-key")
         exit(1)
     
-    print("🧪 Testing Gemini Client with Quota Tracking\n")
+    print("[TEST] Testing Gemini Client with Quota Tracking\n")
     
     # Initialize client
     client = GeminiClient(api_key=api_key)
@@ -220,7 +220,7 @@ if __name__ == "__main__":
     client.print_quota_status()
     
     # Test single generation
-    print("📝 Testing single generation...\n")
+    print("[MSG] Testing single generation...\n")
     result = client.generate(
         prompt="Explain RAG (Retrieval-Augmented Generation) in 2 sentences.",
         temperature=0.7,
@@ -228,12 +228,12 @@ if __name__ == "__main__":
     )
     
     if result["success"]:
-        print(f"✅ Response: {result['response']}\n")
+        print(f"[OK] Response: {result['response']}\n")
     else:
-        print(f"❌ Error: {result['error']}\n")
+        print(f"[ERR] Error: {result['error']}\n")
     
     # Test batch generation
-    print("📝 Testing batch generation...\n")
+    print("[MSG] Testing batch generation...\n")
     test_prompts = [
         "What is a vector database?",
         "What is semantic search?",
@@ -242,7 +242,7 @@ if __name__ == "__main__":
     
     batch_results = client.generate_batch(test_prompts)
     
-    print(f"\n✅ Processed {len(batch_results)} prompts")
+    print(f"\n[OK] Processed {len(batch_results)} prompts")
     print(f"   Successful: {sum(1 for r in batch_results if r['success'])}")
     print(f"   Failed: {sum(1 for r in batch_results if not r['success'])}")
     

@@ -122,7 +122,7 @@ class ABTester:
         if missing:
             raise ValueError(f"Questions missing required fields: {missing}")
         
-        print(f"✅ Dataset validated: {len(questions)} questions loaded")
+        print(f"[OK] Dataset validated: {len(questions)} questions loaded")
         return questions
     
     def run_experiment(
@@ -142,7 +142,7 @@ class ABTester:
         Returns:
             List of experiment results
         """
-        print(f"\n🧪 Running experiment: {config.name}")
+        print(f"\n[TEST] Running experiment: {config.name}")
         print(f"   Config: retrieval={config.retrieval_method}, chunk={config.chunk_size}, top_k={config.top_k}")
         print(f"   Questions: {limit or len(self.dataset)}")
         print()
@@ -187,13 +187,13 @@ class ABTester:
                 results.append(result)
                 
             except Exception as e:
-                print(f"    ⚠️ Error: {e}")
+                print(f"    [WARN] Error: {e}")
                 continue
         
         # Save results
         self._save_experiment_results(config, results)
         
-        print(f"\n✅ Experiment complete: {len(results)} results")
+        print(f"\n[OK] Experiment complete: {len(results)} results")
         return results
     
     def compare_experiments(
@@ -215,7 +215,7 @@ class ABTester:
         Returns:
             Comparison result with statistical analysis
         """
-        print(f"\n📊 Comparing: {config_a_name} vs {config_b_name}")
+        print(f"\n[STAT] Comparing: {config_a_name} vs {config_b_name}")
         print(f"   Sample size: {len(results_a)} questions")
         print()
         
@@ -257,8 +257,8 @@ class ABTester:
                 is_significant[metric] = False
             
             # Print results
-            direction = "📈" if improvement > 0 else "📉" if improvement < 0 else "➡️"
-            sig_marker = "✅ SIGNIFICANT" if is_significant.get(metric) else "⚠️ not significant"
+            direction = "[UP]" if improvement > 0 else "[DOWN]" if improvement < 0 else "->"
+            sig_marker = "[OK] SIGNIFICANT" if is_significant.get(metric) else "[WARN] not significant"
             
             print(f"  {metric}:")
             print(f"    A: {mean_a:.3f} → B: {mean_b:.3f}  {direction} {improvement:+.1f}%")
@@ -363,17 +363,17 @@ class ABTester:
 
 def demo_ab_testing():
     """Demo A/B testing framework."""
-    print("🧪 A/B Testing Framework Demo\n")
+    print("[TEST] A/B Testing Framework Demo\n")
     
     # This is a demo - in real usage, you'd pass actual RAG pipeline
     print("📋 Framework Features:")
-    print("  ✅ Run experiments with different configs")
-    print("  ✅ Statistical significance testing (t-test)")
-    print("  ✅ Automatic winner determination")
-    print("  ✅ Results persistence")
+    print("  [OK] Run experiments with different configs")
+    print("  [OK] Statistical significance testing (t-test)")
+    print("  [OK] Automatic winner determination")
+    print("  [OK] Results persistence")
     print()
     
-    print("📝 Usage Example:")
+    print("[MSG] Usage Example:")
     print("""
     tester = ABTester('data/eval_dataset_50q.json')
     
@@ -408,7 +408,7 @@ def demo_ab_testing():
     print(f"Winner: {comparison.winner}")
     """)
     
-    print("\n✅ Framework ready for Week 3 experiments!")
+    print("\n[OK] Framework ready for Week 3 experiments!")
 
 
 if __name__ == "__main__":

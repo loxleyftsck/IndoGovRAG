@@ -64,7 +64,7 @@ def check_professional_format(answer: str) -> dict:
     return {"score": score, "details": checks}
 
 def run_assessment():
-    print("🤖 INDOGOV AI - AUTOMATED PROJECT EVALUATOR")
+    print("[AI] INDOGOV AI - AUTOMATED PROJECT EVALUATOR")
     print("===========================================")
     print(f"Target: {API_URL}")
     print(f"Time: {time.strftime('%Y-%m-%d %H:%M:%S')}")
@@ -75,7 +75,7 @@ def run_assessment():
     results = []
 
     for test in TEST_CASES:
-        print(f"📋 Testing: {test['category']}")
+        print(f" Testing: {test['category']}")
         print(f"   Query: {test['query']}")
         
         start_time = time.time()
@@ -98,10 +98,10 @@ def run_assessment():
             if keyword_match:
                 format_score = min(100, format_score + 10) # Bonus for accuracy
             
-            print(f"   ✅ Latency: {latency:.2f}ms")
-            print(f"   ✅ Confidence: {confidence:.2f}")
-            print(f"   ✅ Format Score: {eval_result['score']}/100")
-            print(f"   📝 Answer snippet: {answer[:100]}...")
+            print(f"   [OK] Latency: {latency:.2f}ms")
+            print(f"   [OK] Confidence: {confidence:.2f}")
+            print(f"   [OK] Format Score: {eval_result['score']}/100")
+            print(f"   [MSG] Answer snippet: {answer[:100]}...")
             print("-------------------------------------------")
             
             total_score += format_score
@@ -113,24 +113,24 @@ def run_assessment():
             })
 
         except Exception as e:
-            print(f"   ❌ ERROR: {str(e)}")
+            print(f"   [ERR] ERROR: {str(e)}")
             results.append({"query": test['query'], "score": 0, "passed": False}) 
             
     # Final Report
     avg_score = total_score / len(TEST_CASES)
     grade = "A" if avg_score >= 90 else "B" if avg_score >= 80 else "C"
     
-    print("\n📊 FINAL ASSESSMENT REPORT")
+    print("\n[STAT] FINAL ASSESSMENT REPORT")
     print("==========================")
     print(f"Average Quality Score: {avg_score:.1f}/100")
     print(f"Project Grade: {grade}")
-    print(f"System Status: {'✅ PASSED' if avg_score >= PASS_THRESHOLD else '❌ FAILED'}")
+    print(f"System Status: {'[OK] PASSED' if avg_score >= PASS_THRESHOLD else '[ERR] FAILED'}")
     
     if avg_score >= PASS_THRESHOLD:
-        print("\n🏆 CERTIFIED: READY FOR PRODUCTION")
+        print("\n CERTIFIED: READY FOR PRODUCTION")
         sys.exit(0)
     else:
-        print("\n⚠️ IMPROVEMENTS REQUIRED")
+        print("\n[WARN] IMPROVEMENTS REQUIRED")
         sys.exit(1)
 
 if __name__ == "__main__":

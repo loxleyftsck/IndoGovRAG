@@ -1,0 +1,210 @@
+name: Docker Build & Push
+
+on:
+  push:
+    branches: [main, develop]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [main, develop]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+
+  # ---------------------------------------------------------------------------
+  # Build and push Docker image
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build & Push Image
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry (GHCR)
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=
+
+      - name: Build production image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          target: production
+          build-args: |
+            PYTHON_VERSION=3.11
+
+      - name: Build dev image (on main/develop only)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          target: development
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Save image size artifact
+        run: |
+          echo "Production image size:"
+          docker images ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} --format "{{.Size}}"
+
+  # ---------------------------------------------------------------------------
+  # Scan Docker image for vulnerabilities
+  # ---------------------------------------------------------------------------
+  container-scan:
+    name: Container Security Scan
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.event_name != 'pull_request'
+
+    permissions:
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull the built image
+        run: docker pull ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+        continue-on-error: true
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # ---------------------------------------------------------------------------
+  # Integration test: run container and verify /health endpoint
+  # ---------------------------------------------------------------------------
+  integration-test:
+    name: Integration Test (Container)
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull image
+        run: docker pull ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+
+      - name: Run container and verify health endpoint
+        run: |
+          # Start container in background
+          docker run -d \
+            --name indogovrag-test \
+            -p 8000:8000 \
+            -e ENVIRONMENT=test \
+            -e GEMINI_API_KEY=test-key \
+            ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
+
+          # Wait for startup (start_period in Dockerfile is 15s)
+          echo "Waiting for container to start..."
+          sleep 20
+
+          # Verify /health endpoint responds 200
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/health)
+          echo "Health endpoint returned HTTP $HTTP_CODE"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "--- Container logs ---"
+            docker logs indogovrag-test
+            docker stop indogovrag-test
+            exit 1
+          fi
+
+          # Verify root endpoint
+          ROOT_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/)
+          echo "Root endpoint returned HTTP $ROOT_CODE"
+
+          # Cleanup
+          docker stop indogovrag-test
+          echo "Integration test passed!"
+
+  # ---------------------------------------------------------------------------
+  # Deploy to Fly.io (staging on develop, production on main)
+  # ---------------------------------------------------------------------------
+  deploy-fly:
+    name: Deploy to Fly.io
+    runs-on: ubuntu-latest
+    needs: [integration-test]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Fly.io (Staging)
+        if: github.ref == 'refs/heads/develop'
+        uses: superfly/flyctl-actions/setup@v1
+        with:
+          args: "deploy --app indogovrag-staging --image ghcr.io/${{ github.repository }}:${{ github.sha }}"
+
+      - name: Deploy to Fly.io (Production)
+        if: github.ref == 'refs/heads/main'
+        uses: superfly/flyctl-actions/setup@v1
+        with:
+          args: "deploy --app indogovrag-prod --image ghcr.io/${{ github.repository }}:${{ github.sha }}"

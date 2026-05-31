@@ -15,7 +15,7 @@ from src.data.chunker import Chunk
 def load_sample_documents():
     """Load Indonesian government document samples."""
     
-    print("🔧 Loading Sample Indonesian Government Documents...")
+    print("[CONFIG] Loading Sample Indonesian Government Documents...")
     print()
     
     # Sample documents about Indonesian government topics
@@ -68,13 +68,13 @@ def load_sample_documents():
     ]
     
     # Initialize vector store
-    print("📦 Initializing Vector Store...")
+    print("[STORE] Initializing Vector Store...")
     store = VectorStore()
-    
+
     # Create chunks from documents
     chunks = []
     chunk_id = 0
-    
+
     for doc in documents:
         # Simple chunking (just use whole document for now)
         text = doc['text'].strip()
@@ -94,35 +94,35 @@ def load_sample_documents():
         )
         chunks.append(chunk)
         chunk_id += 1
-    
+
     # Prepare for indexing
-    print(f"📝 Preparing {len(chunks)} chunks...")
+    print(f"[MSG] Preparing {len(chunks)} chunks...")
     prepared_chunks = prepare_chunks_for_indexing(chunks)
-    
+
     # Add to vector store
-    print("💾 Adding to vector store...")
+    print("[SAVE] Adding to vector store...")
     store.add_chunks(prepared_chunks, show_progress=True)
     
     # Verify
     count = store.collection.count()
     print()
-    print(f"✅ Successfully loaded {count} documents!")
+    print(f"[OK] Successfully loaded {count} documents!")
     print()
     
     # Test search
-    print("🔍 Testing search...")
+    print("[SEARCH] Testing search...")
     results = store.search("Apa itu KTP elektronik?", n_results=2)
     
     if results:
-        print("✅ Search working!")
+        print("[OK] Search working!")
         print(f"   Top result: {results[0].text[:100]}...")
         for i, res in enumerate(results, 1):
             print(f"   {i}. Score: {res.score:.3f} | {res.metadata.get('title')}")
     else:
-        print("⚠️  No results found")
+        print("[WARN]  No results found")
     
     print()
-    print(f"🎉 Vector store ready with {count} documents!")
+    print(f"[OK] Vector store ready with {count} documents!")
     print("   Now you can run RAG queries!")
     
     return count
