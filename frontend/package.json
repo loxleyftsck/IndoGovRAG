@@ -36,7 +36,7 @@
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
-    "eslint-config-next": "16.1.0",
+    "eslint-config-next": "16.2.6",
     "playwright": "^1.60.0",
     "prettier": "^3.1.0",
     "prettier-plugin-tailwindcss": "^0.5.9",
